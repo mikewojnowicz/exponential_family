@@ -1,0 +1,11 @@
+**/.DS_Store
+
+%Tex files
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.log
+

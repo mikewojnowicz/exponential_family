@@ -1,0 +1,352 @@
+\pdfoutput=1
+
+\documentclass{article} % For LaTeX2e
+
+%STANDARD PREAMBLE
+%https://tex.stackexchange.com/questions/68821/is-it-possible-to-create-a-latex-preamble-header
+\usepackage{../../latex_preamble/preamble}
+
+%%% CONTROL SIZE OF BLOCK MATRICES
+% Reference: https://tex.stackexchange.com/questions/14071/how-can-i-increase-the-line-spacing-in-a-matrix
+
+\makeatletter
+\renewcommand*\env@matrix[1][\arraystretch]{%
+  \edef\arraystretch{#1}%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{*\c@MaxMatrixCols c}}
+\makeatother
+ 
+ % INDICATOR FUNCTIONS
+ % Allows us to switch between delta(x,y)
+ % or Iverson bracket $[x=y]$ or $[x==y]$
+ % or 1_{whatever} ..
+ 
+ %\newcommand{\indicate}[2]{\delta({#1},{#2})}
+ \newcommand{\indicate}[2]{[{#1} = {#2}]}
+  
+ %%% MARKOV RANDOM FIELDS 
+\newcommand{\selfpotential}{\phi}
+\newcommand{\edgepotential}{\psi}
+
+\begin{document}
+
+
+
+\title{Exponential Family} 
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{The Exponential Family} \label{sec:ef}
+
+We are interested in the exponential family primarily because of it makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.   This is true regardless of whether we're doing maximum likelihood,  expectation maximization,  variational inference,  or Gibbs sampling. 
+
+\subsection{Definition}
+We define an \textit{exponential family} of probability distributions as those distributions whose density has the following form
+\begin{align}
+\label{eqn:exponential_family}
+ p(x \cond \theta) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\theta)\} 
+ \end{align}
+where we refer to $h$ as the base measure, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer.  \redfootnote{TODO: It would be helpful to get more solid on integrating against probability measure here, so that I can set this up in a more precise way, as Jordan does.    He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."}
+
+\begin{remark}{\remarktitle{Non-uniqueness of natural parameter}}
+\label{rk:nonuniqueness_of_natural_parameter}
+Note from \eqref{eqn:exponential_family} that natural parameters are not unique since,  for example,  $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$. \redfootnote{Are they unique up to scalar multiplication?} Thus,  we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\end{remark}
+
+\subsection{Example: Dirichlet distribution}
+
+\begin{example}{(Dirichlet Distribution)} 
+\label{ex:dirichlet_as_ef} We can write the density of the Dirichlet distribution in exponential form:
+\begin{align*}
+p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
+&= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
+\end{align*}
+with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^T$, sufficient statistics $t(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^T$, base measure $h(\pi)=1$, and log normalizer $a(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. $\qed$
+\end{example} 
+
+For an example of how the natural parametrization can help provide insight into message passing,  see Section \ref{sec:mvn_in_message_passing}.\footnote{
+\textbf{Remark} The exponential family representation of the Dirichlet, as given in Example \ref{ex:dirichlet_as_ef}, is useful when we want to compute the expectation of a log probability from a Dirichlet distributed probability vector (as happens in the derivation of LDA with variational inference; see my notes on variational inference).  
+
+In those notes,  we see
+\begin{align} 
+\E [ \log \pi_k] &= \E [t_k(p)] \stackrel{1}{=} \df{\partial}{\partial \eta_k} a(\eta) \nonumber \\
+&=\Psi(\alpha_k) -  \Psi(\sum_k  \alpha_k) \label{eqn:expectation_of_log_probability} 
+\end{align}
+where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ is the first derivative of the $\log \Gamma$ function.   It is known as the \textit{digamma function}.  $\qed$
+
+% See e.g., https://zhiyzuo.github.io/Exponential-Family-Distributions/
+}
+
+\red{TODO:  Add multivariate Gaussian example,  showing that the natural parameters are the precision $\Sigma^{-1}$ and precision-weighted mean $\Sigma^{-1} \mu$,  as we use this in Section \ref{sec:normal_data_with_non_conjugate_prior} combined with the exponential family formalism to derive the updates to the mean for a Bayesian normal model with conditionally conjugate prior.}
+
+\subsection{i.i.d samples from an exponential family}
+If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
+\begin{align}
+\label{eqn:exponential_family_iid}
+ p(\+x \cond \theta) = \ds\prod_{i=1}^n h(x_i) \exp \big\{ \eta(\theta)^T \sum_{i=1}^n t(x_i) - n \,a(\eta(\theta))\big\} 
+ \end{align}
+
+\section{Exponential Family: Maximum Likelihood Estimation} \label{sec:ml_with_ef}
+
+The goal for maximum likelihood is to determine the parameter
+\begin{equation}
+\label{eqn:ml}
+\theta_{ML} = \argmax_\theta  \, \log p(\+x \cond \theta) 
+\end{equation}
+
+Let us assume that $\+x=(x_1, ..., x_n)$ are i.i.d observations  from a fixed exponential family, so that the likelihood has form \eqref{eqn:exponential_family_iid}.  Let us compute the gradient with respect to the natural parameter $\eta$ of $\ell(\eta) := \log p(\+x \cond \eta)$
+
+\[ \nabla_\eta \ell(\eta) = \ds\sum_{i=1}^n t(x_i) - n \; \nabla_\eta a(\eta) \]
+
+Setting the gradient to zero, we obtain
+
+\[ \nabla_\eta a(\eta) = \df{1}{n}  \ds\sum_{i=1}^n t(x_i) \]
+
+But $\nabla_\eta a(\eta) = \E [t(X)]$ \cite{jordan_ef}.  Thus, we should set $\theta_{ML}$ such that
+
+\[ \mu(\theta_{ML}) = \df{1}{n} \ds\sum_{i=1}^n t(x_i) \]
+where $\mu := \E[t(x)]$ refers to the mean parametrization of the likelihood. \redfootnote{TODO: This switching of parameterization should be handled much more explicitly.}
+
+ \section{Exponential Family: Expectation Maximization} \label{sec:em_with_ef}
+
+Some models have latent variables associated with each observation, and so maximum likelihood is not possible.  Let us see how expectation maximization looks when the complete data likelihood is in the exponential family.
+
+The expectation maximization algorithm is 
+\begin{equation}
+\label{eqn:em_algorithm_appendix}
+ \+\theta^{(t+1)} =  \text{argmax}_{\+\theta} \; \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
+ \end{equation}
+
+We see how this plays out in the exponential family by following the logic of Section \ref{sec:ml_with_ef}.   Let us assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are n independent samples from the same exponential family, where $\+x$ is observed data and $\+z$ is unobserved data.
+Moreover, let us assume that the complete data likelihood is in the exponential family
+
+\begin{align}
+\label{eqn:exponential_family_complete_data_likelihood}
+ p(\+x, \+z \cond \theta) = \ds\prod_{i=1}^n h(x_i, z_i) \exp \big\{ \eta(\theta)^T \sum_{i=1}^n t(x_i, z_i) - n \,a(\eta(\theta))\big\} 
+ \end{align}
+
+Here we want to find $\+\theta$ to optimize 
+\[ f(\+\theta) =  \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \]
+
+Following the logic of Section \ref{sec:ml_with_ef}, we determine that we should select $\theta^{(t+1)}$ such that
+\[ \mu(\theta^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \+\theta^{(t)})} t(x_i, z_i) \]
+where $\mu := \E[t(x_1,z_1)]$ refers to the mean parametrization of the likelihood.
+
+This is why an EM iteration is often described and/or implemented as performing maximum likelihood with the expected sufficient statistics.
+
+\red{TODO: But is EM \textit{always} equivalent to performing ML with ESS's? Or is this ONLY true if I'm working within the exponential family?  I need to read up some more on EM theory.}
+
+\red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \theta, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
+ 
+ \section{Exponential Family: Conjugate Priors} \label{sec:conjugate_exponential_family_models}
+ 
+\red{TODO:  State what a conjugate prior is without using the formalism of Section \ref{sec:ef_general_formalism}} 
+ 
+ 
+\subsection{Example:  Inverse Wishart prior on covariance matrix of multivariate Gaussian with known mean} \label{ref:inverse_wishart_prior_on_mvn_with_known_mean}
+ 
+Here we will show that the Inverse Wishart is a conjugate prior for the covariance of a multivariate normally distributed random variable with known mean.
+
+This situation comes up 
+
+\begin{example}{\remarktitle{Inverse Wishart prior on the covariance of a  Multivariate Normal sampling model with known mean}} \label{ex:inverse_wishart_prior}
+
+
+
+Consider the sampling model for $\+y :=(\+y_1, ....,\+y_n) \iid \N_d(\+\mu,  \+\Sigma)$
+\begin{align}
+p\+(y \cond \+\mu, \+\Sigma) & \propto | \+\Sigma |^{-n/2} \exp \bb{ -\df{1}{2} \ds\sum_{i=1}^n (\+y_i - \+\mu)^T  \Sigma^{-1} (\+y_i- \+\mu) } \nonumber \\
+& = | \+\Sigma |^{-n/2} \exp \bb{ -\df{1}{2} \tr(\+\Sigma^{-1} \+S_\mu)  }\label{eqn:mvn_in_nice_form_for_inverse_wishart_prior}
+\end{align}
+where $\+S_\mu := \sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^T$ is the sum of pairwise deviation products,  and where the equality in \eqref{eqn:mvn_in_nice_form_for_inverse_wishart_prior}  is justified in Remark \ref{rk:reexpressing_mvn_in_nice_form_for_inverse_wishart_prior}.
+
+Let us take the mean $\+\mu$ to be known,  and let us take the prior on the covariance $\+\Sigma \in \R^{d \times d}$ to be given by $\+\Sigma \sim \InvWish(\+\Psi, \nu)$, i.e.
+
+\begin{align}
+p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+\Psi) } 
+\label{eqn:inverse_wishart_prior}
+\end{align}
+where $\+\Sigma \succ 0$ and $\nu > d-1$ to have a proper prior.   Note that $\E[\+\Sigma] = \frac{\+\Psi}{\nu -d -1}$.
+
+It is easy to see from the forms of the likelihood \eqref{eqn:mvn_in_nice_form_for_inverse_wishart_prior} and prior \eqref{eqn:inverse_wishart_prior} that the Inverse Wishart is a conjugate prior in this context.  In particular
+
+\begin{align}
+p(\+\Sigma \cond \+\mu,  \+y) \propto | \+\Sigma|^{-(\nu+ n + d +1) /2}  \exp \bb{ -\df{1}{2} \tr \big(\+\Sigma^{-1} (\+\Psi + \+S_\mu) \big) } 
+\label{eqn:inverse_wishart_posterior}
+\end{align}
+where $S_\mu$ was defined above.  Thus,  we have 
+\[ \+\Sigma \cond \+\mu,  \+y \sim \InvWish \bigg( \+\Psi +  \ds\sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^T,  \nu + n \bigg) \]
+And so the conjugate updates are given by
+\begin{align}
+\nu^\prime &\leftarrow  \nu + n \\
+\+\Psi^\prime &\leftarrow \+\Psi + \ds\sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^T
+\end{align}
+\end{example}
+
+\begin{remark}{\remarktitle{Interpreting the hyperparameters of the Inverse Wishart}}
+\label{rk:inverse_wishart_hyperparameter_interpretation}
+Note that the hyperparameters of the Inverse Wishart can be interpreted (as per conjugacy) in the following way: the covariance was estimated from $\nu$ observations with a sum of pairwise deviation products $\+\Psi$. \footnote{This interpretation also makes the formula for $\E[\+\Sigma]$ more intuitive.}
+\end{remark}
+
+
+
+\begin{remark}{\remarktitle{Expressing the Multivariate Gaussian density in a nice form for the Inverse Wishart prior on the Covariance Matrix}} 
+\label{rk:reexpressing_mvn_in_nice_form_for_inverse_wishart_prior}
+
+Here we justify the equality of \eqref{eqn:mvn_in_nice_form_for_inverse_wishart_prior}.
+
+We will show that $\ds\sum_{i=1}^n \+x_i^T \+A \+x_i = \tr(\+A \ds\sum \+x_i \+x_i^T)$ for $\+x \in \R^d$,  and $\+A \in \R^{d \times d}$ symmetric.
+
+\begin{align*}
+\ds\sum_{i=1}^n \+x_i^T \+A \+x_i  &= \ds\sum_{i=1}^n \ds\sum_{j,k=1}^n a_{jk} x_{ij} x_{ik} \\
+& = \ds\sum_{j,k=1}^n \bigg( \+A \circ \ds\sum_{i=1}^n \+x_i \+x_i^T \bigg)_{jk} \\
+& \stackrel{(*)}{=} \tr (\+A \ds\sum_{i=1}^n \+x_i \+x_i^T) 
+\end{align*}
+where $\circ$ is the Hadamard,  also called the elementwise,  operator,  and where (*) holds by properties of the $\tr$ operator
+
+\[ \tr(\+A\+B) = \ds\sum_{i,j} (\+A^T \circ \+B)_{ij}  \stackrel{\text{$\+A$ symmetric}}{=}  \ds\sum_{i,j} (\+A \circ \+B)_{ij}\]
+
+\end{remark}
+
+\subsection{General formalism} \label{sec:ef_general_formalism}
+Here we provide some notes, following \cite{jordan_ef}, about conjugate priors for exponential family data models. 
+
+Writing the exponential family density in canonical form, we have
+\[ p(x \cond \eta) = h(x) \exp \{ \eta^T T(x) - A(\eta) \} \]
+where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $h(x)$ is the base measure, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
+
+The natural parameter space is 
+\[  \bigg\{\eta : \ds\int h(x) \exp \{ \eta^T T(x) - A(\eta) \} < \infty \bigg \}\]
+
+Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we obtain:
+\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^n h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^n T(x_i) - N A(\eta) \bigg\} \]
+as the likelihood function.
+
+A conjugate prior can be obtained by mimicking the likelihood
+\begin{equation}
+p (\eta \cond \tau, \eta_0) = H(\tau, \eta_0) \exp \{ \tau^T \eta - \eta_o A(\eta)\}
+\label{eqn:conjugate_prior_exptl_family}
+\end{equation}
+
+where now $H(\tau, \eta_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
+
+To verify conjugacy, we compute the posterior density
+\[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^T \eta - (n_0 + N) A(\eta) \bigg\} \]
+which retains the form of \eqref{eqn:conjugate_prior_exptl_family}
+
+Thus, the prior-to-posterior conversion can be summarized with the following update rules
+\begin{align*}
+\tau & \to \tau + \ds\sum_{n=1}^N T(x_n) \\
+n_0 & \to  n_0 + N \\
+\labelit \label{eqn:general_formalism_prior_to_posterior_conversion}
+\end{align*}
+
+For conjugate Bayesian models, the predictive posterior distribution, $p(x_{\text{new}} \cond x)$ is always tractable, because it has the same form (integrating a likelihood against the parameter distribution) as does the evidence term in Bayes law.   For exponential family models, the predictive posterior takes the form of a ratio of normalizing factors
+
+\begin{equation}
+p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}), n_0 + N}{H(\tau_{\text{post}} + T(x_{\text{new}}), n_0 + N + 1)}
+\label{eqn:predictive_posterior_exptl_family}
+\end{equation}
+
+\red{TODO:  Redo some of the examples using the exponential family conjugate prior formalism.    A possibly useful resource in the giant table at \url{https://en.wikipedia.org/wiki/Exponential_family}.}
+
+\section{Exponential Family: Conditional Conjugacy}
+
+A family of prior distributions for a parameter is called conditionally conjugate if the conditional posterior distribution (often called the \textit{complete conditional}),  given the data and all other parameters in the model,  is also in that class  \cite{gelman2006prior}.    The posterior distribution for conditionally conjugate models is easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.
+
+Below we give perhaps the simplest example. 
+
+\subsection{Example:  Bayesian normal model with conditionally conjugate prior} \label{sec:normal_data_with_non_conjugate_prior}
+
+Consider the following model with a normal sampling distribution and conditionally conjugate prior\redfootnote{TODO: Prove that the prior,  although conditionally conjugate,  is not conjugate.   (I \textit{believe} this is true,  based on context clues from experience,  but I am not currently certain about it.)}:
+\begin{align*}
+\+\mu &\sim \N_{d}(\+m_0,\+V_0 ) \\
+\+\Sigma &\sim \InverseWishart(\nu_0,  \+\Psi_0) \\
+\+x_i \cond \+\mu,  \+\Sigma &\iid \N_{d}( \+\mu , \+\Sigma), \quad i=1,...,N
+\end{align*}
+We define $\+x := (\+x_1,  \hdots \+x_N)$,  where each $\+x_i \in \R^d$.
+
+The complete conditionals are well-known.   In particular
+\begin{align*}
+\+\mu  \cond \+\Sigma, \+x &\sim \N_{d}(\+m,\+V )  \labelit\label{eqn:normal_model_complete_conditional_on_mu} \\
+\intertext{where}
+\+m  &=  \bp{\+V_0^{-1} + N  \+\Sigma^{-1} }^{-1}  \bp{\+V_0^{-1} \+m_0 + N \+\Sigma^{-1}  \bar{\+x} } \\
+\+V &= \bp{\+V_0^{-1} +  N \+\Sigma^{-1} }^{-1} \\
+\intertext{and}
+\+\Sigma \cond \+\mu,  \+x  &\sim \InverseWishart(\nu,  \+\Psi) 
+\labelit \label{eqn:normal_model_complete_conditional_on_Sigma} \\
+\intertext{where}
+\nu &=  \nu_0 + N \\
+\+\Psi &= \Psi_0 + \ds\sum_{i=1}^N  (\+x_i - \+\mu) (\+x_i - \+\mu)^T \\ 
+\end{align*}
+
+Indeed,  we derived \eqref{eqn:normal_model_complete_conditional_on_Sigma} in Section \ref{ref:inverse_wishart_prior_on_mvn_with_known_mean}. \footnote{We still need to add a derivation for \eqref{eqn:normal_model_complete_conditional_on_mu} \red{TODO},  but the birds' eye view for one approach is to use the general formalism for conjugacy updates in the exponential family \eqref{eqn:general_formalism_prior_to_posterior_conversion},  noting that the natural parameters for a multivariate Gaussian are its precision and precision-weighted mean. }
+
+Note that the model is different than the model  fully conjugate (Normal-Inverse-Wishart) prior on the pair $(\+\mu, \+\Sigma)$.   The conditionally conjugate prior lacks closed-form posterior updating,  but is also more expressive. \bluefootnote{Is it also more expressive once we move to a variational approximation?  i.e.,  can we get more expressive marginals this way?}
+
+
+These conjugate posterior updates have nice interpretations:
+\begin{itemize}
+\item \textbf{Hyperparameter updates for $(\+\mu  \cond \+\Sigma, \+x)$}: On the precision scale,  $\+V$ is the sum of the prior precision matrix $\+V_0^{-1}$ and $N$ copies of the precision for each observation,  $\+\Sigma^{-1}$.    Similarly,  $\+m$ is the precision-weighted convex combination of $\+m_0$, the prior mean    and the empirical average $\bar{\+x}$.
+\item \textbf{Hyperparameter updates for $(\+\Sigma \cond \+\mu,  \+x)$}:  The covariance was estimated from $\nu$ observations with a sum of pairwise deviation products $\Psi$.
+\end{itemize}
+
+
+\newpage 
+ \appendix
+ 
+ \section{EF representation of Multivariate Gaussian in message passing}
+ \label{sec:mvn_in_message_passing}
+ 
+In a dissertation on Gaussian Belief Propagation \cite{bickson2008gaussian}, referred to in \cite{krishnan2016structured}, a multivariate Gaussian is considered as a Markov Random Field. 
+
+In particular, consider the Markov Random field
+
+\begin{equation}
+p(x) = \df{1}{Z}\bp{ \ds\prod_{i=1}^n \selfpotential(x_i) \ds\prod_{i,j} \edgepotential(x_i, x_j)  } 
+\label{eqn:mrf_dyadic}
+\end{equation}
+
+Now note that a multivariate Gaussian has a joint distribution which can be expressed as
+\[ p(x) \propto \exp \bigg\{ -\df{1}{2} x^T A x + b^T x \bigg\} \]
+
+as this is just the exponential family form of a Gaussian (e.g., see  \cite{englehardt_gaussian_models}), where the natural parameters are
+given in terms of the \textit{precision} $\Sigma^{-1}$
+\begin{align*}
+A &= \Sigma^{-1} \\
+b &= \Sigma^{-1} \mu
+\end{align*}
+
+Thus, the multivariate Gaussian is a MRF where the potentials in \eqref{eqn:mrf_dyadic} are given by
+
+\begin{align*}
+\edgepotential_{ij}(x_i, x_j) & := \exp \bigg\{ -\df{1}{2} x_i A_{ij} x_j \bigg\}  \\
+\selfpotential_{i}(x_i) & := \exp \bigg\{ -\df{1}{2} A_{ii} x_i^2 + b_i x_i \bigg\}  
+\end{align*}
+
+This seems to be useful in inference for state space models, where one multiplies multiple ``messages" that are different Gaussian densities \textit{over the same variable}.   For example, see  the equations for $\mu_t$ and $\sigma^2_t$ in Section 4 of \cite{krishnan2016structured}, where messages from the past and the future of a time series model are combined to get a posterior distribution on the state $z_t$.   The combined parameters have an expression which may at first be puzzling:
+
+\[ \mu_t = \df{\mu_1 \sigma^2_2 + \mu_2 \sigma^2_1}{\sigma^2_1 + \sigma^2_2}  , \quad \sigma^2_t = \df{\sigma^2_1 \sigma^2_2}{ \sigma^2_1 + \sigma^2_2} \]
+
+However, these messages have an intuitive form when considered in terms of the natural parameterizations:  the combined mean is a weighted combination of the original means, with the weights given by the precisions.   The combined precision (inverse covariance) is given simply by the sum of the original precisions.  Very nice! 
+
+ See Figure \ref{fig:lemma_twelve_bickson} for the general expression, which explains the formula in  \cite{krishnan2016structured}.  This is an example of where the natural parametrization provides more insight than the standard parametrization. 
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{images/bickson_lemma_12}
+\caption{Lemma 12 of \cite{bickson2008gaussian}}
+\label{fig:lemma_twelve_bickson}
+\end{figure}
+
+
+ 
+ 
+\bibliography{references_exponential_family}{}
+\bibliographystyle{unsrt}
+
+
+\end{document}
