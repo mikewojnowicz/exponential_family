@@ -4,7 +4,8 @@
 
 %STANDARD PREAMBLE
 %https://tex.stackexchange.com/questions/68821/is-it-possible-to-create-a-latex-preamble-header
-\usepackage{../../latex_preamble/preamble}
+\usepackage{/Users/mwojno01/Research/Learning/latex_preamble/preamble}
+
 
 %%% CONTROL SIZE OF BLOCK MATRICES
 % Reference: https://tex.stackexchange.com/questions/14071/how-can-i-increase-the-line-spacing-in-a-matrix
@@ -23,7 +24,7 @@
  % or 1_{whatever} ..
  
  %\newcommand{\indicate}[2]{\delta({#1},{#2})}
- \newcommand{\indicate}[2]{[{#1} = {#2}]}
+% \newcommand{\indicate}[2]{[{#1} = {#2}]}
   
  %%% MARKOV RANDOM FIELDS 
 \newcommand{\selfpotential}{\phi}
@@ -42,7 +43,7 @@
 
 \section{The Exponential Family} \label{sec:ef}
 
-We are interested in the exponential family primarily because of it makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.   This is true regardless of whether we're doing maximum likelihood,  expectation maximization,  variational inference,  or Gibbs sampling. 
+We are interested in the exponential family primarily because it makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.   This is true regardless of whether we're doing maximum likelihood,  expectation maximization,  variational inference,  or Gibbs sampling. 
 
 \subsection{Definition}
 We define an \textit{exponential family} of probability distributions as those distributions whose density has the following form
@@ -65,7 +66,8 @@ Note from \eqref{eqn:exponential_family} that natural parameters are not unique 
 p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
 &= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^T$, sufficient statistics $t(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^T$, base measure $h(\pi)=1$, and log normalizer $a(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. $\qed$
+with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^T$, sufficient statistics $t(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^T$, base measure $h(\pi)=1$, and log normalizer $a(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
+\qed 
 \end{example} 
 
 For an example of how the natural parametrization can help provide insight into message passing,  see Section \ref{sec:mvn_in_message_passing}.\footnote{
@@ -82,6 +84,28 @@ where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ 
 }
 
 \red{TODO:  Add multivariate Gaussian example,  showing that the natural parameters are the precision $\Sigma^{-1}$ and precision-weighted mean $\Sigma^{-1} \mu$,  as we use this in Section \ref{sec:normal_data_with_non_conjugate_prior} combined with the exponential family formalism to derive the updates to the mean for a Bayesian normal model with conditionally conjugate prior.}
+
+\subsection{Example: Truncated normal distribution}
+
+\begin{example}{(Truncated normal distribution)} 
+\label{ex:truncated_normal_as_ef} The univariate truncated normal distribution $\TruncatedNormal(\mu,  \sigma^2,  \Omega)$ results when a normal distribution $\N(\mu,  \sigma^2)$ is truncated to some set $\Omega \in \R$.    Note that the parameters $\mu, \sigma^2$ denote the mean and variance of the \textit{parent} normal distribution;  i.e.  if $X \sim \TruncatedNormal(\mu,  \sigma^2,  \Omega)$ then $\E[X] \neq \mu$ (unless $\Omega = \R$). 
+
+If we assume that the truncation set is an interval $\Omega = (a,b)$ for $a,b \in \R$,  then the distribution $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ has p.d.f.
+
+\begin{align*}
+f(x ; \mu,  \sigma^2,  a,  b) = \df{\phi_{\mu, \sigma^2} (x) }{\Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) } \indicate{a \leq x \leq b} \labelit \label{eqn:pdf_of_normal_truncated_to_an_interval}
+\end{align*} 
+
+where $\phi_{\mu,  \sigma^2}$ and $\Phi_{\mu,  \sigma^2}$ denote the pdf and cdf,  respectively,  of a univariate normal distribution with mean $\mu$ and variance $\sigma^2$.   
+
+If we write
+\begin{align*}
+f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\half \df{(x-\mu)^2}{\sigma^2}}  \indicate{a \leq x \leq b} \\
+& = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
+\end{align*} 
+where $K := \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a)$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\+\eta = (- \frac{1}{2 \sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $\+t(x) = (x^2,  x)^T$,  and base measure $h(x) = K \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$.
+\qed
+\end{example}
 
 \subsection{i.i.d samples from an exponential family}
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
@@ -254,7 +278,7 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}), n_0 + N}{H(\tau_{\text{po
 
 \red{TODO:  Redo some of the examples using the exponential family conjugate prior formalism.    A possibly useful resource in the giant table at \url{https://en.wikipedia.org/wiki/Exponential_family}.}
 
-\section{Exponential Family: Conditional Conjugacy}
+\section{Exponential Family: Conditional Conjugacy} \label{sec:exponential_family_conditional_conjugacy}
 
 A family of prior distributions for a parameter is called conditionally conjugate if the conditional posterior distribution (often called the \textit{complete conditional}),  given the data and all other parameters in the model,  is also in that class  \cite{gelman2006prior}.    The posterior distribution for conditionally conjugate models is easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.
 
