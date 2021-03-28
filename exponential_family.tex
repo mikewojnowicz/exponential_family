@@ -88,7 +88,7 @@ where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ 
 \subsection{Example: Truncated normal distribution}
 
 \begin{example}{(Truncated normal distribution)} 
-\label{ex:truncated_normal_as_ef} The univariate truncated normal distribution $\TruncatedNormal(\mu,  \sigma^2,  \Omega)$ results when a normal distribution $\N(\mu,  \sigma^2)$ is truncated to some set $\Omega \in \R$.    Note that the parameters $\mu, \sigma^2$ denote the mean and variance of the \textit{parent} normal distribution;  i.e.  if $X \sim \TruncatedNormal(\mu,  \sigma^2,  \Omega)$ then $\E[X] \neq \mu$ (unless $\Omega = \R$). 
+\label{ex:truncated_normal_as_ef} The univariate truncated normal distribution $\TruncatedNormal(\mu,  \sigma^2,  \Omega)$ results when a normal distribution $\N(\mu,  \sigma^2)$ is truncated to some set $\Omega \in \R$. \footnote{For more information on the truncated normal,  see e.g.  \url{https://people.sc.fsu.edu/~jburkardt/presentations/truncated_normal.pdf} or \url{http://parker.ad.siu.edu/Olive/ch4.pdf}.}   Note that the parameters $\mu, \sigma^2$ denote the mean and variance of the \textit{parent} normal distribution;  i.e.  if $X \sim \TruncatedNormal(\mu,  \sigma^2,  \Omega)$ then $\E[X] \neq \mu$ (unless $\Omega = \R$). 
 
 If we assume that the truncation set is an interval $\Omega = (a,b)$ for $a,b \in \R$,  then the distribution $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ has p.d.f.
 
@@ -171,6 +171,11 @@ This is why an EM iteration is often described and/or implemented as performing 
 \red{TODO:  State what a conjugate prior is without using the formalism of Section \ref{sec:ef_general_formalism}} 
  
  
+ \subsection{Example:  Normal prior on mean of multivariate Gaussian with known covariance}
+ 
+\red{TODO.   Note that in Section \ref{{sec:Bayesian_linear_regression_with_normal_prior}
+},   I've already written up a self-enclosed argument for Bayesian linear regression;  some of that argument can likely be factored out to here.}
+
 \subsection{Example:  Inverse Wishart prior on covariance matrix of multivariate Gaussian with known mean} \label{ref:inverse_wishart_prior_on_mvn_with_known_mean}
  
 Here we will show that the Inverse Wishart is a conjugate prior for the covariance of a multivariate normally distributed random variable with known mean.
@@ -234,6 +239,35 @@ where $\circ$ is the Hadamard,  also called the elementwise,  operator,  and whe
 
 \[ \tr(\+A\+B) = \ds\sum_{i,j} (\+A^T \circ \+B)_{ij}  \stackrel{\text{$\+A$ symmetric}}{=}  \ds\sum_{i,j} (\+A \circ \+B)_{ij}\]
 
+\end{remark}
+
+
+\subsection{Example:  Bayesian linear regression with normal prior on regression weights} \label{sec:Bayesian_linear_regression_with_normal_prior}
+
+Consider the Bayesian linear multiple regression model
+\begin{align*}
+\+\beta &\sim \N (\+0, \+V) \\
+y_i \cond \+\beta &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n
+\end{align*}
+
+where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
+
+The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
+
+\begin{align*}
+\ln p(\+\beta \cond \+y) &= \ds\sum_{i=1}^n \ln p(y_i \cond \+\beta)  + \ln p(\+\beta) \\
+&= -\df{1}{2 \sigma^2} \ds\sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  - \half \+\beta^T \+V^{-1} \+\beta + \text{constant} \\
+&\stackrel{1}{=} -\df{1}{2 \sigma^2} \bigg(  \+y^T \+y - 2 \+y^T \+X^T \+\beta + \+\beta^T \+X^T \+X \+\beta \bigg)  - \half \+\beta^T \+V^{-1} \+\beta + \text{constant} \\
+&\stackrel{2}{=} -\half (\+\beta - \+\mu)^T \+\Sigma^{-1} (\+\beta - \+\mu) +  \text{constant} \\
+\intertext{where}  \\
+\+\mu &= \df{1}{\sigma^2} \+\Sigma \+X^T \+y \\
+\+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^T \+X + \+V^{-1}  \bigg)^{-1} \\
+\end{align*}
+
+Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$
+
+\begin{remark}
+For a nice conceptual overview of Bayesian linear regression., see \cite{groseeXXXXbayesian} or \cite{bishop2006pattern}.   Among other things, these resources demonstrate how Bayesian regression makes predictions using an infinite collection of regression models (whose contributions are weighted by their posterior probabilities).  They also show how the linear model is less restrictive than it might first seem;  it can be used to model nonlinear functional relationships by using nonlinear basis functions. 
 \end{remark}
 
 \subsection{General formalism} \label{sec:ef_general_formalism}
@@ -367,8 +401,22 @@ However, these messages have an intuitive form when considered in terms of the n
 \end{figure}
 
 
- 
- 
+\section{Multivariate completing the square}
+
+A nice overview of multivariate completing the square is given by \cite{gundersenXXXXcompleting}.    
+
+Let $\+x,  \+b$ be $d$-dimensional vectors, and let $\+M \in \R^{d \times d}$ be a symmetric invertible matrix. Then
+
+\begin{align*}
+\+x^T \+M \+x - 2 \+b^T \+x = (\+x - \+M^{-1} \+b)^T \+M (\+x - \+M^{-1} \+b) - \+b^T \+M^{-1} \+b
+ \labelit \label{eqn:multivariate_completing_the_square}
+\end{align*}
+
+
+
+
+%  \+x^⊤ \+M \+x − 2\+b^⊤ \+x = (\+x−\+M^{−1} \+b)^T \+M (\+x−^\+M^{−1} \+b)− \+b^T \+M^{−1} \+b
+% 
 \bibliography{references_exponential_family}{}
 \bibliographystyle{unsrt}
 
