@@ -244,27 +244,56 @@ where $\circ$ is the Hadamard,  also called the elementwise,  operator,  and whe
 
 \subsection{Example:  Bayesian linear regression with normal prior on regression weights} \label{sec:Bayesian_linear_regression_with_normal_prior}
 
-Consider the Bayesian linear multiple regression model
-\begin{align*}
-\+\beta &\sim \N (\+0, \+V) \\
-y_i \cond \+\beta &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n
-\end{align*}
 
+In this section,  we will show that the normal prior on $\+\beta$ is a conjugate prior for the regression weights $\+\beta$ of a Bayesian multiple regression model with known observation noise $\sigma^2$.  That is,  the posterior on $\+\beta$ given $\+y = (y_1,...,y_n)^T$ for such a model is also Gaussian.  
+
+
+\begin{proposition} \label{prop:bayes_linear_regression_with_known_ssq}
+Consider the Bayesian linear multiple regression model with known observation noise $\sigma^2$
+\begin{align*}
+\+\beta &\sim \N (\+\mu_0, \+\Sigma_0) \\
+y_i \cond \+\beta &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n \\
+\labelit \label{eqn:bayesian_multiple_linear_regression_with_known_observation_noise}
+\end{align*}
 where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
 
-The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
-
+The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise} is given by 
 \begin{align*}
-\ln p(\+\beta \cond \+y) &= \ds\sum_{i=1}^n \ln p(y_i \cond \+\beta)  + \ln p(\+\beta) \\
-&= -\df{1}{2 \sigma^2} \ds\sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  - \half \+\beta^T \+V^{-1} \+\beta + \text{constant} \\
-&\stackrel{1}{=} -\df{1}{2 \sigma^2} \bigg(  \+y^T \+y - 2 \+y^T \+X^T \+\beta + \+\beta^T \+X^T \+X \+\beta \bigg)  - \half \+\beta^T \+V^{-1} \+\beta + \text{constant} \\
-&\stackrel{2}{=} -\half (\+\beta - \+\mu)^T \+\Sigma^{-1} (\+\beta - \+\mu) +  \text{constant} \\
-\intertext{where}  \\
-\+\mu &= \df{1}{\sigma^2} \+\Sigma \+X^T \+y \\
-\+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^T \+X + \+V^{-1}  \bigg)^{-1} \\
+p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
+\intertext{where}
+\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^T \+X }^{-1}  \\
+\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}  
 \end{align*}
 
-Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$
+\end{proposition}
+
+\begin{proof}
+By Bayes rule,
+\begin{align*} 
+p(\+\beta \cond \+y) &\propto   p(\+\beta)  \exp \bigg\{  \ds\sum_{i=1}^N  -\frac{1}{2 \sigma^2} \bigg( y_i -  \+x_i^T \+\beta \bigg)^2  \bigg\} \\
+\intertext{and defining $\+\Omega  \in \R^{n \times n}: \+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \frac{1}{\sigma^2})$,  we have} 
+&\stackrel{1}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+y - \+X \+\beta)^T \+\Omega   (\+y - \+X \+\beta) \bigg\} \\ 
+&\stackrel{2}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+X^+ \+y - \+\beta)^T  \+X^T \+\Omega \+X   (\+X^+ \+y - \+\beta) \bigg\} 
+\end{align*}
+where (1) writes the weighted sum of squares in matrix notation, and (2) isolates $\+\beta$,  using $\+X^{+}$,  the Moore-Penrose psuedo-inverse of $\+X$. \footnote{Specifically,  since $\+X\+X^+ = \+I$,  we use 
+\begin{align*}
+(\+y - \+X \+\beta)^T \+\Omega   (\+y - \+X \+\beta) &= (\+X\+\beta - \+y)^T \+\Omega (\+X\+\beta - \+y)\\ &= \bigg( \+X (\+\beta - \+X^+ \+y ) \bigg)^T \+\Omega  \bigg(  \+X (\+\beta - \+X^+ \+y ) \bigg) \\
+&= (\+\beta - \+X^+ \+y)^T \+X^T \+\Omega \+X   (\+\beta - \+X^+ \+y) 
+\end{align*}
+.}  
+
+Thus,  we see that $p(\+\beta \cond  \+y)$ is proportional to the product of two multivariate Gaussians:  $p(\+\beta)$,  which has mean $\+\mu_0$ and covariance $\+\Sigma_0$,  and another Gaussian,  which has mean $\+X^+ \+y$ and covariance $(\+X^T \+\Omega \+X)^{-1}$.   We know from the exponential family representation of the Gaussian that the resulting distribution can be obtained by summing at the scale of natural parameters -- which for the Gaussian are the precision and precision-weighted mean. \footnote{See,  for reference,  Section \ref{sec:mvn_in_message_passing}.}   Using this,  we obtain
+
+\begin{align*}
+p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
+\intertext{where}
+\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \+X^T \+\Omega \+X }^{-1}  \\
+\+\mu &= \+\Sigma  \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^T \+\Omega \cancel{\+X} \cancel{\+X^+}  \+y }  \\
+&= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^T \+\Omega \+y}  
+\end{align*}
+
+recalling that we defined $\+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \frac{1}{\sigma^2})$ completes the proof. 
+\end{proof}
 
 \begin{remark}
 For a nice conceptual overview of Bayesian linear regression., see \cite{groseeXXXXbayesian} or \cite{bishop2006pattern}.   Among other things, these resources demonstrate how Bayesian regression makes predictions using an infinite collection of regression models (whose contributions are weighted by their posterior probabilities).  They also show how the linear model is less restrictive than it might first seem;  it can be used to model nonlinear functional relationships by using nonlinear basis functions. 
@@ -400,6 +429,49 @@ However, these messages have an intuitive form when considered in terms of the n
 \label{fig:lemma_twelve_bickson}
 \end{figure}
 
+\section{More on Bayesian multivariate linear regression}  \label{sec:more_bayesian_multivariate_linear_regression} 
+
+Below we give an alternate proof for the posterior of the regression weights in multivariate linear regression,  compared to what was given in Proposition \ref{prop:bayes_linear_regression_with_known_ssq}.   This alternate proof may be of interest.   Whereas the proof of proposition \ref{prop:bayes_linear_regression_with_known_ssq} given in Section  \ref{sec:Bayesian_linear_regression_with_normal_prior} refers to exponential family properties,  the proof below does not,  and instead uses multivariate completing the square to do the heavy lifting. 
+
+Note that proposition 
+\ref{prop:bayes_linear_regression_with_known_ssq_and_zero_prior_mean} below, as stated,  is slightly more restrictive in that it assumes the prior mean is zero.   This additional restriction is not necessary; the proposition could be rewritten to match 
+Proposition \ref{prop:bayes_linear_regression_with_known_ssq} exactly,  and the proof could be adjusted accordingly to match the additional generality.    The difference in statements is just an unnecessary presentational blemish.\redfootnote{TODO: fix up the unnecessary presentational blemish -- assuming that we don't end up sacrifing too much pedagogical clarity for the sake of generality}.
+%The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise} is given by 
+
+\begin{proposition} \label{prop:bayes_linear_regression_with_known_ssq_and_zero_prior_mean}
+Consider the Bayesian linear multiple regression model
+\begin{align*}
+\+\beta &\sim \N (\+0, \+V) \\
+y_i \cond \+\beta &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n
+\end{align*}
+
+where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
+
+The posterior distribution for this model is given by 
+\begin{align*}
+p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
+\intertext{where}
+\+\mu &= \df{1}{\sigma^2} \+\Sigma \+X^T \+y \\
+\+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^T \+X + \+V^{-1}  \bigg)^{-1} \\
+\end{align*}
+\end{proposition} 
+
+\begin{proof}
+The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
+
+\begin{align*}
+\ln p(\+\beta \cond \+y) &= \ds\sum_{i=1}^n \ln p(y_i \cond \+\beta)  + \ln p(\+\beta) \\
+&= -\df{1}{2 \sigma^2} \ds\sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  - \half \+\beta^T \+V^{-1} \+\beta + \text{constant} \\
+&\stackrel{1}{=} -\df{1}{2 \sigma^2} \bigg(  \+y^T \+y - 2 \+y^T \+X^T \+\beta + \+\beta^T \+X^T \+X \+\beta \bigg)  - \half \+\beta^T \+V^{-1} \+\beta + \text{constant} \\
+&\stackrel{2}{=} -\half (\+\beta - \+\mu)^T \+\Sigma^{-1} (\+\beta - \+\mu) +  \text{constant} \\
+\intertext{where}  \\
+\+\mu &= \df{1}{\sigma^2} \+\Sigma \+X^T \+y \\
+\+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^T \+X + \+V^{-1}  \bigg)^{-1} \\
+\end{align*}
+
+Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$
+\end{proof}
+
 
 \section{Multivariate completing the square}
 
@@ -411,7 +483,6 @@ Let $\+x,  \+b$ be $d$-dimensional vectors, and let $\+M \in \R^{d \times d}$ be
 \+x^T \+M \+x - 2 \+b^T \+x = (\+x - \+M^{-1} \+b)^T \+M (\+x - \+M^{-1} \+b) - \+b^T \+M^{-1} \+b
  \labelit \label{eqn:multivariate_completing_the_square}
 \end{align*}
-
 
 
 
