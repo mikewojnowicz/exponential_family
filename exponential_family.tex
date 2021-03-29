@@ -43,7 +43,7 @@
 
 \section{The Exponential Family} \label{sec:ef}
 
-We are interested in the exponential family primarily because it makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.   This is true regardless of whether we're doing maximum likelihood,  expectation maximization,  variational inference,  or Gibbs sampling. 
+We are interested in the exponential family primarily because it makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.    This is true regardless of whether we're doing frequentist inference (such as maximum likelihood) or Bayesian inference.    Bayesian inference with exponential family likelihoods tends to be especially nice,  as all exponential family likelihoods have conjugate priors,  and these are often also in the exponential family \cite{bernardo2009bayesian}. \redfootnote{TODO:  Get clearer on the relationship.  There is a brief discussion on this in \cite{bernardo2009bayesian}.  I am not clear on whether all likelihoods with conjugate priors need to be in the exponential family.}   More complicated models may not be in the exponential family,  but may have exponential family complete conditional distributions;  in such situation,  we can appeal to exponential family formalisms to more easily work out inference schemes for expectation maximization,  variational inference,  or Gibbs sampling.   
 
 \subsection{Definition}
 We define an \textit{exponential family} of probability distributions as those distributions whose density has the following form
@@ -166,7 +166,7 @@ This is why an EM iteration is often described and/or implemented as performing 
 
 \red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \theta, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
  
- \section{Exponential Family: Conjugate Priors} \label{sec:conjugate_exponential_family_models}
+ \section{Conjugate Priors} \label{sec:conjugate_exponential_family_models}
  
 \red{TODO:  State what a conjugate prior is without using the formalism of Section \ref{sec:ef_general_formalism}} 
  
@@ -341,7 +341,7 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}), n_0 + N}{H(\tau_{\text{po
 
 \red{TODO:  Redo some of the examples using the exponential family conjugate prior formalism.    A possibly useful resource in the giant table at \url{https://en.wikipedia.org/wiki/Exponential_family}.}
 
-\section{Exponential Family: Conditional Conjugacy} \label{sec:exponential_family_conditional_conjugacy}
+\section{Conditional Conjugacy} \label{sec:exponential_family_conditional_conjugacy}
 
 A family of prior distributions for a parameter is called conditionally conjugate if the conditional posterior distribution (often called the \textit{complete conditional}),  given the data and all other parameters in the model,  is also in that class  \cite{gelman2006prior}.    The posterior distribution for conditionally conjugate models is easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.
 
