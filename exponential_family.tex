@@ -170,13 +170,71 @@ This is why an EM iteration is often described and/or implemented as performing 
  
 \red{TODO:  State what a conjugate prior is without using the formalism of Section \ref{sec:ef_general_formalism}} 
  
+ \subsection{Univariate normal model}
  
- \subsection{Example:  Normal prior on mean of multivariate Gaussian with known covariance}
- 
-\red{TODO.   Note that in Section \ref{{sec:Bayesian_linear_regression_with_normal_prior}
-},   I've already written up a self-enclosed argument for Bayesian linear regression;  some of that argument can likely be factored out to here.}
+\subsubsection{Example:  Normal prior on mean of univariate Gaussian with known covariance}
 
-\subsection{Example:  Inverse Wishart prior on covariance matrix of multivariate Gaussian with known mean} \label{ref:inverse_wishart_prior_on_mvn_with_known_mean}
+\red{TODO: Fill in}
+
+\subsubsection{Example:  Inverse gamma prior on the variance of a univariate Gaussian with known mean}
+
+
+\begin{proposition} \label{prop:bayes_univariate_normal_with_known_mean}
+Consider the Bayesian univariate normal model with known mean $\mu$ and random variance $\sigma^2$
+\begin{align*}
+\sigma^2 &\sim \IG (\alpha_0,  \beta_0) \\
+y_i \cond \mu,  \sigma^2 &\iid \N (\mu,  \sigma^2),  \quad i=1,...,n \\
+\labelit \label{eqn:bayesian_uvn_known_mean}
+\end{align*}
+where $\IG$ denotes the Inverse Gamma distribution.
+
+
+The posterior distribution for  \eqref{eqn:bayesian_uvn_known_mean} is given by 
+\begin{align*}
+\sigma^2 \cond \+y,  \mu & \sim \N(\alpha_n,  \beta_n )
+\intertext{where}
+\alpha_n & =  \alpha_0 + \half\, n\\
+\beta_n & = \beta_0 + \half  \ds\sum_{i=1}^n (x_i - \mu)^2 
+\labelit \label{eqn:posterior_variance_uvn_fixed_mean}
+\end{align*}
+
+\end{proposition}
+
+\begin{proof}
+
+We have 
+\begin{align*}
+p(\sigma^2 \cond \+y,  \mu) &\stackrel{1}{\propto}  \explaintermbrace{prior}{ p(\sigma^2)} \quad \explaintermbrace{likelihood}{ \ds\prod_{i=1}^n p(y_i \cond \mu,  \sigma^2)} \\
+& \stackrel{2}{\propto} \explaintermbrace{prior}{(\sigma^2)^{-\alpha_0 - 1} \exp \big\{ -\df{\beta_0}{\sigma^2} \big\}} \quad  \explaintermbrace{likelihood}{(\sigma^2)^{-n/2}  \,  \exp \big\{ -\df{1}{2\sigma^2}  \ds\sum_{i=1}^n (y_i - \mu)^2 \big\}}  \\
+& \stackrel{3}{\propto} (\sigma^2)^{- (\alpha_0 + n/2) - 1} \exp \bigg\{ -\df{\beta_0 + \half \sum_{i=1}^n (x_i - \mu)^2}{\sigma^2} \bigg\}
+\end{align*}
+where (1) is by Bayes rule (and conditional independence of the observation model),  (2) fills in the pdfs,  and (3) combines like terms so as to look like an Inverse Gamma density.
+\end{proof}
+
+\begin{remark}{\remarktitle{Reparametrizing the inverse gamma prior for greater interpretability}}
+Peter Hoff \cite{hoff2009first} (pp.74) suggests parametrizing the prior as 
+\[ \sigma^2 \sim \IG (\nu_0,  \, \nu_0 \,  \sigma^2_0 / 2) \\ \]
+for greater intepretability.   In this case,  we find that the posterior $IG$ parameters are given by
+\begin{align*}
+\alpha_n & =  \half ( \nu_0 + n )\\
+\beta_n & =  \half ( \nu_0 \, \sigma_0^2 + n \, \text{MSE}  )
+\intertext{where the mean squared error $\text{MSE}$ is defined by}
+\text{MSE} & :=  \df{1}{n} \ds\sum_{i=1}^n (y_i - \mu)^2 
+\end{align*}
+So $\eta_0$ plays the role of a prior sample saize and $\sigma^2_0$ plays the role of the variance within that prior sample. 
+% \eqref{eqn:bayesian_uvn_known_mean}
+\qed
+\end{remark}
+
+ 
+ 
+\subsection{Multivariate normal model}
+ 
+\subsubsection{Example:  Normal prior on mean of multivariate Gaussian with known covariance}
+ 
+\red{TODO.   Note that in Section \ref{sec:Bayesian_linear_regression_with_normal_prior},   I've already written up a self-enclosed argument for Bayesian linear regression;  some of that argument can likely be factored out to here.}
+
+\subsubsection{Example:  Inverse Wishart prior on covariance matrix of multivariate Gaussian with known mean} \label{ref:inverse_wishart_prior_on_mvn_with_known_mean}
  
 Here we will show that the Inverse Wishart is a conjugate prior for the covariance of a multivariate normally distributed random variable with known mean.
 
@@ -241,8 +299,9 @@ where $\circ$ is the Hadamard,  also called the elementwise,  operator,  and whe
 
 \end{remark}
 
+\subsection{Bayesian linear regression}
 
-\subsection{Example:  Bayesian linear regression with normal prior on regression weights} \label{sec:Bayesian_linear_regression_with_normal_prior}
+\subsubsection{Example:  Bayesian linear regression with normal prior on regression weights and known observation noise} \label{sec:Bayesian_linear_regression_with_normal_prior}
 
 
 In this section,  we will show that the normal prior on $\+\beta$ is a conjugate prior for the regression weights $\+\beta$ of a Bayesian multiple regression model with known observation noise $\sigma^2$.  That is,  the posterior on $\+\beta$ given $\+y = (y_1,...,y_n)^T$ for such a model is also Gaussian.  
@@ -259,7 +318,7 @@ where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \ti
 
 The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise} is given by 
 \begin{align*}
-p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
+\+\beta \cond \+y & \sim \N(\+\mu,  \+\Sigma )
 \intertext{where}
 \+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^T \+X }^{-1}  \\
 \+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}  
