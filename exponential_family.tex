@@ -221,7 +221,7 @@ for greater intepretability.   In this case,  we find that the posterior $IG$ pa
 \intertext{where the mean squared error $\text{MSE}$ is defined by}
 \text{MSE} & :=  \df{1}{n} \ds\sum_{i=1}^n (y_i - \mu)^2 
 \end{align*}
-So $\eta_0$ plays the role of a prior sample saize and $\sigma^2_0$ plays the role of the variance within that prior sample. 
+So $\eta_0$ plays the role of a prior sample size and $\sigma^2_0$ plays the role of the variance within that prior sample. 
 % \eqref{eqn:bayesian_uvn_known_mean}
 \qed
 \end{remark}
@@ -321,7 +321,8 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 \+\beta \cond \+y & \sim \N(\+\mu,  \+\Sigma )
 \intertext{where}
 \+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^T \+X }^{-1}  \\
-\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}  
+\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}   \\
+\labelit \label{eqn:posterior_bayesian_lin_regression_with_known_obs_var}
 \end{align*}
 
 \end{proposition}
@@ -357,6 +358,14 @@ recalling that we defined $\+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \fra
 \begin{remark}
 For a nice conceptual overview of Bayesian linear regression., see \cite{groseeXXXXbayesian} or \cite{bishop2006pattern}.   Among other things, these resources demonstrate how Bayesian regression makes predictions using an infinite collection of regression models (whose contributions are weighted by their posterior probabilities).  They also show how the linear model is less restrictive than it might first seem;  it can be used to model nonlinear functional relationships by using nonlinear basis functions. 
 \end{remark}
+
+\begin{remark}{\remarktitle{Intuition about posterior of Bayesian linear regression}}
+Equation \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var}
+gives the posterior for Bayesian linear multiple regression in the case where the observation noise is known.    As pointed out by \cite{hoff2009first} (pp. 155),  intuition can be obtained by considering the limiting cases.  When the prior on the regression coefficients $\+\beta$ is diffuse,  the elements of the prior precision matrix $\+\Sigma_0^{-1}$ will be small,  and so the posterior mean satisfies
+$\+\mu \approx ( \+X^T \+X)^{-1} \+X^T \+y$,  i.e.  it approximately equals the standard least squares estimate.   On the other hand,   when the observation variance $\sigma^2$ is large,  then the measurement precision is small, and the posterior mean satisfies $\+\mu \approx \+\mu_0$,  i.e.  it approximately equals the prior mean.
+\end{remark}
+
+\red{TODO: Add Bayesian linear regression where variance is also unknown. }
 
 \subsection{General formalism} \label{sec:ef_general_formalism}
 Here we provide some notes, following \cite{jordan_ef}, about conjugate priors for exponential family data models. 
