@@ -1,4 +1,5 @@
 \pdfoutput=1
+\synctex=1
 
 \documentclass{article} % For LaTeX2e
 
@@ -87,17 +88,7 @@ where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ 
 
 \red{TODO:  Add multivariate Gaussian example,  showing that the natural parameters are the precision $\Sigma^{-1}$ and precision-weighted mean $\Sigma^{-1} \mu$,  as we use this in Section \ref{sec:normal_data_with_non_conjugate_prior} combined with the exponential family formalism to derive the updates to the mean for a Bayesian normal model with conditionally conjugate prior.}
 
-\subsubsection{Inverse Gamma distribution}
 
-\begin{example}{(Inverse Gamma Distribution)} 
-\label{ex:inverse_gamma_as_ef} The Inverse Gamma distribution is the distribution of the reciprocal of a Gamma random variable.\footnote{The density of the inverse gamma can easily be obtained from the gamma density by defining the transformation $Y = \df{1}{X} := g(X)$ and then applying the change of variables formula,  $f_Y(y) = f_X (g^{-1}(y)) | \df{d}{dy} g^{-1}(y)|$.}  We can write the density of the Inverse Gamma $\InverseGamma(\alpha,  \beta)$ distribution in exponential family form:
-\begin{align*}
-p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1} \exp \bigg(- \df{\beta}{x} \bigg) \\
-&= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
-\end{align*}
-with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient statistics $t(x) = [\log x ,  \frac{1}{x}]^T$, base measure $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
-\qed 
-\end{example} 
 
 
 \subsubsection{Truncated normal distribution}
@@ -118,9 +109,39 @@ If we write
 f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\half \df{(x-\mu)^2}{\sigma^2}}  \indicate{a \leq x \leq b} \\
 & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
 \end{align*} 
-where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\+\eta = (- \frac{1}{2 \sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $\+t(x) = (x^2,  x)^T$,  and base measure $h(x) = K \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$.
+where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (- \frac{1}{2 \sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $t(x) = (x^2,  x)^T$,  and base measure $h(x) = K \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$.
 \qed
 \end{example}
+
+\subsubsection{Inverse Gamma distribution}
+
+\begin{example}{(Inverse Gamma Distribution)} 
+\label{ex:inverse_gamma_as_ef} The Inverse Gamma distribution is the distribution of the reciprocal of a Gamma random variable.\footnote{The density of the inverse gamma can easily be obtained from the gamma density by defining the transformation $Y = \df{1}{X} := g(X)$ and then applying the change of variables formula,  $f_Y(y) = f_X (g^{-1}(y)) | \df{d}{dy} g^{-1}(y)|$.}  We can write the density of the Inverse Gamma $\InverseGamma(\alpha,  \beta)$ distribution in exponential family form:
+\begin{align*}
+p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1} \exp \bigg(- \df{\beta}{x} \bigg) \\
+&= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
+\end{align*}
+with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient statistics $t(x) = [\log x ,  \frac{1}{x}]^T$, base measure $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
+\qed 
+\end{example} 
+
+\subsubsection{Inverse Wishart distribution}
+
+\begin{example}{(Inverse Wishart distribution)} 
+\label{ex:inverse_wishart_as_ef} The Inverse Wishart distribution is the distribution of the inverse of a Wishart random variable.   We can write the density of the Inverse Wishart $\InverseWishart(\+\Psi,  \nu)$ distribution in exponential family form:
+\begin{align*}
+p (\+X  \cond \+\Psi,  \nu) & \stackrel{1}{=} C(\+\Psi,  \nu) \; | \+X | ^{-(\nu + p + 1)/2} \exp \bigg\{ -\half \tr (\+\Psi \+X^{-1} ) \bigg\} \\
+& = \exp \bigg\{ \frac{-(\nu + p + 1)}{2}  \log | \+ X | \;  -\half \tr (\+\Psi \+X^{-1} )  \; + \log  C(\+\Psi,  \nu)   \bigg\} \\
+& \stackrel{2}{=} \exp \bigg\{ \frac{-(\nu + p + 1)}{2}  \log | \+ X | \;  -\half  \ds\sum_{i,j=1}^p \+\Psi_{ij} \+X^{-1}_{ij} \; + \log  C(\+\Psi,  \nu)   \bigg\} 
+\end{align*}
+Equation (1) gives the standard representation of the $\InverseWishart(\+\Psi,  \nu)$ density,  where   $C(\+\Psi,  \nu)$ is the normalizing constant,  $| \cdot |$ refers to the determinant,  $\+X,  \+\Psi \in \R^{p \times p}$ are positive definite matrices,  and $\nu > p-1$.    Equation (2) uses the fact that the trace of a matrix product behaves like a dot product \eqref{eqn:trace_of_matrix_product}.      
+
+
+As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^T$, sufficient statistics $t(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^T$, base measure $h(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
+\qed 
+\end{example} 
+
+%{eqn:trace_of_matrix_product}
 
 \subsection{i.i.d samples from an exponential family}
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
@@ -555,8 +576,9 @@ The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
 Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$
 \end{proof}
 
+\section{Matrix Facts}
 
-\section{Multivariate completing the square}
+\subsection{Multivariate completing the square}
 
 A nice overview of multivariate completing the square is given by \cite{gundersenXXXXcompleting}.    
 
@@ -567,10 +589,24 @@ Let $\+x,  \+b$ be $d$-dimensional vectors, and let $\+M \in \R^{d \times d}$ be
  \labelit \label{eqn:multivariate_completing_the_square}
 \end{align*}
 
-
-
 %  \+x^⊤ \+M \+x − 2\+b^⊤ \+x = (\+x−\+M^{−1} \+b)^T \+M (\+x−^\+M^{−1} \+b)− \+b^T \+M^{−1} \+b
 % 
+
+\subsection{The trace of a matrix product}
+
+The trace of a matrix product behaves like a dot product.  
+
+Let $\+A, \+B \in \R^{m \times n}$.  Then 
+
+\begin{align*}
+\tr (\+A^T \+B) = \ds\sum_{i=1}^n (\+A^T \+B)_i = \ds\sum_{i=1}^n \ds\sum_{j=1}^m a_{ij} b_{ij}
+\labelit \label{eqn:trace_of_matrix_product}
+\end{align*}
+
+i.e.,  the trace of the matrix product is obtained by summing up the element-wise products. 
+
+
+
 \bibliography{references_exponential_family}{}
 \bibliographystyle{unsrt}
 
