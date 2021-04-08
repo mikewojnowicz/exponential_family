@@ -58,10 +58,11 @@ where we refer to $h$ as the base measure, $\eta$ as the natural parameter, $t$ 
 Note from \eqref{eqn:exponential_family} that natural parameters are not unique since,  for example,  $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$. \redfootnote{Are they unique up to scalar multiplication?} Thus,  we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
 \end{remark}
 
-\subsection{Example: Dirichlet distribution}
+\subsection{Examples}
+\subsubsection{Dirichlet distribution}
 
 \begin{example}{(Dirichlet Distribution)} 
-\label{ex:dirichlet_as_ef} We can write the density of the Dirichlet distribution in exponential form:
+\label{ex:dirichlet_as_ef} We can write the density of the Dirichlet distribution in exponential family form:
 \begin{align*}
 p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
 &= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
@@ -70,8 +71,9 @@ with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^T$, suffi
 \qed 
 \end{example} 
 
-For an example of how the natural parametrization can help provide insight into message passing,  see Section \ref{sec:mvn_in_message_passing}.\footnote{
-\textbf{Remark} The exponential family representation of the Dirichlet, as given in Example \ref{ex:dirichlet_as_ef}, is useful when we want to compute the expectation of a log probability from a Dirichlet distributed probability vector (as happens in the derivation of LDA with variational inference; see my notes on variational inference).  
+For an example of how the natural parametrization can help provide insight into message passing,  see Section \ref{sec:mvn_in_message_passing}.
+
+\begin{remark} The exponential family representation of the Dirichlet, as given in Example \ref{ex:dirichlet_as_ef}, is useful when we want to compute the expectation of a log probability from a Dirichlet distributed probability vector (as happens in the derivation of LDA with variational inference; see my notes on variational inference).  
 
 In those notes,  we see
 \begin{align} 
@@ -81,14 +83,27 @@ In those notes,  we see
 where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ is the first derivative of the $\log \Gamma$ function.   It is known as the \textit{digamma function}.  $\qed$
 
 % See e.g., https://zhiyzuo.github.io/Exponential-Family-Distributions/
-}
+\end{remark}
 
 \red{TODO:  Add multivariate Gaussian example,  showing that the natural parameters are the precision $\Sigma^{-1}$ and precision-weighted mean $\Sigma^{-1} \mu$,  as we use this in Section \ref{sec:normal_data_with_non_conjugate_prior} combined with the exponential family formalism to derive the updates to the mean for a Bayesian normal model with conditionally conjugate prior.}
 
-\subsection{Example: Truncated normal distribution}
+\subsubsection{Inverse Gamma distribution}
+
+\begin{example}{(Inverse Gamma Distribution)} 
+\label{ex:inverse_gamma_as_ef} The Inverse Gamma distribution is the distribution of the reciprocal of a Gamma random variable.\footnote{The density of the inverse gamma can easily be obtained from the gamma density by defining the transformation $Y = \df{1}{X} := g(X)$ and then applying the change of variables formula,  $f_Y(y) = f_X (g^{-1}(y)) | \df{d}{dy} g^{-1}(y)|$.}  We can write the density of the Inverse Gamma $\InverseGamma(\alpha,  \beta)$ distribution in exponential family form:
+\begin{align*}
+p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1} \exp \bigg(- \df{\beta}{x} \bigg) \\
+&= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
+\end{align*}
+with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient statistics $t(x) = [\log x ,  \frac{1}{x}]^T$, base measure $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
+\qed 
+\end{example} 
+
+
+\subsubsection{Truncated normal distribution}
 
 \begin{example}{(Truncated normal distribution)} 
-\label{ex:truncated_normal_as_ef} The univariate truncated normal distribution $\TruncatedNormal(\mu,  \sigma^2,  \Omega)$ results when a normal distribution $\N(\mu,  \sigma^2)$ is truncated to some set $\Omega \in \R$. \footnote{For more information on the truncated normal,  see e.g.  \url{https://people.sc.fsu.edu/~jburkardt/presentations/truncated_normal.pdf} or \url{http://parker.ad.siu.edu/Olive/ch4.pdf}.}   Note that the parameters $\mu, \sigma^2$ denote the mean and variance of the \textit{parent} normal distribution;  i.e.  if $X \sim \TruncatedNormal(\mu,  \sigma^2,  \Omega)$ then $\E[X] \neq \mu$ (unless $\Omega = \R$). 
+\label{ex:truncated_normal_as_ef} The univariate truncated normal distribution $\TruncatedNormal(\mu,  \sigma^2,  \Omega)$ results when a normal distribution $\N(\mu,  \sigma^2)$ is truncated to some set $\Omega \in \R$. \footnote{For more information on the truncated normal,  see e.g.  \cite{burkardt2014truncated} or \url{http://parker.ad.siu.edu/Olive/ch4.pdf}.}   Note that the parameters $\mu, \sigma^2$ denote the mean and variance of the \textit{parent} normal distribution;  i.e.  if $X \sim \TruncatedNormal(\mu,  \sigma^2,  \Omega)$ then $\E[X] \neq \mu$ (unless $\Omega = \R$). 
 
 If we assume that the truncation set is an interval $\Omega = (a,b)$ for $a,b \in \R$,  then the distribution $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ has p.d.f.
 
