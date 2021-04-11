@@ -661,16 +661,49 @@ i.e.,  the trace of the matrix product is obtained by summing up the element-wis
 
 \section{The Inverse Wishart Distribution} \label{sec:inverse_wishart_distribution}
  
-The Inverse Wishart is a distribution on symmetric,  positive definite matrices.     The Inverse Wishart distribution,  denoted $\InverseWishart(\+\Psi, \nu)$,  has density
+The Inverse Wishart is a distribution on symmetric,  positive definite matrices.     The Inverse Wishart distribution,  denoted $\InverseWishart(\nu, \+\Psi)$,  has density
 
 \begin{align}
 p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+\Psi) } 
 \label{eqn:inverse_wishart_density}
 \end{align}
-where $\+\Sigma \succ 0$ and $\nu > d-1$ to have a proper prior.     Note that our notation follows that of wikipedia,  but that some authors, e.g.  \cite{hoff2009first},  denote a random variable with this same density as  $\InverseWishart(\+\Psi^{-1},  \nu)$
+where $\+\Sigma \succ 0$ and $\nu > d-1$ to have a proper prior.     The expected value of an Inverse Wishart random variable parametrized as in \eqref{eqn:inverse_wishart_density} is given by $\E[\+\Sigma] = \frac{\+\Psi}{\nu -d -1}$.   
 
-For intuition on the parameters,  see Remark \ref{rk:inverse_wishart_parameter_interpretation}.   The expected value of an Inverse Wishart random variable is given by $\E[\+\Sigma] = \frac{\+\Psi}{\nu -d -1}$.    This corroborates with the parameter interpretations given in Remark \ref{rk:inverse_wishart_parameter_interpretation}.   For a visualization of how samples are affected by the parameters,  see \cite{hughesXXXXinverse}. 
+\begin{remark}{\remarktitle{Interpreting the parameters of the Inverse Wishart}}
+\label{rk:inverse_wishart_parameter_interpretation}
+Note that the parameters of the Inverse Wishart can be interpreted (as per conjugacy;  see \eqref{eqn:Sigma_cc_normal_model_cond_conj_prior}) in the following way: the covariance was estimated from $\nu$ observations with a residual sum of squares (a.k.a.  sum of pairwise deviation products) $\+\Psi$. 
+\qed
+\end{remark}
 
+Remark \ref{rk:inverse_wishart_parameter_interpretation} also provides inuition on the expected value.      For a visualization of how samples are affected by the parameters,  see \cite{hughesXXXXinverse}. 
+
+\begin{remark}{\remarktitle{Peter Hoff's notation for the Inverse Wishart: A warning}}
+\label{rk:peter_hoffs_notation_for_inverse_wishart}
+Note that some authors (e.g.  \cite{hoff2009first},  pp.257) use the notation $\InverseWishart(\nu,  \+M)$ to refer to the density under reparametrization
+\begin{align}
+p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+M^{-1}) } 
+\label{eqn:inverse_wishart_density_hoff}
+\end{align}
+and therefore appropriately altered normalization constant.  The expected value of an Inverse Wishart random variable parametrized as in   \eqref{eqn:inverse_wishart_density_hoff},  is given by $\E[\+\Sigma] = \frac{\+M^{-1}}{\nu -d -1}$.     
+
+However,  Hoff later introduces the reparametrization $\+S := \+M^{-1}$,  and so writes $\InverseWishart(\nu, \+S^{-1})$ to mean 
+\begin{align}
+p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+S) } 
+\label{eqn:inverse_wishart_density_hoffs_alternate}
+\end{align}
+which is \eqref{eqn:inverse_wishart_density}, and which we would write as $\InverseWishart(\nu, \+S)$.
+\qed
+\end{remark}
+
+\begin{remark}{\remarktitle{Comparing parametrizations}}
+Regarding Remark \ref{rk:peter_hoffs_notation_for_inverse_wishart},  prefer our notation because 
+\begin{itemize}
+\item It is the natural parameterization (see Example \ref{ex:inverse_wishart_as_ef}).
+\item It lets $\+\Psi$ be interpreted directly as a prior residual sum of squares (see Remark \ref{rk:inverse_wishart_parameter_interpretation}). 
+\item It matches the parametrization used throughout Wikipedia,  e.g. in its conjugacy tables.
+\end{itemize}
+\qed
+\end{remark}
 
 The  Inverse Wishart is a popular choice for modeling covariance matrices (e.g.  see \cite{hoff2009first}),  due to at least the fact that is a  conditionally conjugate prior on the covariance of a normal distribution.   (See Section \ref{sec:normal_data_with_non_conjugate_prior}.)   It seems to me that a weakly informative prior could be constructed by setting  $\nu = d+2$ (the smallest integer for which $\nu$ is in the parameter space) and $\+\Psi = (\nu -d - 1) \+I = \+I$.   This would presumably be reasonable at least if one expected unit variances and wanted to make a prior assumption of independence across dimensions.
 
@@ -681,11 +714,9 @@ Some problems with the Inverse Wishart as a model for covariance matrices is sum
 are associated with correlations near zero.    
 \end{enumerate}
 
-The Wishart distribution has the same support as the Inverse Wishart;  however,  the Wishart does not give a conditionally conjugate prior on the covariance of a normal distribution.    The Inverse Wishart density can be derived from the Wishart via the multivariate change of variables  \cite{wolpert2011change}. \footnote{It is claimed in Wikipedia that if $\+X \sim \Wishart(\+\Psi, \nu)$  then $\+X^{-1} \sim \InverseWishart(\+\Psi^{-1}, \nu)$.   I almost was able to show this using the multivariate change of variables  \cite{wolpert2011change} along with (15.15) of \cite{dwyer1967some},  but I  was off by a negative when attempting to combine the two terms with $|\+X^{-1}|$ raised to an exponent.}\redfootnote{TO DO: Provide derivation.}
+The Wishart distribution has the same support as the Inverse Wishart;  however,  the Wishart does not give a conditionally conjugate prior on the covariance of a normal distribution.    The Inverse Wishart density can be derived from the Wishart via the multivariate change of variables  \cite{wolpert2011change}. \footnote{It is claimed in Wikipedia that if $\+X \sim \Wishart(\nu,  \+\Psi)$  then $\+X^{-1} \sim \InverseWishart(\nu,  \+\Psi^{-1})$.   I almost was able to show this using the multivariate change of variables  \cite{wolpert2011change} along with (15.15) of \cite{dwyer1967some},  but I  was off by a negative when attempting to combine the two terms with $|\+X^{-1}|$ raised to an exponent.}\redfootnote{TO DO: Provide derivation.}
 
-The inverse Wishart can be seen as a generalization of the inverse gamma distribution to multiple dimensions.\redfootnote{TODO: fill in.}
-
-A sample $\+\Sigma$ from the $\InverseWishart(\+\Psi, \nu)$ distribution can be obtained by the following scheme\redfootnote{TODO: Provide derivation of this scheme.} \cite{hoff2009first}:
+A sample $\+\Sigma$ from the $\InverseWishart(\nu, \+\Psi)$ distribution (using the natural parametrization of \eqref{eqn:inverse_wishart_density}) can be obtained by the following scheme\redfootnote{TODO: Provide derivation of this scheme.} \cite{hoff2009first}:
 
 \begin{enumerate}
 \item Sample $\+z_1, ..., \+z_{\nu} \iid \N (\+0,  \+\Psi^{-1})$
@@ -694,11 +725,8 @@ A sample $\+\Sigma$ from the $\InverseWishart(\+\Psi, \nu)$ distribution can be 
 \end{enumerate}
 The intuition is that the Inverse Wishart models covariance matrices as an inverse sum of squares (again, see Remark \ref{rk:inverse_wishart_parameter_interpretation}).  
 
+The inverse Wishart can be seen as a generalization of the inverse gamma distribution to multiple dimensions.\redfootnote{TODO: fill in.}
 
-\begin{remark}{\remarktitle{Interpreting the parameters of the Inverse Wishart}}
-\label{rk:inverse_wishart_parameter_interpretation}
-Note that the parameters of the Inverse Wishart can be interpreted (as per conjugacy;  see \eqref{eqn:Sigma_cc_normal_model_cond_conj_prior}) in the following way: the covariance was estimated from $\nu$ observations with a residual sum of squares (a.k.a.  sum of pairwise deviation products) $\+\Psi$. 
-\end{remark}
 
 \bibliography{references_exponential_family}{}
 \bibliographystyle{unsrt}
