@@ -310,12 +310,7 @@ And so the conjugate updates are given by
 \end{align}
 \end{example}
 
-\begin{remark}{\remarktitle{Interpreting the hyperparameters of the Inverse Wishart}}
-\label{rk:inverse_wishart_hyperparameter_interpretation}
-Note that the hyperparameters of the Inverse Wishart can be interpreted (as per conjugacy) in the following way: the covariance was estimated from $\nu$ observations with a sum of pairwise deviation products $\+\Psi$. \footnote{This interpretation also makes the formula for $\E[\+\Sigma]$ more intuitive.}
-\end{remark}
-
-
+For interpretation of the parameters of the Inverse Wishart,  see Remark \ref{rk:inverse_wishart_parameter_interpretation}.
 
 \begin{remark}{\remarktitle{Expressing the Multivariate Gaussian density in a nice form for the Inverse Wishart prior on the Covariance Matrix}} 
 \label{rk:reexpressing_mvn_in_nice_form_for_inverse_wishart_prior}
@@ -472,7 +467,8 @@ The complete conditionals are well-known.   In particular
 \labelit \label{eqn:normal_model_complete_conditional_on_Sigma} \\
 \intertext{where}
 \nu &=  \nu_0 + N \\
-\+\Psi &= \Psi_0 + \ds\sum_{i=1}^N  (\+x_i - \+\mu) (\+x_i - \+\mu)^T \\ 
+\+\Psi &= \Psi_0 + \ds\sum_{i=1}^N  (\+x_i - \+\mu) (\+x_i - \+\mu)^T 
+\labelit \label{eqn:Sigma_cc_normal_model_cond_conj_prior}\\ 
 \end{align*}
 
 Indeed,  we derived \eqref{eqn:normal_model_complete_conditional_on_Sigma} in Section \ref{ref:inverse_wishart_prior_on_mvn_with_known_mean}. \footnote{We still need to add a derivation for \eqref{eqn:normal_model_complete_conditional_on_mu} \red{TODO},  but the birds' eye view for one approach is to use the general formalism for conjugacy updates in the exponential family \eqref{eqn:general_formalism_prior_to_posterior_conversion},  noting that the natural parameters for a multivariate Gaussian are its precision and precision-weighted mean. }
@@ -606,6 +602,46 @@ Let $\+A, \+B \in \R^{m \times n}$.  Then
 i.e.,  the trace of the matrix product is obtained by summing up the element-wise products. 
 
 
+\section{The Inverse Wishart Distribution}
+
+The Inverse Wishart is a distribution on symmetric,  positive definite matrices.     The Inverse Wishart distribution,  denoted $\InverseWishart(\+\Psi, \nu)$,  has density
+
+\begin{align}
+p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+\Psi) } 
+\label{eqn:inverse_wishart_density}
+\end{align}
+where $\+\Sigma \succ 0$ and $\nu > d-1$ to have a proper prior.     Note that our notation follows that of wikipedia,  but that some authors, e.g.  \cite{hoff2009first},  denote a random variable with this same density as  $\InverseWishart(\+\Psi^{-1},  \nu)$
+
+For intuition on the parameters,  see Remark \ref{rk:inverse_wishart_parameter_interpretation}.   The expected value of an Inverse Wishart random variable is given by $\E[\+\Sigma] = \frac{\+\Psi}{\nu -d -1}$.    This corroborates with the parameter interpretations given in Remark \ref{rk:inverse_wishart_parameter_interpretation}.   For a visualization of how samples are affected by the parameters,  see \cite{hughesXXXXinverse}. 
+
+
+The  Inverse Wishart is a popular choice for modeling covariance matrices (e.g.  see \cite{hoff2009first}),  due to at least the fact that is a  conditionally conjugate prior on the covariance of a normal distribution.   (See Section \ref{sec:normal_data_with_non_conjugate_prior}.)   It seems to me that a weakly informative prior could be constructed by setting  $\nu = d+2$ (the smallest integer for which $\nu$ is in the parameter space) and $\+\Psi = (\nu -d - 1) \+I = \+I$.   This would presumably be reasonable at least if one expected unit variances and wanted to make a prior assumption of independence across dimensions.
+
+Some problems with the Inverse Wishart as a model for covariance matrices is summarized in  \cite{alvarez2014bayesian}.    We highlight that:
+\begin{enumerate}
+\item  When $\nu  > 1$,   the implied scaled inv-$\chi^2$ distribution on the individual variances has extremely low density in the region near zero.   
+\item The prior imposes a dependency between the correlations and the variances. In particular,  larger variances are associated with absolute values of the correlations near 1 while small variances
+are associated with correlations near zero.    
+\end{enumerate}
+
+The Wishart distribution has the same support as the Inverse Wishart;  however,  the Wishart does not give a conditionally conjugate prior on the covariance of a normal distribution.    The Inverse Wishart density can be derived from the Wishart via the multivariate change of variables  \cite{wolpert2011change}. \footnote{It is claimed in Wikipedia that if $\+X \sim \Wishart(\+\Psi, \nu)$  then $\+X^{-1} \sim \InverseWishart(\+\Psi^{-1}, \nu)$.   I almost was able to show this using the multivariate change of variables  \cite{wolpert2011change} along with (15.15) of \cite{dwyer1967some},  but I  was off by a negative when attempting to combine the two terms with $|\+X^{-1}|$ raised to an exponent.}\redfootnote{TO DO: Provide derivation.}
+
+The inverse Wishart can be seen as a generalization of the inverse gamma distribution to multiple dimensions.\redfootnote{TODO: fill in.}
+
+A sample $\+\Sigma$ from the $\InverseWishart(\+\Psi, \nu)$ distribution can be obtained by the following scheme\redfootnote{TODO: Provide derivation of this scheme.} \cite{hoff2009first}:
+
+\begin{enumerate}
+\item Sample $\+z_1, ..., \+z_{\nu} \iid \N (\+0,  \+\Psi^{-1})$
+\item Calculate $\+Z^T \+Z = \sum_{i=1}^\nu \+z_i \+z_i^T$.
+\item Set $\+\Sigma = ( \+Z^T \+Z )^{-1}$.
+\end{enumerate}
+The intuition is that the Inverse Wishart models covariance matrices as an inverse sum of squares (again, see Remark \ref{rk:inverse_wishart_parameter_interpretation}).  
+
+
+\begin{remark}{\remarktitle{Interpreting the parameters of the Inverse Wishart}}
+\label{rk:inverse_wishart_parameter_interpretation}
+Note that the parameters of the Inverse Wishart can be interpreted (as per conjugacy;  see \eqref{eqn:Sigma_cc_normal_model_cond_conj_prior}) in the following way: the covariance was estimated from $\nu$ observations with a residual sum of squares (a.k.a.  sum of pairwise deviation products) $\+\Psi$. 
+\end{remark}
 
 \bibliography{references_exponential_family}{}
 \bibliographystyle{unsrt}
