@@ -128,7 +128,7 @@ with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient stati
 \subsubsection{Inverse Wishart distribution}
 
 \begin{example}{(Inverse Wishart distribution)} 
-\label{ex:inverse_wishart_as_ef} The Inverse Wishart distribution is the distribution of the inverse of a Wishart random variable.   We can write the density of the Inverse Wishart $\InverseWishart(\+\Psi,  \nu)$ distribution in exponential family form:
+\label{ex:inverse_wishart_as_ef} The Inverse Wishart distribution (Section \ref{sec:inverse_wishart_distribution}) is the distribution of the inverse of a Wishart random variable.   We can write the density of the Inverse Wishart $\InverseWishart(\+\Psi,  \nu)$ distribution in exponential family form:
 \begin{align*}
 p (\+X  \cond \+\Psi,  \nu) & \stackrel{1}{=} C(\+\Psi,  \nu) \; | \+X | ^{-(\nu + p + 1)/2} \exp \bigg\{ -\half \tr (\+\Psi \+X^{-1} ) \bigg\} \\
 & = \exp \bigg\{ \frac{-(\nu + p + 1)}{2}  \log | \+ X | \;  -\half \tr (\+\Psi \+X^{-1} )  \; + \log  C(\+\Psi,  \nu)   \bigg\} \\
@@ -205,6 +205,13 @@ This is why an EM iteration is often described and/or implemented as performing 
  \section{Conjugate Priors} \label{sec:conjugate_exponential_family_models}
  
 \red{TODO:  State what a conjugate prior is without using the formalism of Section \ref{sec:ef_general_formalism}} 
+
+\begin{remark}{\remarktitle{Conditional conjugacy}}
+\label{rk:exponential_family_conditional_conjugacy} A family of prior distributions for a parameter is called conditionally conjugate if the conditional posterior distribution (often called the \textit{complete conditional}),  given the data and all other parameters in the model,  is also in that class  \cite{gelman2006prior}.    The posterior distribution for conditionally conjugate models is easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.
+
+In Section \ref{sec:normal_data_with_non_conjugate_prior}, we give perhaps the simplest example. 
+\end{remark}
+ 
  
  \subsection{Univariate normal model}
  
@@ -213,7 +220,6 @@ This is why an EM iteration is often described and/or implemented as performing 
 \red{TODO: Fill in}
 
 \subsubsection{Example:  Inverse gamma prior on the variance of a univariate Gaussian with known mean}
-
 
 \begin{proposition} \label{prop:bayes_univariate_normal_with_known_mean}
 Consider the Bayesian univariate normal model with known mean $\mu$ and random variance $\sigma^2$
@@ -247,7 +253,8 @@ p(\sigma^2 \cond \+y,  \mu) &\stackrel{1}{\propto}  \explaintermbrace{prior}{ p(
 where (1) is by Bayes rule (and conditional independence of the observation model),  (2) fills in the pdfs,  and (3) combines like terms so as to look like an Inverse Gamma density.
 \end{proof}
 
-\begin{remark}{\remarktitle{Reparametrizing the inverse gamma prior for greater interpretability}}
+\begin{remark}{\remarktitle{Reparametrizing the inverse gamma prior for greater interpretability}}  
+\label{rk:inverse_gamma_prior_with_hoff_parametrization}
 Peter Hoff \cite{hoff2009first} (pp.74) suggests parametrizing the prior as 
 \[ \sigma^2 \sim \IG (\nu_0,  \, \nu_0 \,  \sigma^2_0 / 2) \\ \]
 for greater intepretability.   In this case,  we find that the posterior $IG$ parameters are given by
@@ -266,11 +273,12 @@ So $\eta_0$ plays the role of a prior sample size and $\sigma^2_0$ plays the rol
  
 \subsection{Multivariate normal model}
  
-\subsubsection{Example:  Normal prior on mean of multivariate Gaussian with known covariance}
+\subsubsection{Example:  Normal prior on mean of multivariate Gaussian with known covariance}  \label{sec:normal_prior_on_mvn_with_known_covariance}
+ 
  
 \red{TODO.   Note that in Section \ref{sec:Bayesian_linear_regression_with_normal_prior},   I've already written up a self-enclosed argument for Bayesian linear regression;  some of that argument can likely be factored out to here.}
 
-\subsubsection{Example:  Inverse Wishart prior on covariance matrix of multivariate Gaussian with known mean} \label{ref:inverse_wishart_prior_on_mvn_with_known_mean}
+\subsubsection{Example:  Inverse Wishart prior on covariance matrix of multivariate Gaussian with known mean} \label{sec:inverse_wishart_prior_on_mvn_with_known_mean}
  
 Here we will show that the Inverse Wishart is a conjugate prior for the covariance of a multivariate normally distributed random variable with known mean.
 
@@ -330,6 +338,40 @@ where $\circ$ is the Hadamard,  also called the elementwise,  operator,  and whe
 
 \end{remark}
 
+\subsubsection{Example:  Bayesian normal model with conditionally conjugate prior} \label{sec:normal_data_with_non_conjugate_prior}
+
+Consider the following model with a normal sampling distribution and conditionally conjugate prior\redfootnote{TODO: Prove that the prior,  although conditionally conjugate,  is not conjugate.   (I \textit{believe} this is true,  based on context clues from experience,  but I am not currently certain about it.)}:
+\begin{align*}
+\+\mu &\sim \N_{d}(\+m_0,\+V_0 ) \\
+\+\Sigma &\sim \InverseWishart(\nu_0,  \+\Psi_0) \\
+\+x_i \cond \+\mu,  \+\Sigma &\iid \N_{d}( \+\mu , \+\Sigma), \quad i=1,...,N
+\end{align*}
+We define $\+x := (\+x_1,  \hdots \+x_N)$,  where each $\+x_i \in \R^d$.
+
+The complete conditionals are well-known,  and have in fact already been provided by Sections  \ref{sec:normal_prior_on_mvn_with_known_covariance} and \ref{sec:inverse_wishart_prior_on_mvn_with_known_mean}. \footnote{We still need to add a derivation for \eqref{eqn:normal_model_complete_conditional_on_mu} \red{TODO},  but the birds' eye view for one approach is to use the general formalism for conjugacy updates in the exponential family \eqref{eqn:general_formalism_prior_to_posterior_conversion},  noting that the natural parameters for a multivariate Gaussian are its precision and precision-weighted mean. }    In particular
+\begin{align*}
+\+\mu  \cond \+\Sigma, \+x &\sim \N_{d}(\+m,\+V )  \labelit\label{eqn:normal_model_complete_conditional_on_mu} \\
+\intertext{where}
+\+m  &=  \bp{\+V_0^{-1} + N  \+\Sigma^{-1} }^{-1}  \bp{\+V_0^{-1} \+m_0 + N \+\Sigma^{-1}  \bar{\+x} } \\
+\+V &= \bp{\+V_0^{-1} +  N \+\Sigma^{-1} }^{-1} \\
+\intertext{and}
+\+\Sigma \cond \+\mu,  \+x  &\sim \InverseWishart(\nu,  \+\Psi) 
+\labelit \label{eqn:normal_model_complete_conditional_on_Sigma} \\
+\intertext{where}
+\nu &=  \nu_0 + N \\
+\+\Psi &= \Psi_0 + \ds\sum_{i=1}^N  (\+x_i - \+\mu) (\+x_i - \+\mu)^T 
+\labelit \label{eqn:Sigma_cc_normal_model_cond_conj_prior}\\ 
+\end{align*}
+
+Note that the model is different than the model  fully conjugate (Normal-Inverse-Wishart) prior on the pair $(\+\mu, \+\Sigma)$.   The conditionally conjugate prior lacks closed-form posterior updating,  but is also more expressive. \bluefootnote{Is it also more expressive once we move to a variational approximation?  i.e.,  can we get more expressive marginals this way?}
+
+These conjugate posterior updates have nice interpretations:
+\begin{itemize}
+\item \textbf{Hyperparameter updates for $(\+\mu  \cond \+\Sigma, \+x)$}: On the precision scale,  $\+V$ is the sum of the prior precision matrix $\+V_0^{-1}$ and $N$ copies of the precision for each observation,  $\+\Sigma^{-1}$.    Similarly,  $\+m$ is the precision-weighted convex combination of $\+m_0$, the prior mean    and the empirical average $\bar{\+x}$.
+\item \textbf{Hyperparameter updates for $(\+\Sigma \cond \+\mu,  \+x)$}:  The covariance was estimated from $\nu$ observations with a sum of pairwise deviation products $\Psi$.
+\end{itemize}
+
+
 \subsection{Bayesian linear regression}
 
 \subsubsection{Example:  Bayesian linear regression with normal prior on regression weights and known observation noise} \label{sec:Bayesian_linear_regression_with_normal_prior}
@@ -352,7 +394,7 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 \+\beta \cond \+y & \sim \N(\+\mu,  \+\Sigma )
 \intertext{where}
 \+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^T \+X }^{-1}  \\
-\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}   \\
+\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}  \\
 \labelit \label{eqn:posterior_bayesian_lin_regression_with_known_obs_var}
 \end{align*}
 
@@ -397,6 +439,58 @@ $\+\mu \approx ( \+X^T \+X)^{-1} \+X^T \+y$,  i.e.  it approximately equals the 
 \end{remark}
 
 \red{TODO: Add Bayesian linear regression where variance is also unknown. }
+ 
+\subsection{Hierarchical Bayesian linear regression} \label{sec:hierarchial_linear_regression}
+
+Consider a Bayesian hierarchical linear regression.    We take the regression to be hierarchical in the sense that we take the regression weights $\+\beta_j$ to be distinct for each of $j=1,...,J$ groups,  but we assume that the $\+\beta_j$'s are drawn from some distribution.     The model allows for ``sharing statistical strength" in the sense that uncertainty about the $j$th group's regression parameters,  to the extent that it exists,  can be reduced by borrowing information from the other groups $k \neq j$.    In other words,  for grouped data,  we allow the information from the other groups to play the role that is played by the prior in Bayesian linear regression.To further motivate this model,  see \cite{hoff2009first}.
+
+A simple version of this model is\footnote{The version is simple because,  for example,   we ignore problems with the Inverse Wishart for modeling covariance matrices (see Section \ref{sec:inverse_wishart_distribution}),  we are not imagining that the regression coefficients are sparse,  etc.} \footnote{Recall that the inverse gamma distribution is parametrized in a convenient way for interpretability,  where $\nu_0$ is a prior sample size from which a  prior sample variance of $\sigma_0^2$ has been obtained.  This parametrization,  and corresponding interpretation,  falls out of the use of the inverse gamma as a prior on the variance in a univariate normal model (see Remark \ref{rk:inverse_gamma_prior_with_hoff_parametrization}). }:
+\begin{align*}
+\+\mu &\sim  \N (\+m_0,\+V_0) \\
+\+\Sigma &\sim \InvWish(\+\Psi_0,  \eta_0) \\
+\+\beta_j &\iid \N(\+\mu,  \+\Sigma) \\
+\sigma^2 &\sim \InverseGamma (\frac{\nu_0}{2}, \frac{\nu_0}{2} \sigma_0^2) \\
+\epsilon_{ij} &\iid \N(0, \sigma^2) \\
+y_{ij} &= \+\beta_j^T \+x_{ij} + \epsilon_{ij} \\
+\labelit \label{eqn:hierarchical_linear_regression}
+\end{align*}
+This model can be seen as a Bayesian linear regression to model within-group data,  put beneath a Bayesian normal sampling model to handle between-group heterogeneity in the regression weights. 
+ 
+The complete conditionals (e.g.  see Section 11.2 of \cite{hoff2009first}) are given by
+
+\begin{align*}
+\+\beta_j \cond \+\Sigma,  \+\mu, \sigma^2,  \+y & \sim  \N(\+\mu_j^\prime,  \+\Sigma_j^\prime) \\
+\+\Sigma_j^\prime &= \bigg( \+\Sigma^{-1} + \frac{1}{\sigma^2} \+X_j^T \+X_j \bigg)^{-1} \\
+\+\mu_j^\prime &= \+\Sigma_j^\prime \bigg( \+\Sigma^{-1} \+\mu + \frac{1}{\sigma^2} \+X_j^T \+y_j \bigg) \\
+& \\ 
+\sigma^2 \cond \+\beta_1, ...,\+\beta_J,  \+y & \sim \InverseGamma
+\bigg( \half (\nu_0 + N),  \half (\nu_0 \sigma_0^2 + \text{SSR})\bigg) \\
+\intertext{where}
+\text{SSR} &:= \ds\sum_{j=1}^J \ds\sum_{i=1}^{n_j}  (y_{ij} - \+\beta_j^T \+x_{ij})^2 \\
+& \\ 
+\+\mu \cond  \+\beta_1, ...,\+\beta_J,  \+\Sigma &\sim \N(\+m^\prime,  \+V^\prime) \\
+\+m^\prime &= \+V^\prime \bigg( \+V_0^{-1} \+m_0 + J \+\Sigma^{-1} \overline{\+\beta} \bigg),  \quad \quad \overline{\+\beta} := \frac{1}{J} \sum_{j=1}^J \+\beta_j \\ 
+\+V^\prime &=  \bigg( \+V_0^{-1} + J \+\Sigma^{-1} \bigg)^{-1} \\
+& \\ 
+\+\Sigma \cond \+\beta_1, ...,\+\beta_J,  \+\mu &\sim \InverseWishart (\+\Psi^\prime, \eta^\prime) \\
+\eta^\prime &= \eta_0 + J \\
+\+\Psi^\prime &= \+\Psi_0 + \ds\sum_{j=1}^J (\+\beta_j - \+\mu) (\+\beta_j -\+\mu)^T \\
+\labelit \label{eqn:hierarchical_linear_regression_ccs}
+\end{align*}
+
+Where note that we have defined,  as shorthands,  
+\begin{align*}
+\+\mu_j^\prime  & := \E [ \+\beta_j \cond \+\Sigma, \+\mu, \sigma^2, \+y] \\
+\+\Sigma_j^\prime  & := \Var [ \+\beta_j \cond \+\Sigma, \+\mu, \sigma^2, \+y] \\
+\end{align*}
+and likewise throughout \eqref{eqn:hierarchical_linear_regression_ccs}. 
+
+Following are some thoughts on these complete conditionals; in particular,  on their relationship to the complete conditionals from the simpler models (Bayesian linear regression,  multivariate normal sampling model) from which the Bayesian hierarchical linear regression is composed:
+\begin{itemize}
+\item The complete conditionals for the group-specific regression weights,  $\+\beta_j$,  are just the conditional distributions for the regression coefficients from Bayesian linear regression \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise},  but where we use group $j$'s data alone,  and where the prior on these regression weights is not an external prior,  but a normal distribution with mean equal to $\+\mu$,  the expected regression weights across groups,  and variance equal to $\+\Sigma$,  the variance in regression weights across groups. 
+\item The complete conditional  for the expected regression weights across groups,  $\+\mu$,   is just the conditional distribution for the mean of a multivariate normal sampling model \eqref{eqn:normal_model_complete_conditional_on_mu},  but where the ``data" are the (latent) regression weights,  $\+\beta_1, ...,\+\beta_J$. 
+\item The complete conditional  for the variance in regression weights across groups,  $\+\Sigma$,   is just the conditional distribution for the variance of a multivariate normal sampling model \eqref{eqn:normal_model_complete_conditional_on_Sigma},  but where the ``data" are the (latent) regression weights, $\+\beta_1, ...,\+\beta_J$. 
+\end{itemize}
 
 \subsection{General formalism} \label{sec:ef_general_formalism}
 Here we provide some notes, following \cite{jordan_ef}, about conjugate priors for exponential family data models. 
@@ -440,47 +534,6 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}), n_0 + N}{H(\tau_{\text{po
 
 \red{TODO:  Redo some of the examples using the exponential family conjugate prior formalism.    A possibly useful resource in the giant table at \url{https://en.wikipedia.org/wiki/Exponential_family}.}
 
-\section{Conditional Conjugacy} \label{sec:exponential_family_conditional_conjugacy}
-
-A family of prior distributions for a parameter is called conditionally conjugate if the conditional posterior distribution (often called the \textit{complete conditional}),  given the data and all other parameters in the model,  is also in that class  \cite{gelman2006prior}.    The posterior distribution for conditionally conjugate models is easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.
-
-Below we give perhaps the simplest example. 
-
-\subsection{Example:  Bayesian normal model with conditionally conjugate prior} \label{sec:normal_data_with_non_conjugate_prior}
-
-Consider the following model with a normal sampling distribution and conditionally conjugate prior\redfootnote{TODO: Prove that the prior,  although conditionally conjugate,  is not conjugate.   (I \textit{believe} this is true,  based on context clues from experience,  but I am not currently certain about it.)}:
-\begin{align*}
-\+\mu &\sim \N_{d}(\+m_0,\+V_0 ) \\
-\+\Sigma &\sim \InverseWishart(\nu_0,  \+\Psi_0) \\
-\+x_i \cond \+\mu,  \+\Sigma &\iid \N_{d}( \+\mu , \+\Sigma), \quad i=1,...,N
-\end{align*}
-We define $\+x := (\+x_1,  \hdots \+x_N)$,  where each $\+x_i \in \R^d$.
-
-The complete conditionals are well-known.   In particular
-\begin{align*}
-\+\mu  \cond \+\Sigma, \+x &\sim \N_{d}(\+m,\+V )  \labelit\label{eqn:normal_model_complete_conditional_on_mu} \\
-\intertext{where}
-\+m  &=  \bp{\+V_0^{-1} + N  \+\Sigma^{-1} }^{-1}  \bp{\+V_0^{-1} \+m_0 + N \+\Sigma^{-1}  \bar{\+x} } \\
-\+V &= \bp{\+V_0^{-1} +  N \+\Sigma^{-1} }^{-1} \\
-\intertext{and}
-\+\Sigma \cond \+\mu,  \+x  &\sim \InverseWishart(\nu,  \+\Psi) 
-\labelit \label{eqn:normal_model_complete_conditional_on_Sigma} \\
-\intertext{where}
-\nu &=  \nu_0 + N \\
-\+\Psi &= \Psi_0 + \ds\sum_{i=1}^N  (\+x_i - \+\mu) (\+x_i - \+\mu)^T 
-\labelit \label{eqn:Sigma_cc_normal_model_cond_conj_prior}\\ 
-\end{align*}
-
-Indeed,  we derived \eqref{eqn:normal_model_complete_conditional_on_Sigma} in Section \ref{ref:inverse_wishart_prior_on_mvn_with_known_mean}. \footnote{We still need to add a derivation for \eqref{eqn:normal_model_complete_conditional_on_mu} \red{TODO},  but the birds' eye view for one approach is to use the general formalism for conjugacy updates in the exponential family \eqref{eqn:general_formalism_prior_to_posterior_conversion},  noting that the natural parameters for a multivariate Gaussian are its precision and precision-weighted mean. }
-
-Note that the model is different than the model  fully conjugate (Normal-Inverse-Wishart) prior on the pair $(\+\mu, \+\Sigma)$.   The conditionally conjugate prior lacks closed-form posterior updating,  but is also more expressive. \bluefootnote{Is it also more expressive once we move to a variational approximation?  i.e.,  can we get more expressive marginals this way?}
-
-
-These conjugate posterior updates have nice interpretations:
-\begin{itemize}
-\item \textbf{Hyperparameter updates for $(\+\mu  \cond \+\Sigma, \+x)$}: On the precision scale,  $\+V$ is the sum of the prior precision matrix $\+V_0^{-1}$ and $N$ copies of the precision for each observation,  $\+\Sigma^{-1}$.    Similarly,  $\+m$ is the precision-weighted convex combination of $\+m_0$, the prior mean    and the empirical average $\bar{\+x}$.
-\item \textbf{Hyperparameter updates for $(\+\Sigma \cond \+\mu,  \+x)$}:  The covariance was estimated from $\nu$ observations with a sum of pairwise deviation products $\Psi$.
-\end{itemize}
 
 
 \newpage 
@@ -602,8 +655,8 @@ Let $\+A, \+B \in \R^{m \times n}$.  Then
 i.e.,  the trace of the matrix product is obtained by summing up the element-wise products. 
 
 
-\section{The Inverse Wishart Distribution}
-
+\section{The Inverse Wishart Distribution} \label{sec:inverse_wishart_distribution}
+ 
 The Inverse Wishart is a distribution on symmetric,  positive definite matrices.     The Inverse Wishart distribution,  denoted $\InverseWishart(\+\Psi, \nu)$,  has density
 
 \begin{align}
