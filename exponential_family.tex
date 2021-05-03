@@ -57,10 +57,7 @@ We define an \textit{exponential family} of probability distributions as those d
  \end{align}
 where we refer to $h$ as the base measure, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer.  \redfootnote{TODO: It would be helpful to get more solid on integrating against probability measure here, so that I can set this up in a more precise way, as Jordan does.    He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."}
 
-\begin{remark}{\remarktitle{Non-uniqueness of natural parameter}}
-\label{rk:nonuniqueness_of_natural_parameter}
-Note from \eqref{eqn:exponential_family} that natural parameters are not unique since,  for example,  $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$. \redfootnote{Are they unique up to scalar multiplication?} Thus,  we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
-\end{remark}
+
 
 \subsection{Examples}
 \subsubsection{Dirichlet distribution}
@@ -72,7 +69,7 @@ p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } 
 &= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
 \end{align*}
 with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^T$, sufficient statistics $t(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^T$, base measure $h(\pi)=1$, and log normalizer $a(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
-\qed 
+  
 \end{example} 
 
 For an example of how the natural parametrization can help provide insight into message passing,  see Section \ref{sec:mvn_in_message_passing}.
@@ -84,7 +81,7 @@ In those notes,  we see
 \E [ \log \pi_k] &= \E [t_k(p)] \stackrel{1}{=} \df{\partial}{\partial \eta_k} a(\eta) \nonumber \\
 &=\Psi(\alpha_k) -  \Psi(\sum_k  \alpha_k) \label{eqn:expectation_of_log_probability} 
 \end{align}
-where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ is the first derivative of the $\log \Gamma$ function.   It is known as the \textit{digamma function}.  $\qed$
+where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ is the first derivative of the $\log \Gamma$ function.   It is known as the \textit{digamma function}.  $ $
 
 % See e.g., https://zhiyzuo.github.io/Exponential-Family-Distributions/
 \end{remark}
@@ -113,7 +110,7 @@ f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\hal
 & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
 \end{align*} 
 where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (- \frac{1}{2 \sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $t(x) = (x^2,  x)^T$,  base measure $h(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
-\qed
+ 
 \end{example}
 
 \begin{remark}
@@ -130,7 +127,7 @@ p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1
 &= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
 \end{align*}
 with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient statistics $t(x) = [\log x ,  \frac{1}{x}]^T$, base measure $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
-\qed 
+  
 \end{example} 
 
 \subsubsection{Inverse Wishart distribution}
@@ -146,7 +143,7 @@ Equation (1) gives the standard representation of the $\InverseWishart(\+\Psi,  
 
 
 As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^T$, sufficient statistics $t(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^T$, base measure $h(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
-\qed 
+  
 \end{example} 
 
 %{eqn:trace_of_matrix_product}
@@ -204,6 +201,18 @@ and \eqref{eqn:hmm_ef_form} shows that the HMM is in the exponential family, so 
 The sufficient statistics for $\log \pi_k$ are $\state_1^k$, and the sufficient statistics for $\log A_{kk'}$ are $\sum_{t=2}^T \state_{t-1}^k \state_t^{k'}$. 
 
 \end{example}
+
+
+\subsection{Remarks}
+\begin{remark}{\remarktitle{Non-uniqueness of natural parameter}}
+\label{rk:nonuniqueness_of_natural_parameter}
+Note from \eqref{eqn:exponential_family} that natural parameters are not unique since,  for example,  $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$. \redfootnote{Are they unique up to scalar multiplication?} Thus,  we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\end{remark}
+
+\begin{remark}
+Exponential family members can have intractable normalization constants.  Consider, for example,  the Ising model.  See pp. 3 of \cite{taylorXXXXmultiparameter}.
+\end{remark}
+
 
 \subsection{i.i.d samples from an exponential family}
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
@@ -274,7 +283,7 @@ Conditional conjugacy (sometimes called semi-conjugacy) can be defined similarly
 
 \begin{remark}{\remarktitle{On Conditional conjugacy}}
 In other words,  a family of prior distributions for a parameter is called conditionally conjugate if the conditional posterior distribution (often called the \textit{complete conditional}),  given the data and all other parameters in the model,  is also in that class  \cite{gelman2006prior}. \redfootnote{Add some notes,  or refer back to notes from regular conjugacy (once they're created),  pointing out how this definition can be vapid,  and also how conjugate priors are not unique. }    In Section \ref{sec:normal_data_with_non_conjugate_prior}, we give perhaps the simplest example of a conditionally conjugate model.
-\qed
+ 
 \end{remark}
  
  Why are conjugate and conditionally conjugate models of interest?  The posterior distributions for conditionally conjugate models are easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.   
@@ -332,7 +341,7 @@ for greater intepretability.   In this case,  we find that the posterior $IG$ pa
 \end{align*}
 So $\eta_0$ plays the role of a prior sample size and $\sigma^2_0$ plays the role of the variance within that prior sample. 
 % \eqref{eqn:bayesian_uvn_known_mean}
-\qed
+ 
 \end{remark}
 
  
@@ -734,7 +743,7 @@ where $\+\Sigma \succ 0$ and $\nu > d-1$ to have a proper prior.     The expecte
 \begin{remark}{\remarktitle{Interpreting the parameters of the Inverse Wishart}}
 \label{rk:inverse_wishart_parameter_interpretation}
 Note that the parameters of the Inverse Wishart can be interpreted (as per conjugacy;  see \eqref{eqn:Sigma_cc_normal_model_cond_conj_prior}) in the following way: the covariance was estimated from $\nu$ observations with a residual sum of squares (a.k.a.  sum of pairwise deviation products) $\+\Psi$. 
-\qed
+ 
 \end{remark}
 
 Remark \ref{rk:inverse_wishart_parameter_interpretation} also provides inuition on the expected value.      For a visualization of how samples are affected by the parameters,  see \cite{hughesXXXXinverse}. 
@@ -754,7 +763,7 @@ p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\
 \label{eqn:inverse_wishart_density_hoffs_alternate}
 \end{align}
 which is \eqref{eqn:inverse_wishart_density}, and which we would write as $\InverseWishart(\nu, \+S)$.
-\qed
+ 
 \end{remark}
 
 \begin{remark}{\remarktitle{Comparing parametrizations}}
@@ -764,7 +773,7 @@ Regarding Remark \ref{rk:peter_hoffs_notation_for_inverse_wishart},  prefer our 
 \item It lets $\+\Psi$ be interpreted directly as a prior residual sum of squares (see Remark \ref{rk:inverse_wishart_parameter_interpretation}). 
 \item It matches the parametrization used throughout Wikipedia,  e.g. in its conjugacy tables.
 \end{itemize}
-\qed
+ 
 \end{remark}
 
 The  Inverse Wishart is a popular choice for modeling covariance matrices (e.g.  see \cite{hoff2009first}),  due to at least the fact that is a  conditionally conjugate prior on the covariance of a normal distribution.   (See Section \ref{sec:normal_data_with_non_conjugate_prior}.)   It seems to me that a weakly informative prior could be constructed by setting  $\nu = d+2$ (the smallest integer for which $\nu$ is in the parameter space) and $\+\Psi = (\nu -d - 1) \+I = \+I$.   This would presumably be reasonable at least if one expected unit variances and wanted to make a prior assumption of independence across dimensions.
