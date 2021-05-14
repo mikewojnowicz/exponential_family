@@ -19,20 +19,15 @@
   \array{*\c@MaxMatrixCols c}}
 \makeatother
  
- % INDICATOR FUNCTIONS
- % Allows us to switch between delta(x,y)
- % or Iverson bracket $[x=y]$ or $[x==y]$
- % or 1_{whatever} ..
- 
- %\newcommand{\indicate}[2]{\delta({#1},{#2})}
-% \newcommand{\indicate}[2]{[{#1} = {#2}]}
-  
- %%% MARKOV RANDOM FIELDS 
+%%% MARKOV RANDOM FIELDS 
 \newcommand{\selfpotential}{\phi}
 \newcommand{\edgepotential}{\psi}
 
-%%%% HIDDEN MARKOV MODEL
+%%% HIDDEN MARKOV MODEL
 \newcommand{\state}{x}
+
+%%% BAYESIAN LINEAR REGRESSION
+\newcommand{\new}{\text{new}}
 
 \begin{document}
 
@@ -513,7 +508,20 @@ gives the posterior for Bayesian linear multiple regression in the case where th
 $\+\mu \approx ( \+X^T \+X)^{-1} \+X^T \+y$,  i.e.  it approximately equals the standard least squares estimate.   On the other hand,   when the observation variance $\sigma^2$ is large,  then the measurement precision is small, and the posterior mean satisfies $\+\mu \approx \+\mu_0$,  i.e.  it approximately equals the prior mean.
 \end{remark}
 
+\paragraph{Posterior predictive}
+
+The posterior predictive distribution for Bayesian linear regression with known observation noise \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise},   after observing n observations $\+y =(y_1, ..., y_n)$,   has density
+\begin{align*}
+p(y_\new \cond \+y) &= \ds\int  p(y_\new \cond \+\beta) \, p(\+\beta \cond \+y) \, d\+\beta \\
+&= \ds\int \density\N(\+x_\new^T \+\beta,  \sigma^2) \,  \density\N(\+\mu_n,  \+\Sigma_n)  \,  d\+\beta \\
+& \stackrel{1}{=} \density\N \bigg( \+x_\new^T \+\mu_n,  \;  \sigma^2 + \+x_\new^T \+\Sigma_n  \+x_\new \bigg) 
+\end{align*}
+
+where $\density\N$ refers to the density of a Gaussian,  where $(\+\mu_n, \+\Sigma_n)$ are the posterior parameters given by \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var},  and where Equality (1) holds by Proposition \ref{prop:simplest_linear_gaussian_model}.
+
+
 \red{TODO: Add Bayesian linear regression where variance is also unknown. }
+
  
 \subsection{Hierarchical Bayesian linear regression} \label{sec:hierarchial_linear_regression}
 
@@ -614,48 +622,77 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}), n_0 + N}{H(\tau_{\text{po
 \newpage 
  \appendix
  
- \section{EF representation of Multivariate Gaussian in message passing}
- \label{sec:mvn_in_message_passing}
- 
-In a dissertation on Gaussian Belief Propagation \cite{bickson2008gaussian}, referred to in \cite{krishnan2016structured}, a multivariate Gaussian is considered as a Markov Random Field. 
 
-In particular, consider the Markov Random field
 
-\begin{equation}
-p(x) = \df{1}{Z}\bp{ \ds\prod_{i=1}^n \selfpotential(x_i) \ds\prod_{i,j} \edgepotential(x_i, x_j)  } 
-\label{eqn:mrf_dyadic}
-\end{equation}
+\section{Matrix Facts}
 
-Now note that a multivariate Gaussian has a joint distribution which can be expressed as
-\[ p(x) \propto \exp \bigg\{ -\df{1}{2} x^T A x + b^T x \bigg\} \]
+\subsection{Multivariate completing the square}
 
-as this is just the exponential family form of a Gaussian (e.g., see  \cite{englehardt_gaussian_models}), where the natural parameters are
-given in terms of the \textit{precision} $\Sigma^{-1}$
-\begin{align*}
-A &= \Sigma^{-1} \\
-b &= \Sigma^{-1} \mu
-\end{align*}
+A nice overview of multivariate completing the square is given by \cite{gundersenXXXXcompleting}.    
 
-Thus, the multivariate Gaussian is a MRF where the potentials in \eqref{eqn:mrf_dyadic} are given by
+Let $\+x,  \+b$ be $d$-dimensional vectors, and let $\+M \in \R^{d \times d}$ be a symmetric invertible matrix. Then
 
 \begin{align*}
-\edgepotential_{ij}(x_i, x_j) & := \exp \bigg\{ -\df{1}{2} x_i A_{ij} x_j \bigg\}  \\
-\selfpotential_{i}(x_i) & := \exp \bigg\{ -\df{1}{2} A_{ii} x_i^2 + b_i x_i \bigg\}  
+\+x^T \+M \+x - 2 \+b^T \+x = (\+x - \+M^{-1} \+b)^T \+M (\+x - \+M^{-1} \+b) - \+b^T \+M^{-1} \+b
+ \labelit \label{eqn:multivariate_completing_the_square}
 \end{align*}
 
-This seems to be useful in inference for state space models, where one multiplies multiple ``messages" that are different Gaussian densities \textit{over the same variable}.   For example, see  the equations for $\mu_t$ and $\sigma^2_t$ in Section 4 of \cite{krishnan2016structured}, where messages from the past and the future of a time series model are combined to get a posterior distribution on the state $z_t$.   The combined parameters have an expression which may at first be puzzling:
+%  \+x^⊤ \+M \+x − 2\+b^⊤ \+x = (\+x−\+M^{−1} \+b)^T \+M (\+x−^\+M^{−1} \+b)− \+b^T \+M^{−1} \+b
+% 
 
-\[ \mu_t = \df{\mu_1 \sigma^2_2 + \mu_2 \sigma^2_1}{\sigma^2_1 + \sigma^2_2}  , \quad \sigma^2_t = \df{\sigma^2_1 \sigma^2_2}{ \sigma^2_1 + \sigma^2_2} \]
+\subsection{The trace of a matrix product}
 
-However, these messages have an intuitive form when considered in terms of the natural parameterizations:  the combined mean is a weighted combination of the original means, with the weights given by the precisions.   The combined precision (inverse covariance) is given simply by the sum of the original precisions.  Very nice! 
+The trace of a matrix product behaves like a dot product.  
 
- See Figure \ref{fig:lemma_twelve_bickson} for the general expression, which explains the formula in  \cite{krishnan2016structured}.  This is an example of where the natural parametrization provides more insight than the standard parametrization. 
+Let $\+A, \+B \in \R^{m \times n}$.  Then 
 
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{images/bickson_lemma_12}
-\caption{Lemma 12 of \cite{bickson2008gaussian}}
-\label{fig:lemma_twelve_bickson}
-\end{figure}
+\begin{align*}
+\tr (\+A^T \+B) = \ds\sum_{i=1}^n (\+A^T \+B)_i = \ds\sum_{i=1}^n \ds\sum_{j=1}^m a_{ij} b_{ij}
+\labelit \label{eqn:trace_of_matrix_product}
+\end{align*}
+
+i.e.,  the trace of the matrix product is obtained by summing up the element-wise products. 
+
+
+\section{Gaussian Facts}
+
+\subsection{The simplest linear Gaussian model}
+
+\begin{proposition}
+\label{prop:simplest_linear_gaussian_model}
+Let
+\begin{align*}
+X &\sim \N(\+\mu,  \+\Sigma) \\
+Y \cond X &\sim \N(\+AX+\+b,  \+V) \\
+\end{align*}
+
+Then
+\begin{align*}
+Y &\sim \N(\+A \+\mu + \+b,  \+V + \+A \+\Sigma \+A^T)
+\end{align*}
+\end{proposition}
+
+\begin{proof}
+See Section 2.3.3 of \cite{bishop2006pattern}.    The necessary computation is for the density
+
+\begin{align*}
+p(y)  = \ds\int p(y \cond x) \,  p(x) \,  dx
+\labelit \label{eqn:computation_for_the_simplest_linear_gaussian_model}
+\end{align*}
+\end{proof}
+
+%where $\density\N$ refers to the density of a Normal distribution.
+
+\begin{remark}
+The necesary computation in \eqref{eqn:computation_for_the_simplest_linear_gaussian_model} can be seen as the convolution of two Gaussians.
+\end{remark}
+
+
+\begin{remark}
+This scheme can be generalized to \textit{linear Gaussian models}.  These are probabilistic graphical models whose conditional distributions are all Gaussian,  with a mean that is a linear function of parents,  and a covariance that is independent of parents.   See Sec 8.1.4 of \cite{bishop2006pattern}, or \cite{roweis1999unifying}.   
+\end{remark}
+
+
 
 \section{More on Bayesian multivariate linear regression}  \label{sec:more_bayesian_multivariate_linear_regression} 
 
@@ -700,34 +737,7 @@ The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
 Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$
 \end{proof}
 
-\section{Matrix Facts}
 
-\subsection{Multivariate completing the square}
-
-A nice overview of multivariate completing the square is given by \cite{gundersenXXXXcompleting}.    
-
-Let $\+x,  \+b$ be $d$-dimensional vectors, and let $\+M \in \R^{d \times d}$ be a symmetric invertible matrix. Then
-
-\begin{align*}
-\+x^T \+M \+x - 2 \+b^T \+x = (\+x - \+M^{-1} \+b)^T \+M (\+x - \+M^{-1} \+b) - \+b^T \+M^{-1} \+b
- \labelit \label{eqn:multivariate_completing_the_square}
-\end{align*}
-
-%  \+x^⊤ \+M \+x − 2\+b^⊤ \+x = (\+x−\+M^{−1} \+b)^T \+M (\+x−^\+M^{−1} \+b)− \+b^T \+M^{−1} \+b
-% 
-
-\subsection{The trace of a matrix product}
-
-The trace of a matrix product behaves like a dot product.  
-
-Let $\+A, \+B \in \R^{m \times n}$.  Then 
-
-\begin{align*}
-\tr (\+A^T \+B) = \ds\sum_{i=1}^n (\+A^T \+B)_i = \ds\sum_{i=1}^n \ds\sum_{j=1}^m a_{ij} b_{ij}
-\labelit \label{eqn:trace_of_matrix_product}
-\end{align*}
-
-i.e.,  the trace of the matrix product is obtained by summing up the element-wise products. 
 
 
 \section{The Inverse Wishart Distribution} \label{sec:inverse_wishart_distribution}
@@ -798,6 +808,49 @@ A sample $\+\Sigma$ from the $\InverseWishart(\nu, \+\Psi)$ distribution (using 
 The intuition is that the Inverse Wishart models covariance matrices as an inverse sum of squares (again, see Remark \ref{rk:inverse_wishart_parameter_interpretation}).  
 
 The inverse Wishart can be seen as a generalization of the inverse gamma distribution to multiple dimensions.\redfootnote{TODO: fill in.   Make explicit how it is a generalization.}
+
+ \section{EF representation of Multivariate Gaussian in message passing}
+ \label{sec:mvn_in_message_passing}
+ 
+In a dissertation on Gaussian Belief Propagation \cite{bickson2008gaussian}, referred to in \cite{krishnan2016structured}, a multivariate Gaussian is considered as a Markov Random Field. 
+
+In particular, consider the Markov Random field
+
+\begin{equation}
+p(x) = \df{1}{Z}\bp{ \ds\prod_{i=1}^n \selfpotential(x_i) \ds\prod_{i,j} \edgepotential(x_i, x_j)  } 
+\label{eqn:mrf_dyadic}
+\end{equation}
+
+Now note that a multivariate Gaussian has a joint distribution which can be expressed as
+\[ p(x) \propto \exp \bigg\{ -\df{1}{2} x^T A x + b^T x \bigg\} \]
+
+as this is just the exponential family form of a Gaussian (e.g., see  \cite{englehardt_gaussian_models}), where the natural parameters are
+given in terms of the \textit{precision} $\Sigma^{-1}$
+\begin{align*}
+A &= \Sigma^{-1} \\
+b &= \Sigma^{-1} \mu
+\end{align*}
+
+Thus, the multivariate Gaussian is a MRF where the potentials in \eqref{eqn:mrf_dyadic} are given by
+
+\begin{align*}
+\edgepotential_{ij}(x_i, x_j) & := \exp \bigg\{ -\df{1}{2} x_i A_{ij} x_j \bigg\}  \\
+\selfpotential_{i}(x_i) & := \exp \bigg\{ -\df{1}{2} A_{ii} x_i^2 + b_i x_i \bigg\}  
+\end{align*}
+
+This seems to be useful in inference for state space models, where one multiplies multiple ``messages" that are different Gaussian densities \textit{over the same variable}.   For example, see  the equations for $\mu_t$ and $\sigma^2_t$ in Section 4 of \cite{krishnan2016structured}, where messages from the past and the future of a time series model are combined to get a posterior distribution on the state $z_t$.   The combined parameters have an expression which may at first be puzzling:
+
+\[ \mu_t = \df{\mu_1 \sigma^2_2 + \mu_2 \sigma^2_1}{\sigma^2_1 + \sigma^2_2}  , \quad \sigma^2_t = \df{\sigma^2_1 \sigma^2_2}{ \sigma^2_1 + \sigma^2_2} \]
+
+However, these messages have an intuitive form when considered in terms of the natural parameterizations:  the combined mean is a weighted combination of the original means, with the weights given by the precisions.   The combined precision (inverse covariance) is given simply by the sum of the original precisions.  Very nice! 
+
+ See Figure \ref{fig:lemma_twelve_bickson} for the general expression, which explains the formula in  \cite{krishnan2016structured}.  This is an example of where the natural parametrization provides more insight than the standard parametrization. 
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{images/bickson_lemma_12}
+\caption{Lemma 12 of \cite{bickson2008gaussian}}
+\label{fig:lemma_twelve_bickson}
+\end{figure}
 
 
 \bibliography{references_exponential_family}{}
