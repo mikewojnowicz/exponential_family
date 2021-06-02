@@ -125,6 +125,7 @@ We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribu
 \begin{align*}
 	p(\+x \cond \+\mu, \+\Sigma) &= (2\pi)^{-d/2} |\+\Sigma |^{-1/2} \exp \bigg\{ -\half (\+x - \+\mu)^T \+\Sigma^{-1} (\+x - \+\mu) \bigg\}  \\
 	& \stackrel{1}{=} (2\pi)^{-d/2} \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T) $}{\+x^T \+\Sigma^{-1} \+x} + \+\mu \+\Sigma^{-1} \+x -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
+	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
 with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $t(\+x) = \big(\vectorize (\+x \+x^T), \+x \big)$, base measure $h(x) = (2\pi)^{-d/2}$ and log normalizing $a(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
 \end{example}
@@ -140,6 +141,12 @@ From Example \ref{ex:mvn_as_ef}, we see that the natural parameters of the MVN a
 \begin{remark}
 In Section \ref{sec:normal_data_with_non_conjugate_prior}, we use the exponential family representation to derive the updates to the mean for a Bayesian normal model with conditionally conjugate prior.
 \end{remark}
+
+\begin{remark}
+\label{rk:mvn_from_ef}
+Equation \eqref{eqn:mvn_as_ef} also says that if a random vector $\+x$ has a density on $\R^d$ that is proportional to $\exp \{ -\half \+x^T \+A \+X + \+x^T \+b\}$ for some matrix $\+A$ and vector $\+b$, then $\+x$ must be multivariate normal with covariance $\+A^{-1}$ and mean $\+A^{-1}\+b$. 
+\end{remark}
+	
 
 \subsubsection{Inverse Wishart distribution}
 
@@ -303,7 +310,7 @@ In other words,  a family of prior distributions for a parameter is called condi
  
 \subsubsection{Example:  Normal prior on mean of univariate Gaussian with known covariance}
 
-\red{TODO: Fill in}
+\red{TODO: Fill in.  Note also that we can obtain this as a special case of the multivariate case, which is handled in Section \ref{sec:normal_prior_on_mvn_with_known_covariance}.}
 
 \subsubsection{Example:  Inverse gamma prior on the variance of a univariate Gaussian with known mean}
 
@@ -362,7 +369,44 @@ So $\eta_0$ plays the role of a prior sample size and $\sigma^2_0$ plays the rol
 \subsubsection{Example:  Normal prior on mean of multivariate Gaussian with known covariance}  \label{sec:normal_prior_on_mvn_with_known_covariance}
  
  
-\red{TODO.   Note that in Section \ref{sec:Bayesian_linear_regression_with_normal_prior},   I've already written up a self-enclosed argument for Bayesian linear regression;  some of that argument can likely be factored out to here.}
+Here we provide the posterior for the mean of a multivariate Gaussian in the case where the covariance is known.
+
+Given data $\+y :=(\+y_1, ....,\+y_n)$, consider the model
+\begin{align*}
+\+\mu &\sim \N(\+\mu_0, \+\Sigma_0) \\
+\+y_i \cond \+\mu &\iid \N(\+\mu, \+\Sigma) && i=1,...,n
+\end{align*}
+
+
+
+
+We use the exponential family representation of the MVN (Example \ref{ex:mvn_as_ef}) to represent the prior in terms of its natural parameters
+\begin{align*}
+	p(\+\mu) &\propto \exp \bigg\{ -\half \+\mu^T \+\Sigma_0^{-1} \+\mu + \+\mu^T \+\Sigma_0^{-1} \+\mu_0 \bigg\} 
+\labelit \label{eqn:prior_for_mvn_fixed_cov}
+\end{align*}
+
+And similarly, we write the likelihood $	L(\+\mu) = p(\+y \cond \+\mu) = \prod_{i=1}^n p(\+y_i \cond \+\mu)$  as
+\begin{align*}
+	L(\+\mu) &\propto \exp \bigg\{ -\half \ds\sum_{i=1}^n (\+y_i - \+\mu)^T \+\Sigma^{-1} (\+y_i - \+\mu)\bigg\}  \\
+	&= \exp \bigg\{ - \half \+\mu^T n \+\Sigma^{-1} \+\mu + \+\mu^T \+\Sigma^{-1} n \bar{\+y} \bigg\} 
+\labelit \label{eqn:likelihood_for_mvn_fixed_cov}
+\end{align*}
+
+
+
+So by Bayes' law, combining the like terms in $\+\mu$ of \eqref{eqn:prior_for_mvn_fixed_cov} and \eqref{eqn:likelihood_for_mvn_fixed_cov}, we find
+\begin{align*}
+ p(\+\mu \cond \+y) &\propto \explaintermbrace{prior}{p(\+\mu)}\explaintermbrace{likelihood}{p(\+y \cond \+\mu)} \\
+ &= \exp \bigg\{ - \half \+\mu^T \bigg( \+\Sigma_0^{-1} + n  \+\Sigma^{-1}\bigg)  \+\mu + \+\mu^T \bigg( \+\Sigma_0 \+\mu_0 + \+\Sigma^{-1} n \bar{\+y} \bigg) \bigg\} 
+\end{align*}
+which reveals that the posterior is normal (Remark \ref{rk:mvn_from_ef}), along with the particular forms for its natural parameters (precision and precision-weighted mean).  In particular, we have, $\+\mu \cond \+y \sim \N(\+\mu_n, \+\Sigma_n)$, where
+\begin{align*}
+	\+\Sigma_n &= \bigg( \+\Sigma_0^{-1} + n \+\Sigma^{-1}\bigg)^{-1} \\
+	\+\mu_n &= \+\Sigma_n \bigg(\+\Sigma_0 \+\mu_0 + n \+\Sigma^{-1} \bar{\+y}  \bigg)
+\end{align*}
+
+On the precision scale,  $\+\Sigma_n$ is the sum of the prior precision matrix $\+\Sigma_0^{-1}$ and $n$ copies of the precision for each observation,  $\+\Sigma^{-1}$.    Similarly,  $\+\mu_n$ is the precision-weighted convex combination of $\+\mu_0$, the prior mean, and the empirical average, $\bar{\+y}$.
 
 \subsubsection{Example:  Inverse Wishart prior on covariance matrix of multivariate Gaussian with known mean} \label{sec:inverse_wishart_prior_on_mvn_with_known_mean}
  
@@ -376,7 +420,7 @@ This situation comes up
 
 Consider the sampling model for $\+y :=(\+y_1, ....,\+y_n) \iid \N_d(\+\mu,  \+\Sigma)$
 \begin{align}
-p\+(y \cond \+\mu, \+\Sigma) & \propto | \+\Sigma |^{-n/2} \exp \bb{ -\df{1}{2} \ds\sum_{i=1}^n (\+y_i - \+\mu)^T  \Sigma^{-1} (\+y_i- \+\mu) } \nonumber \\
+p(\+y \cond \+\mu, \+\Sigma) & \propto | \+\Sigma |^{-n/2} \exp \bb{ -\df{1}{2} \ds\sum_{i=1}^n (\+y_i - \+\mu)^T  \Sigma^{-1} (\+y_i- \+\mu) } \nonumber \\
 & = | \+\Sigma |^{-n/2} \exp \bb{ -\df{1}{2} \tr(\+\Sigma^{-1} \+S_\mu)  }\label{eqn:mvn_in_nice_form_for_inverse_wishart_prior}
 \end{align}
 where $\+S_\mu := \sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^T$ is the sum of pairwise deviation products,  and where the equality in \eqref{eqn:mvn_in_nice_form_for_inverse_wishart_prior}  is justified in Remark \ref{rk:reexpressing_mvn_in_nice_form_for_inverse_wishart_prior}.
@@ -453,7 +497,7 @@ Note that the model is different than the model  fully conjugate (Normal-Inverse
 
 These conjugate posterior updates have nice interpretations:
 \begin{itemize}
-\item \textbf{Hyperparameter updates for $(\+\mu  \cond \+\Sigma, \+x)$}: On the precision scale,  $\+V$ is the sum of the prior precision matrix $\+V_0^{-1}$ and $N$ copies of the precision for each observation,  $\+\Sigma^{-1}$.    Similarly,  $\+m$ is the precision-weighted convex combination of $\+m_0$, the prior mean    and the empirical average $\bar{\+x}$.
+\item \textbf{Hyperparameter updates for $(\+\mu  \cond \+\Sigma, \+x)$}: On the precision scale,  $\+V$ is the sum of the prior precision matrix $\+V_0^{-1}$ and $N$ copies of the precision for each observation,  $\+\Sigma^{-1}$.    Similarly,  $\+m$ is the precision-weighted convex combination of $\+m_0$, the prior mean,    and the empirical average, $\bar{\+x}$.
 \item \textbf{Hyperparameter updates for $(\+\Sigma \cond \+\mu,  \+x)$}:  The covariance was estimated from $\nu$ observations with a sum of pairwise deviation products $\Psi$.
 \end{itemize}
 
