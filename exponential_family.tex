@@ -37,9 +37,9 @@
 \tableofcontents
 \newpage
 
-\section{The Exponential Family} \label{sec:ef}
+\section{Exponential Families} \label{sec:ef}
 
-We are interested in the exponential family primarily because it makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.    This is true regardless of whether we're doing frequentist inference (such as maximum likelihood) or Bayesian inference.    Bayesian inference with exponential family likelihoods tends to be especially nice,  as all exponential family likelihoods have conjugate priors,  and these are often also in the exponential family \cite{bernardo2009bayesian}. \redfootnote{TODO:  Get clearer on the relationship.  There is a brief discussion on this in \cite{bernardo2009bayesian}.  I am not clear on whether all likelihoods with conjugate priors need to be in the exponential family.}   More complicated models may not be in the exponential family,  but may have exponential family complete conditional distributions;  in such situation,  we can appeal to exponential family formalisms to more easily work out inference schemes for expectation maximization,  variational inference,  or Gibbs sampling.   
+We are interested in  exponential families primarily because they makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.    This is true regardless of whether we're doing frequentist inference (such as maximum likelihood) or Bayesian inference.    Bayesian inference with exponential family likelihoods tends to be especially nice,  as all exponential family likelihoods have conjugate priors,  and distributions with conjugate priors are often also exponential families \cite{bernardo2009bayesian}. \redfootnote{TODO:  Get clearer on the relationship.  There is a brief discussion on this in \cite{bernardo2009bayesian}}   More complicated models may not be exponential families,  but may have exponential family complete conditional distributions;  in such situation,  we can appeal to exponential family formalisms to more easily work out inference schemes for expectation maximization,  variational inference,  or Gibbs sampling.   
 
 \subsection{Definition}
 An \textit{exponential family} is a set of probability distributions whose probability density functions have the following form
@@ -215,7 +215,7 @@ where we have defined
 0, & \text{otherwise}
 \end{cases} \]
 
-and \eqref{eqn:hmm_ef_form} shows that the HMM is in the exponential family, so long as the emissions distributions are. 
+and \eqref{eqn:hmm_ef_form} shows that the HMM is an exponential family, so long as the emissions distributions are. 
 The sufficient statistics for $\log \pi_k$ are $\state_1^k$, and the sufficient statistics for $\log A_{kk'}$ are $\sum_{t=2}^T \state_{t-1}^k \state_t^{k'}$. 
 
 \end{example}
@@ -262,7 +262,7 @@ where $\mu := \E[t(x)]$ refers to the mean parametrization of the likelihood. \r
 
  \section{Exponential Family: Expectation Maximization} \label{sec:em_with_ef}
 
-Some models have latent variables associated with each observation, and so maximum likelihood is not possible.  Let us see how expectation maximization looks when the complete data likelihood is in the exponential family.
+Some models have latent variables associated with each observation, and so maximum likelihood is not possible.  Let us see how expectation maximization looks when the complete data likelihood is an exponential family.
 
 The expectation maximization algorithm is 
 \begin{equation}
@@ -270,8 +270,8 @@ The expectation maximization algorithm is
  \+\theta^{(t+1)} =  \text{argmax}_{\+\theta} \; \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
  \end{equation}
 
-We see how this plays out in the exponential family by following the logic of Section \ref{sec:ml_with_ef}.   Let us assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are n independent samples from the same exponential family, where $\+x$ is observed data and $\+z$ is unobserved data.
-Moreover, let us assume that the complete data likelihood is in the exponential family
+We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}.   Let us assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are n independent samples from the same exponential family, where $\+x$ is observed data and $\+z$ is unobserved data.
+Moreover, let us assume that the complete data likelihood is an exponential family
 
 \begin{align}
 \label{eqn:exponential_family_complete_data_likelihood}
@@ -307,7 +307,7 @@ In other words,  a family of prior distributions for a parameter is called condi
  Why are conjugate and conditionally conjugate models of interest?  The posterior distributions for conditionally conjugate models are easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.   
  
  \begin{remark}
- Although most distributions with conjugate priors are in the exponential family, EF membership is not a \textit{necessary} condition for admitting a conjugate prior.  For instance, the uniform distribution on $[0,a]$ is not an exponential family (the distributions don't all have the same support), but the Pareto distribution is a conjugate prior for the parameter $a$ \cite{minkaXXXXbayesian}.  
+ Although most distributions with conjugate priors are exponential families, EF membership is not a \textit{necessary} condition for admitting a conjugate prior.  For instance, the uniform distribution on $[0,a]$ is not an exponential family (the distributions don't all have the same support), but the Pareto distribution is a conjugate prior for the parameter $a$ \cite{minkaXXXXbayesian}.  
  \end{remark}
  	
 
