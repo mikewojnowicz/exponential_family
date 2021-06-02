@@ -42,7 +42,7 @@
 We are interested in the exponential family primarily because it makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.    This is true regardless of whether we're doing frequentist inference (such as maximum likelihood) or Bayesian inference.    Bayesian inference with exponential family likelihoods tends to be especially nice,  as all exponential family likelihoods have conjugate priors,  and these are often also in the exponential family \cite{bernardo2009bayesian}. \redfootnote{TODO:  Get clearer on the relationship.  There is a brief discussion on this in \cite{bernardo2009bayesian}.  I am not clear on whether all likelihoods with conjugate priors need to be in the exponential family.}   More complicated models may not be in the exponential family,  but may have exponential family complete conditional distributions;  in such situation,  we can appeal to exponential family formalisms to more easily work out inference schemes for expectation maximization,  variational inference,  or Gibbs sampling.   
 
 \subsection{Definition}
-We define an \textit{exponential family} of probability distributions as those distributions whose density has the following form
+An \textit{exponential family} is a set of probability distributions whose probability density functions have the following form
 \begin{align}
 \label{eqn:exponential_family}
  p(x \cond \theta) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\theta)\} 
@@ -124,7 +124,7 @@ with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient stati
 We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribution in exponential form
 \begin{align*}
 	p(\+x \cond \+\mu, \+\Sigma) &= (2\pi)^{-d/2} |\+\Sigma |^{-1/2} \exp \bigg\{ -\half (\+x - \+\mu)^T \+\Sigma^{-1} (\+x - \+\mu) \bigg\}  \\
-	& \stackrel{1}{=} (2\pi)^{-d/2} \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T) $}{\+x^T \+\Sigma^{-1} \+x} + \+\mu \+\Sigma^{-1} \+x -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
+	& \stackrel{1}{=} (2\pi)^{-d/2} \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T) $}{\+x^T \+\Sigma^{-1} \+x} + \+\mu^T \+\Sigma^{-1} \+x -\half \+\mu^T \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
 	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
 with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $t(\+x) = \big(\vectorize (\+x \+x^T), \+x \big)$, base measure $h(x) = (2\pi)^{-d/2}$ and log normalizing $a(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
@@ -299,13 +299,18 @@ Conjugacy can be defined as follows \cite{gelman2013bayesian}. If $\mathcal{F}$ 
 Conditional conjugacy (sometimes called semi-conjugacy) can be defined similarly  \cite{gelman2013bayesian}.  If $\mathcal{F}$ is a class of sampling distributions and $\mathcal{P}$ is a class of prior distributions for $\theta \cond \phi$, then the class $\mathcal{P}$ is \textit{conditionally conjugate} for $\mathcal{F}$ if
 \[  p(\theta \cond \phi, y) \in \mathcal{P} \; \text{for all} \; p(\cdot \cond \theta, \phi) \in \mathcal{F} \; \text{and} \; p(\cdot \cond \phi) \in \mathcal{P} \]
 
-\begin{remark}{\remarktitle{On Conditional conjugacy}}
+\begin{remark}{\remarktitle{On conditional conjugacy}}
 In other words,  a family of prior distributions for a parameter is called conditionally conjugate if the conditional posterior distribution (often called the \textit{complete conditional}),  given the data and all other parameters in the model,  is also in that class  \cite{gelman2006prior}. \redfootnote{Add some notes,  or refer back to notes from regular conjugacy (once they're created),  pointing out how this definition can be vapid,  and also how conjugate priors are not unique. }    In Section \ref{sec:normal_data_with_non_conjugate_prior}, we give perhaps the simplest example of a conditionally conjugate model.
  
 \end{remark}
  
  Why are conjugate and conditionally conjugate models of interest?  The posterior distributions for conditionally conjugate models are easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.   
  
+ \begin{remark}
+ Although most distributions with conjugate priors are in the exponential family, EF membership is not a \textit{necessary} condition for admitting a conjugate prior.  For instance, the uniform distribution on $[0,a]$ is not an exponential family (the distributions don't all have the same support), but the Pareto distribution is a conjugate prior for the parameter $a$ \cite{minkaXXXXbayesian}.  
+ \end{remark}
+ 	
+
  \subsection{Univariate normal model}
  
 \subsubsection{Example:  Normal prior on mean of univariate Gaussian with known covariance}
