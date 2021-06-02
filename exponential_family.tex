@@ -573,11 +573,11 @@ $\+\mu \approx ( \+X^T \+X)^{-1} \+X^T \+y$,  i.e.  it approximately equals the 
 The posterior predictive distribution for Bayesian linear regression with known observation noise \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise},   after observing n observations $\+y =(y_1, ..., y_n)$,   has density
 \begin{align*}
 p(y_\new \cond \+y) &= \ds\int  p(y_\new \cond \+\beta) \, p(\+\beta \cond \+y) \, d\+\beta \\
-&= \ds\int \density\N(\+x_\new^T \+\beta,  \sigma^2) \,  \density\N(\+\mu_n,  \+\Sigma_n)  \,  d\+\beta \\
-& \stackrel{1}{=} \density\N \bigg( \+x_\new^T \+\mu_n,  \;  \sigma^2 + \+x_\new^T \+\Sigma_n  \+x_\new \bigg) 
+&= \ds\int f_\N(\+x_\new^T \+\beta,  \sigma^2) \,  f_\N(\+\mu_n,  \+\Sigma_n)  \,  d\+\beta \\
+& \stackrel{1}{=} f_\N \bigg( \+x_\new^T \+\mu_n,  \;  \sigma^2 + \+x_\new^T \+\Sigma_n  \+x_\new \bigg) 
 \end{align*}
 
-where $\density\N$ refers to the density of a Gaussian,  where $(\+\mu_n, \+\Sigma_n)$ are the posterior parameters given by \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var},  and where Equality (1) holds by Proposition \ref{prop:simplest_linear_gaussian_model}.
+where $f_\N(m,v)$ refers to the density of a univariate Gaussian with mean $m$ and variance $v$, and where $(\+\mu_n, \+\Sigma_n)$ are the posterior parameters given by \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var},  and where Equality (1) holds by Proposition \ref{prop:simplest_linear_gaussian_model}.
 
 
 \red{TODO: Add Bayesian linear regression where variance is also unknown. }
@@ -741,7 +741,6 @@ p(y)  = \ds\int p(y \cond x) \,  p(x) \,  dx
 \end{align*}
 \end{proof}
 
-%where $\density\N$ refers to the density of a Normal distribution.
 
 \begin{remark}
 The necesary computation in \eqref{eqn:computation_for_the_simplest_linear_gaussian_model} can be seen as the convolution of two Gaussians.
