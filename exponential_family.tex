@@ -78,11 +78,6 @@ where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ 
 % See e.g., https://zhiyzuo.github.io/Exponential-Family-Distributions/
 \end{remark}
 
-\red{TODO:  Add multivariate Gaussian example,  showing that the natural parameters are the precision $\Sigma^{-1}$ and precision-weighted mean $\Sigma^{-1} \mu$,  as we use this in Section \ref{sec:normal_data_with_non_conjugate_prior} combined with the exponential family formalism to derive the updates to the mean for a Bayesian normal model with conditionally conjugate prior.}
-
-
-
-
 \subsubsection{Truncated normal distribution}
 
 \begin{example}{(Truncated normal distribution)} 
@@ -131,8 +126,20 @@ We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribu
 	p(\+x \cond \+\mu, \+\Sigma) &= (2\pi)^{-d/2} |\+\Sigma |^{-1/2} \exp \bigg\{ -\half (\+x - \+\mu)^T \+\Sigma^{-1} (\+x - \+\mu) \bigg\}  \\
 	& \stackrel{1}{=} (2\pi)^{-d/2} \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T) $}{\+x^T \+\Sigma^{-1} \+x} + \+\mu \+\Sigma^{-1} \+x -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
 \end{align*} 
-with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $t(\+x) = \big(\vectorize (\+x \+x^T), \+x \big)$, base measure $h(x) = (2\pi)^{-d/2}$ and log normalizing $a(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $.  The underbrace representation in Equation (1) is given by $\+x^T \+\Sigma^{-1} \+x = \tr (\+x^T \+\Sigma^{-1} \+x) = \tr (\+\Sigma^{-1} \+x \+x^T) =\vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T)$.\footnote{Recall $\tr(\+A\+B) = \vectorize (\+A)^T \vectorize (\+B)$.}  
+with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $t(\+x) = \big(\vectorize (\+x \+x^T), \+x \big)$, base measure $h(x) = (2\pi)^{-d/2}$ and log normalizing $a(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
 \end{example}
+
+\begin{remark}
+From Example \ref{ex:mvn_as_ef}, we see that the natural parameters of the MVN are the \textit{precision} $\+\Sigma^{-1}$ and \textit{precision-weighted mean} $\+\Sigma^{-1} \+\mu$. 
+\end{remark}
+
+\begin{remark}
+ The underbrace representation in Equation (1) is given by $\+x^T \+\Sigma^{-1} \+x = \tr (\+x^T \+\Sigma^{-1} \+x) = \tr (\+\Sigma^{-1} \+x \+x^T) =\vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T)$.\footnote{Recall $\tr(\+A\+B) = \vectorize (\+A)^T \vectorize (\+B)$.}  
+\end{remark}
+
+\begin{remark}
+In Section \ref{sec:normal_data_with_non_conjugate_prior}, we use the exponential family representation to derive the updates to the mean for a Bayesian normal model with conditionally conjugate prior.
+\end{remark}
 
 \subsubsection{Inverse Wishart distribution}
 
