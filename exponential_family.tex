@@ -543,7 +543,7 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 First,  we consider the likelihood $L(\+\beta) := p(\+y \cond \+\beta,  \sigma^2$),  dropping terms proportional to  $\+\beta$.
 \begin{align*}
 p(\+y \cond \+\beta,  \sigma^2) & \propto  \exp \bigg\{  -\df{1}{2 \sigma^2}  (\+y - \+X \+\beta)^T (\+y - \+X \+\beta) \bigg\} \\ 
-&=   \exp \bigg\{  -\df{1}{2 \sigma^2}  (\+y^T\+y - 2 \+\beta^T \+X^T \+y + \+\beta^T \+X^T \+X \+\beta) \bigg\} \\ 
+&=   \exp \bigg\{  -\df{1}{2 \sigma^2}  (- 2 \+\beta^T \+X^T \+y + \+\beta^T \+X^T \+X \+\beta) \bigg\} \\ 
 \end{align*}
 Doing the same for the prior $p(\+\beta)$,  we have 
 \begin{align*}
