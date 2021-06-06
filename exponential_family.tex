@@ -1,4 +1,7 @@
+
+\synctex=1
 \documentclass{article} % For LaTeX2e
+
 
 %STANDARD PREAMBLE
 %https://tex.stackexchange.com/questions/68821/is-it-possible-to-create-a-latex-preamble-header
@@ -33,9 +36,8 @@
 \title{Exponential Family} 
 
 \maketitle
-
 \tableofcontents
-\newpage
+\newpage 
 
 \section{Exponential Families} \label{sec:ef}
 
@@ -144,7 +146,7 @@ In Section \ref{sec:normal_data_with_non_conjugate_prior}, we use the exponentia
 
 \begin{remark}
 \label{rk:mvn_from_ef}
-Equation \eqref{eqn:mvn_as_ef} also says that if a random vector $\+x$ has a density on $\R^d$ that is proportional to $\exp \{ -\half \+x^T \+A \+X + \+x^T \+b\}$ for some matrix $\+A$ and vector $\+b$, then $\+x$ must be multivariate normal with covariance $\+A^{-1}$ and mean $\+A^{-1}\+b$. 
+Equation \eqref{eqn:mvn_as_ef} also says that if a random vector $\+x$ has a density on $\R^d$ that is proportional to $\exp \{ -\half \+x^T \+A \+x + \+x^T \+b\}$ for some matrix $\+A$ and vector $\+b$, then $\+x$ must be multivariate normal with covariance $\+A^{-1}$ and mean $\+A^{-1}\+b$. 
 \end{remark}
 	
 
@@ -535,37 +537,35 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 
 \end{proposition}
 
+
 \begin{proof}
-By Bayes rule,
-\begin{align*} 
-p(\+\beta \cond \+y) &\propto   p(\+\beta)  \exp \bigg\{  \ds\sum_{i=1}^N  -\frac{1}{2 \sigma^2} \bigg( y_i -  \+x_i^T \+\beta \bigg)^2  \bigg\} \\
-\intertext{and defining $\+\Omega  \in \R^{n \times n}: \+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \frac{1}{\sigma^2})$,  we have} 
-&\stackrel{1}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+y - \+X \+\beta)^T \+\Omega   (\+y - \+X \+\beta) \bigg\} \\ 
-&\stackrel{2}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+X^+ \+y - \+\beta)^T  \+X^T \+\Omega \+X   (\+X^+ \+y - \+\beta) \bigg\} 
-\end{align*}
-where (1) writes the weighted sum of squares in matrix notation, and (2) isolates $\+\beta$,  using $\+X^{+}$,  the Moore-Penrose psuedo-inverse of $\+X$. \footnote{Specifically,  since $\+X\+X^+ = \+I$,  we use 
+
+First,  we consider the likelihood $L(\+\beta) := p(\+y \cond \+\beta,  \sigma^2$),  dropping terms proportional to  $\+\beta$.
 \begin{align*}
-(\+y - \+X \+\beta)^T \+\Omega   (\+y - \+X \+\beta) &= (\+X\+\beta - \+y)^T \+\Omega (\+X\+\beta - \+y)\\ &= \bigg( \+X (\+\beta - \+X^+ \+y ) \bigg)^T \+\Omega  \bigg(  \+X (\+\beta - \+X^+ \+y ) \bigg) \\
-&= (\+\beta - \+X^+ \+y)^T \+X^T \+\Omega \+X   (\+\beta - \+X^+ \+y) 
+p(\+y \cond \+\beta,  \sigma^2) & \propto  \exp \bigg\{  -\df{1}{2 \sigma^2}  (\+y - \+X \+\beta)^T (\+y - \+X \+\beta) \bigg\} \\ 
+&=   \exp \bigg\{  -\df{1}{2 \sigma^2}  (\+y^T\+y - 2 \+\beta^T \+X^T \+y + \+\beta^T \+X^T \+X \+\beta) \bigg\} \\ 
 \end{align*}
-.}  
-
-Thus,  we see that $p(\+\beta \cond  \+y)$ is proportional to the product of two multivariate Gaussians:  $p(\+\beta)$,  which has mean $\+\mu_0$ and covariance $\+\Sigma_0$,  and another Gaussian,  which has mean $\+X^+ \+y$ and covariance $(\+X^T \+\Omega \+X)^{-1}$.   We know from the exponential family representation of the Gaussian that the resulting distribution can be obtained by summing at the scale of natural parameters -- which for the Gaussian are the precision and precision-weighted mean. \footnote{See,  for reference,  Section \ref{sec:mvn_in_message_passing}.}   Using this,  we obtain
-
+Doing the same for the prior $p(\+\beta)$,  we have 
 \begin{align*}
-p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
-\intertext{where}
-\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \+X^T \+\Omega \+X }^{-1}  \\
-\+\mu &= \+\Sigma  \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^T \+\Omega \cancel{\+X} \cancel{\+X^+}  \+y }  \\
-&= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^T \+\Omega \+y}  
+p(\+\beta) & \propto  \exp \bigg\{  -\df{1}{2}  (- 2 \+\beta^T \+\Sigma_0 \+\mu_0 + \+\beta^T \+\Sigma_0^{-1} \+\beta) \bigg\} \\ 
 \end{align*}
 
-recalling that we defined $\+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \frac{1}{\sigma^2})$ completes the proof. 
+Thus,  by Bayes rule
+\begin{align*}
+p(\+\beta \cond  \+y  \sigma^2 ) & \propto  p(\+y \cond \+\beta,  \sigma^2) \times p(\+\beta)  \\
+& \propto  \exp \bigg\{   \+\beta^T \explaintermbrace{$:=\+b$}{\bigg(\+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2}\+X^T \+y \bigg)} - \half \+\beta^T   \explaintermbrace{$:=\+A$}{\bigg(\+\Sigma_0^{-1}  +  \frac{1}{\sigma^2} \+X^T \+X \bigg)}  \+\beta \bigg\}
+\end{align*}
+
+which reveals that the posterior is normal (Remark \ref{rk:mvn_from_ef}),  along with the particular form of its parameter  (covariance $\+A^{-1}$ and mean $\+A^{-1} \+b$). 
+
+
 \end{proof}
+
 
 \begin{remark}
 For a nice conceptual overview of Bayesian linear regression., see \cite{groseeXXXXbayesian} or \cite{bishop2006pattern}.   Among other things, these resources demonstrate how Bayesian regression makes predictions using an infinite collection of regression models (whose contributions are weighted by their posterior probabilities).  They also show how the linear model is less restrictive than it might first seem;  it can be used to model nonlinear functional relationships by using nonlinear basis functions. 
 \end{remark}
+
 
 \begin{remark}{\remarktitle{Intuition about posterior of Bayesian linear regression}}
 Equation \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var}
@@ -594,7 +594,7 @@ Consider a Bayesian hierarchical linear regression.    We take the regression to
 
 A simple version of this model is\footnote{The version is simple because,  for example,   we ignore problems with the Inverse Wishart for modeling covariance matrices (see Section \ref{sec:inverse_wishart_distribution}),  we are not imagining that the regression coefficients are sparse,  etc.} \footnote{Recall that the inverse gamma distribution is parametrized in a convenient way for interpretability,  where $\nu_0$ is a prior sample size from which a  prior sample variance of $\sigma_0^2$ has been obtained.  This parametrization,  and corresponding interpretation,  falls out of the use of the inverse gamma as a prior on the variance in a univariate normal model (see Remark \ref{rk:inverse_gamma_prior_with_hoff_parametrization}). }:
 \begin{align*}
-\+\mu &\sim  \N (\+m_0,\+V_0) \\
+%\+\mu &\sim  \N (\+m_0,\+V_0) \\
 \+\Sigma &\sim \InvWish(\+\Psi_0,  \eta_0) \\
 \+\beta_j &\iid \N(\+\mu,  \+\Sigma) \\
 \sigma^2 &\sim \InverseGamma (\frac{\nu_0}{2}, \frac{\nu_0}{2} \sigma_0^2) \\
@@ -639,6 +639,10 @@ Following are some thoughts on these complete conditionals; in particular,  on t
 \item The complete conditional  for the expected regression weights across groups,  $\+\mu$,   is just the conditional distribution for the mean of a multivariate normal sampling model \eqref{eqn:normal_model_complete_conditional_on_mu},  but where the ``data" are the (latent) regression weights,  $\+\beta_1, ...,\+\beta_J$. 
 \item The complete conditional  for the variance in regression weights across groups,  $\+\Sigma$,   is just the conditional distribution for the variance of a multivariate normal sampling model \eqref{eqn:normal_model_complete_conditional_on_Sigma},  but where the ``data" are the (latent) regression weights, $\+\beta_1, ...,\+\beta_J$. 
 \end{itemize}
+
+\begin{question}
+The hierarchical linear regression model \eqref{eqn:hierarchical_linear_regression} parametrizes the prior on the variance $\sigma^2$ such that its hyperparameters $(\sigma_0^2,  \nu_0)$ can be interpreted as the sample variance and sample size of prior observations.   However,  there is a weird asymmetry because we don't construct the prior on the mean in this manner.   It would be nice to provide the option of doing so.  	My guess is that in the simplest form,  this would just mean parameterizing the top-level prior on $\+\mu$ to have a variance given by $\frac{1}{\kappa_0} V_0$, where $\kappa_0$ is the number of psuedo observations relevant to estimating the mean.    See pp.74-75 of \cite{hoff2009first} for ideas,  although that discussion takes the prior on the mean to depend on the sampling variance $\sigma^2$.  
+\end{question}
 
 \subsection{General formalism} \label{sec:ef_general_formalism}
 Here we provide some notes, following \cite{jordan_ef}, about conjugate priors for exponential family data models. 
@@ -687,7 +691,6 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}), n_0 + N}{H(\tau_{\text{po
 \newpage 
  \appendix
  
-
 
 \section{Matrix Facts}
 
@@ -760,12 +763,68 @@ This scheme can be generalized to \textit{linear Gaussian models}.  These are pr
 
 \section{More on Bayesian multivariate linear regression}  \label{sec:more_bayesian_multivariate_linear_regression} 
 
-Below we give an alternate proof for the posterior of the regression weights in multivariate linear regression,  compared to what was given in Proposition \ref{prop:bayes_linear_regression_with_known_ssq}.   This alternate proof may be of interest.   Whereas the proof of proposition \ref{prop:bayes_linear_regression_with_known_ssq} given in Section  \ref{sec:Bayesian_linear_regression_with_normal_prior} refers to exponential family properties,  the proof below does not,  and instead uses multivariate completing the square to do the heavy lifting. 
+
+Below we give two alternate proofs for the posterior of the regression weights in multivariate linear regression,  compared to what was given in Proposition \ref{prop:bayes_linear_regression_with_known_ssq}.  
+
+We begin by restating the proposition here,  then we provide the alternate proof.
+
+\begin{proposition} \label{prop:bayes_linear_regression_with_known_ssq}
+Consider the Bayesian linear multiple regression model with known observation noise $\sigma^2$
+\begin{align*}
+\+\beta &\sim \N (\+\mu_0, \+\Sigma_0) \\
+y_i \cond \+\beta &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n \\
+\labelit \label{eqn:bayesian_multiple_linear_regression_with_known_observation_noise_APPENDIX}
+\end{align*}
+where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
+
+The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise} is given by 
+\begin{align*}
+\+\beta \cond \+y & \sim \N(\+\mu,  \+\Sigma )
+\intertext{where}
+\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^T \+X }^{-1}  \\
+\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}  \\
+\labelit \label{eqn:posterior_bayesian_lin_regression_with_known_obs_var_APPENDIX}
+\end{align*}
+
+\end{proposition}
+
+
+\begin{proof}
+By Bayes rule,
+\begin{align*} 
+p(\+\beta \cond \+y) &\propto   p(\+\beta)  \exp \bigg\{  \ds\sum_{i=1}^N  -\frac{1}{2 \sigma^2} \bigg( y_i -  \+x_i^T \+\beta \bigg)^2  \bigg\} \\
+\intertext{and defining $\+\Omega  \in \R^{n \times n}: \+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \frac{1}{\sigma^2})$,  we have} 
+&\stackrel{1}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+y - \+X \+\beta)^T \+\Omega   (\+y - \+X \+\beta) \bigg\} \\ 
+&\stackrel{2}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+X^+ \+y - \+\beta)^T  \+X^T \+\Omega \+X   (\+X^+ \+y - \+\beta) \bigg\} 
+\end{align*}
+where (1) writes the weighted sum of squares in matrix notation, and (2) isolates $\+\beta$,  using $\+X^{+}$,  the Moore-Penrose psuedo-inverse of $\+X$. \footnote{Specifically,  since $\+X\+X^+ = \+I$,  we use 
+\begin{align*}
+(\+y - \+X \+\beta)^T \+\Omega   (\+y - \+X \+\beta) &= (\+X\+\beta - \+y)^T \+\Omega (\+X\+\beta - \+y)\\ &= \bigg( \+X (\+\beta - \+X^+ \+y ) \bigg)^T \+\Omega  \bigg(  \+X (\+\beta - \+X^+ \+y ) \bigg) \\
+&= (\+\beta - \+X^+ \+y)^T \+X^T \+\Omega \+X   (\+\beta - \+X^+ \+y) 
+\end{align*}
+.}  
+
+Thus,  we see that $p(\+\beta \cond  \+y)$ is proportional to the product of two multivariate Gaussians:  $p(\+\beta)$,  which has mean $\+\mu_0$ and covariance $\+\Sigma_0$,  and another Gaussian,  which has mean $\+X^+ \+y$ and covariance $(\+X^T \+\Omega \+X)^{-1}$.   We know from the exponential family representation of the Gaussian that the resulting distribution can be obtained by summing at the scale of natural parameters -- which for the Gaussian are the precision and precision-weighted mean. \footnote{See,  for reference,  Section \ref{sec:mvn_in_message_passing}.}   Using this,  we obtain
+
+\begin{align*}
+p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
+\intertext{where}
+\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \+X^T \+\Omega \+X }^{-1}  \\
+\+\mu &= \+\Sigma  \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^T \+\Omega \cancel{\+X} \cancel{\+X^+}  \+y }  \\
+&= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^T \+\Omega \+y}  
+\end{align*}
+
+recalling that we defined $\+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \frac{1}{\sigma^2})$ completes the proof. 
+\end{proof}
+
+
+Now we provide a third proof,  which may be of interest.   Whereas both proofs of proposition \ref{prop:bayes_linear_regression_with_known_ssq} that we have seen so far (both the proof given in Section  \ref{sec:Bayesian_linear_regression_with_normal_prior}, as well as the one given immediately above)  refer to exponential family properties,  the proof below does not,  and instead uses multivariate completing the square to do the heavy lifting. 
 
 Note that proposition 
 \ref{prop:bayes_linear_regression_with_known_ssq_and_zero_prior_mean} below, as stated,  is slightly more restrictive in that it assumes the prior mean is zero.   This additional restriction is not necessary; the proposition could be rewritten to match 
 Proposition \ref{prop:bayes_linear_regression_with_known_ssq} exactly,  and the proof could be adjusted accordingly to match the additional generality.    The difference in statements is just an unnecessary presentational blemish.\redfootnote{TODO: fix up the unnecessary presentational blemish -- assuming that we don't end up sacrifing too much pedagogical clarity for the sake of generality}.
 %The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise} is given by 
+
 
 \begin{proposition} \label{prop:bayes_linear_regression_with_known_ssq_and_zero_prior_mean}
 Consider the Bayesian linear multiple regression model
@@ -785,6 +844,7 @@ p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
 \end{align*}
 \end{proposition} 
 
+
 \begin{proof}
 The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
 
@@ -800,8 +860,6 @@ The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
 
 Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$
 \end{proof}
-
-
 
 \section{The Inverse Wishart Distribution} \label{sec:inverse_wishart_distribution}
  
