@@ -521,14 +521,14 @@ In this section,  we will show that the normal prior on $\+\beta$ is a conjugate
 Consider the Bayesian linear multiple regression model with known observation noise $\sigma^2$
 \begin{align*}
 \+\beta &\sim \N (\+\mu_0, \+\Sigma_0) \\
-y_i \cond \+\beta &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n \\
+y_i \cond \+\beta,  \sigma^2  &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n \\
 \labelit \label{eqn:bayesian_multiple_linear_regression_with_known_observation_noise}
 \end{align*}
 where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
 
 The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise} is given by 
 \begin{align*}
-\+\beta \cond \+y & \sim \N(\+\mu,  \+\Sigma )
+\+\beta \cond \+y,  \sigma^2 & \sim \N(\+\mu,  \+\Sigma )
 \intertext{where}
 \+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^T \+X }^{-1}  \\
 \+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}  \\
@@ -585,8 +585,36 @@ p(y_\new \cond \+y) &= \ds\int  p(y_\new \cond \+\beta) \, p(\+\beta \cond \+y) 
 where $f_\N(m,v)$ refers to the density of a univariate Gaussian with mean $m$ and variance $v$, and where $(\+\mu_n, \+\Sigma_n)$ are the posterior parameters given by \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var},  and where Equality (1) holds by Proposition \ref{prop:simplest_linear_gaussian_model}.
 
 
-\red{TODO: Add Bayesian linear regression where variance is also unknown. }
+\subsubsection{Example:  Bayesian linear regression with inverse gamma prior on observation noise and known regression weights} \label{sec:Bayesian_linear_regression_with_IG_prior}
 
+
+In this section,  we will show that the Inverse Gamma prior on $\sigma^2$ is a conjugate prior for the observation noise of a Bayesian multiple regression model with known regression weights  $\+\beta$.  That is,  the posterior on $\sigma^2$ given $\+y = (y_1,...,y_n)^T$ for such a model is also Inverse Gamma. 
+
+
+\begin{proposition} \label{prop:bayes_linear_regression_with_known_weights}
+Consider the Bayesian linear multiple regression model with known regression weights  $\+\beta$. 
+\begin{align*}
+\sigma^2 &\sim \InverseGamma \bigg(\frac{\nu_0}{2},  \frac{\nu_0 \sigma^2_0}{2} \bigg) \\
+y_i \cond \+\beta,  \sigma^2  &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n \\
+\labelit \label{eqn:bayesian_multiple_linear_regression_with_known_weights}
+\end{align*}
+where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
+
+
+The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_with_known_weights} is given by 
+\begin{align*}
+\sigma^2 \cond \+y,    \+\beta  & \sim \InverseGamma \bigg(\frac{\nu_0 + n }{2},  \frac{\nu_0 \sigma^2_0  + \text{SSR}(\+\beta)}{2} \bigg)  
+\intertext{where the sum of squared residuals is}
+\text{SSR}(\+\beta)  &= (\+y - \+X \+\beta)^T  (\+y - \+X \+\beta) \\
+\labelit \label{eqn:posterior_bayesian_lin_regression_with_known_weights}
+\end{align*}
+
+\end{proposition}
+
+\begin{proof}
+See \cite{hoff2009first} pp. 155.
+\end{proof}
+%\red{TODO: Add expression for the marginal likelihood,  which is available in closed form.  See e.g.  \cite{gundersonXXXXbayesian},  although that resource uses a NIG and not independent N and IG priors.}
  
 \subsection{Hierarchical Bayesian linear regression} \label{sec:hierarchial_linear_regression}
 
