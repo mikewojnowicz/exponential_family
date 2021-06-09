@@ -622,7 +622,7 @@ Consider a Bayesian hierarchical linear regression.    We take the regression to
 
 A simple version of this model is\footnote{The version is simple because,  for example,   we ignore problems with the Inverse Wishart for modeling covariance matrices (see Section \ref{sec:inverse_wishart_distribution}),  we are not imagining that the regression coefficients are sparse,  etc.} \footnote{Recall that the inverse gamma distribution is parametrized in a convenient way for interpretability,  where $\nu_0$ is a prior sample size from which a  prior sample variance of $\sigma_0^2$ has been obtained.  This parametrization,  and corresponding interpretation,  falls out of the use of the inverse gamma as a prior on the variance in a univariate normal model (see Remark \ref{rk:inverse_gamma_prior_with_hoff_parametrization}). }:
 \begin{align*}
-%\+\mu &\sim  \N (\+m_0,\+V_0) \\
+\+\mu &\sim  \N (\+m_0,\+V_0) \\
 \+\Sigma &\sim \InvWish(\+\Psi_0,  \eta_0) \\
 \+\beta_j &\iid \N(\+\mu,  \+\Sigma) \\
 \sigma^2 &\sim \InverseGamma (\frac{\nu_0}{2}, \frac{\nu_0}{2} \sigma_0^2) \\
