@@ -623,7 +623,7 @@ Consider a Bayesian hierarchical linear regression.    We take the regression to
 A simple version of this model is\footnote{The version is simple because,  for example,   we ignore problems with the Inverse Wishart for modeling covariance matrices (see Section \ref{sec:inverse_wishart_distribution}),  we are not imagining that the regression coefficients are sparse,  etc.} \footnote{Recall that the inverse gamma distribution is parametrized in a convenient way for interpretability,  where $\nu_0$ is a prior sample size from which a  prior sample variance of $\sigma_0^2$ has been obtained.  This parametrization,  and corresponding interpretation,  falls out of the use of the inverse gamma as a prior on the variance in a univariate normal model (see Remark \ref{rk:inverse_gamma_prior_with_hoff_parametrization}). }:
 \begin{align*}
 \+\mu &\sim  \N (\+m_0,\+V_0) \\
-\+\Sigma &\sim \InvWish(\+\Psi_0,  \eta_0) \\
+\+\Sigma &\sim \InvWish(\eta_0,  \+\Psi_0) \\
 \+\beta_j &\iid \N(\+\mu,  \+\Sigma) \\
 \sigma^2 &\sim \InverseGamma (\frac{\nu_0}{2}, \frac{\nu_0}{2} \sigma_0^2) \\
 \epsilon_{ij} &\iid \N(0, \sigma^2) \\
@@ -648,7 +648,7 @@ The complete conditionals (e.g.  see Section 11.2 of \cite{hoff2009first}) are g
 \+m^\prime &= \+V^\prime \bigg( \+V_0^{-1} \+m_0 + J \+\Sigma^{-1} \overline{\+\beta} \bigg),  \quad \quad \overline{\+\beta} := \frac{1}{J} \sum_{j=1}^J \+\beta_j \\ 
 \+V^\prime &=  \bigg( \+V_0^{-1} + J \+\Sigma^{-1} \bigg)^{-1} \\
 & \\ 
-\+\Sigma \cond \+\beta_1, ...,\+\beta_J,  \+\mu &\sim \InverseWishart (\+\Psi^\prime, \eta^\prime) \\
+\+\Sigma \cond \+\beta_1, ...,\+\beta_J,  \+\mu &\sim \InverseWishart (\eta^\prime,  \+\Psi^\prime) \\
 \eta^\prime &= \eta_0 + J \\
 \+\Psi^\prime &= \+\Psi_0 + \ds\sum_{j=1}^J (\+\beta_j - \+\mu) (\+\beta_j -\+\mu)^T \\
 \labelit \label{eqn:hierarchical_linear_regression_ccs}
@@ -663,9 +663,11 @@ and likewise throughout \eqref{eqn:hierarchical_linear_regression_ccs}.
 
 Following are some thoughts on these complete conditionals; in particular,  on their relationship to the complete conditionals from the simpler models (Bayesian linear regression,  multivariate normal sampling model) from which the Bayesian hierarchical linear regression is composed:
 \begin{itemize}
-\item The complete conditionals for the group-specific regression weights,  $\+\beta_j$,  are just the conditional distributions for the regression coefficients from Bayesian linear regression \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise},  but where we use group $j$'s data alone,  and where the prior on these regression weights is not an external prior,  but a normal distribution with mean equal to $\+\mu$,  the expected regression weights across groups,  and variance equal to $\+\Sigma$,  the variance in regression weights across groups. 
 \item The complete conditional  for the expected regression weights across groups,  $\+\mu$,   is just the conditional distribution for the mean of a multivariate normal sampling model \eqref{eqn:normal_model_complete_conditional_on_mu},  but where the ``data" are the (latent) regression weights,  $\+\beta_1, ...,\+\beta_J$. 
 \item The complete conditional  for the variance in regression weights across groups,  $\+\Sigma$,   is just the conditional distribution for the variance of a multivariate normal sampling model \eqref{eqn:normal_model_complete_conditional_on_Sigma},  but where the ``data" are the (latent) regression weights, $\+\beta_1, ...,\+\beta_J$. 
+\begin{center}
+•
+\end{center}\item The complete conditionals for the group-specific regression weights,  $\+\beta_j$,  are just the conditional distributions for the regression coefficients from Bayesian linear regression \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise},  but where we use group $j$'s data alone,  and where the prior on these regression weights is not an external prior,  but a normal distribution with mean equal to $\+\mu$,  the expected regression weights across groups,  and variance equal to $\+\Sigma$,  the variance in regression weights across groups. 
 \end{itemize}
 
 \begin{question}
