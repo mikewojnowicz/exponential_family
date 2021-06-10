@@ -126,7 +126,7 @@ with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient stati
 We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribution in exponential form
 \begin{align*}
 	p(\+x \cond \+\mu, \+\Sigma) &= (2\pi)^{-d/2} |\+\Sigma |^{-1/2} \exp \bigg\{ -\half (\+x - \+\mu)^T \+\Sigma^{-1} (\+x - \+\mu) \bigg\}  \\
-	& \stackrel{1}{=} (2\pi)^{-d/2} \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T) $}{\+x^T \+\Sigma^{-1} \+x} + \+\mu^T \+\Sigma^{-1} \+x -\half \+\mu^T \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
+& \stackrel{1}{=} (2\pi)^{-d/2} \exp \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T) $}{\+x^T \+\Sigma^{-1} \+x} + \+x^T \+\Sigma^{-1} \+\mu -\half \+\mu^T \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
 	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
 with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $t(\+x) = \big(\vectorize (\+x \+x^T), \+x \big)$, base measure $h(x) = (2\pi)^{-d/2}$ and log normalizing $a(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
@@ -709,7 +709,7 @@ n_0 & \to  n_0 + N \\
 For conjugate Bayesian models, the predictive posterior distribution, $p(x_{\text{new}} \cond x)$ is always tractable, because it has the same form (integrating a likelihood against the parameter distribution) as does the evidence term in Bayes law.   For exponential family models, the predictive posterior takes the form of a ratio of normalizing factors
 
 \begin{equation}
-p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}), n_0 + N}{H(\tau_{\text{post}} + T(x_{\text{new}}), n_0 + N + 1)}
+p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}, n_0 + N)}{H(\tau_{\text{post}} + T(x_{\text{new}}), n_0 + N + 1)}
 \label{eqn:predictive_posterior_exptl_family}
 \end{equation}
 
