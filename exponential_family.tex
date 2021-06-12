@@ -356,15 +356,16 @@ where (1) is by Bayes rule (and conditional independence of the observation mode
 \begin{remark}{\remarktitle{Reparametrizing the inverse gamma prior for greater interpretability}}  
 \label{rk:inverse_gamma_prior_with_hoff_parametrization}
 Peter Hoff \cite{hoff2009first} (pp.74) suggests parametrizing the prior as 
-\[ \sigma^2 \sim \IG (\nu_0,  \, \nu_0 \,  \sigma^2_0 / 2) \\ \]
-for greater intepretability.   In this case,  we find that the posterior $IG$ parameters are given by
 \begin{align*}
-\alpha_n & =  \half ( \nu_0 + n )\\
-\beta_n & =  \half ( \nu_0 \, \sigma_0^2 + n \, \text{MSE}  )
-\intertext{where the mean squared error $\text{MSE}$ is defined by}
-\text{MSE} & :=  \df{1}{n} \ds\sum_{i=1}^n (y_i - \mu)^2 
+\sigma^2 &\sim \IG (\frac{\nu_0}{2},  \,   \frac{\nu_0 \, \sigma^2_0}{2})
+\intertext{for greater intepretability.   In this case,  we find that the posterior is given by}
+\sigma^2 \cond \+y,  \mu &\sim \IG \bigg( \frac{\nu_0 + n }{2} , \quad  \frac{ \nu_0 \, \sigma_0^2 + n \, \widehat{\sigma}^2_{\text{MLE}}}{2} \bigg) 
+%\alpha_n & =  \frac{\nu_0 + n }{2}\\
+%\beta_n & =  \frac{ \nu_0 \, \sigma_0^2 + n \, \widehat{\sigma}^2_{\text{MLE}}}{2}
+\intertext{where the maximum likelihood estimator of the variance $\widehat{\sigma}^2_{\text{MLE}}$ is defined by}
+\widehat{\sigma}^2_{\text{MLE}} & :=  \df{1}{n} \ds\sum_{i=1}^n (y_i - \mu)^2 
 \end{align*}
-So $\eta_0$ plays the role of a prior sample size and $\sigma^2_0$ plays the role of the variance within that prior sample. 
+So $\nu_0$ plays the role of a prior sample size and $\sigma^2_0$ plays the role of the variance within that prior sample.\footnote{Note that the maximum likelihood estimator of the variance, $\widehat{\sigma}^2_{\text{MLE}}$, could also be expressed as the mean squared error, $\text{MSE}$.}
 % \eqref{eqn:bayesian_uvn_known_mean}
  
 \end{remark}
@@ -684,7 +685,7 @@ The natural parameter space is
 \[  \bigg\{\eta : \ds\int h(x) \exp \{ \eta^T T(x) - A(\eta) \} < \infty \bigg \}\]
 
 Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we obtain:
-\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^n h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^n T(x_i) - N A(\eta) \bigg\} \]
+\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^N T(x_i) - N A(\eta) \bigg\} \]
 as the likelihood function.
 
 A conjugate prior can be obtained by mimicking the likelihood
