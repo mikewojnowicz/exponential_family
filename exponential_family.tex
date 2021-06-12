@@ -322,22 +322,13 @@ In other words,  a family of prior distributions for a parameter is called condi
 \subsubsection{Example:  Inverse gamma prior on the variance of a univariate Gaussian with known mean}
 
 \begin{proposition} \label{prop:bayes_univariate_normal_with_known_mean}
-Consider the Bayesian univariate normal model with known mean $\mu$ and random variance $\sigma^2$
+Consider the following Bayesian univariate normal model with known mean $\mu$ and random variance $\sigma^2$
 \begin{align*}
 \sigma^2 &\sim \IG (\alpha_0,  \beta_0) \\
 y_i \cond \mu,  \sigma^2 &\iid \N (\mu,  \sigma^2),  \quad i=1,...,n \\
 \labelit \label{eqn:bayesian_uvn_known_mean}
-\end{align*}
-where $\IG$ denotes the Inverse Gamma distribution.
-
-
-The posterior distribution for  \eqref{eqn:bayesian_uvn_known_mean} is given by 
-\begin{align*}
-\sigma^2 \cond \+y,  \mu & \sim \N(\alpha_n,  \beta_n )
-\intertext{where}
-\alpha_n & =  \alpha_0 + \half\, n\\
-\beta_n & = \beta_0 + \half  \ds\sum_{i=1}^n (x_i - \mu)^2 
-\labelit \label{eqn:posterior_variance_uvn_fixed_mean}
+\intertext{where $\IG$ denotes the Inverse Gamma distribution.  The posterior distribution is given by}
+\sigma^2 \cond \+y,  \mu & \sim \IG \bigg(\alpha_0 + \frac{n}{2}\ , \; \beta_0 + \half  \ds\sum_{i=1}^n (x_i - \mu)^2  \bigg) \labelit \label{eqn:posterior_on_uvn_variance_under_standard_parameterization}
 \end{align*}
 
 \end{proposition}
@@ -355,7 +346,7 @@ where (1) is by Bayes rule (and conditional independence of the observation mode
 
 \begin{remark}{\remarktitle{Reparametrizing the inverse gamma prior for greater interpretability}}  
 \label{rk:inverse_gamma_prior_with_hoff_parametrization}
-Peter Hoff \cite{hoff2009first} (pp.74) suggests parametrizing the prior as 
+As observed by Peter Hoff \cite{hoff2009first} (pp.74), the form of \eqref{eqn:posterior_on_uvn_variance_under_standard_parameterization}  suggests parametrizing the prior as 
 \begin{align*}
 \sigma^2 &\sim \IG (\frac{\nu_0}{2},  \,   \frac{\nu_0 \, \sigma^2_0}{2})
 \intertext{for greater intepretability.   In this case,  we find that the posterior is given by}
