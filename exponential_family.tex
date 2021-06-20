@@ -1,5 +1,3 @@
-
-\synctex=1
 \documentclass{article} % For LaTeX2e
 
 
@@ -499,6 +497,10 @@ These conjugate posterior updates have nice interpretations:
 \item \textbf{Hyperparameter updates for $(\+\mu  \cond \+\Sigma, \+x)$}: On the precision scale,  $\+V$ is the sum of the prior precision matrix $\+V_0^{-1}$ and $N$ copies of the precision for each observation,  $\+\Sigma^{-1}$.    Similarly,  $\+m$ is the precision-weighted convex combination of $\+m_0$, the prior mean,    and the empirical average, $\bar{\+x}$.
 \item \textbf{Hyperparameter updates for $(\+\Sigma \cond \+\mu,  \+x)$}:  The covariance was estimated from $\nu$ observations with a sum of pairwise deviation products $\Psi$.
 \end{itemize}
+
+\begin{remark}{\remarktitle{Purpose of a prior on $\+\Sigma$}} \label{rk:purpose_of_prior_on_cov_matrix}
+As mentioned by \cite{imai2005bayesian} (pp. 315) a prior distribution on $\+\Sigma$ is generally not meant to convey substantive information, but rather to be weakly informative, and provide some shrinkage of the eigenvalues (i.e., the variances along the principal directions) and correlations. 	
+\end{remark}
 
 
 \subsection{Bayesian linear regression}
