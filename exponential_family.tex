@@ -41,19 +41,57 @@
 
 We are interested in  exponential families primarily because they makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.    This is true regardless of whether we're doing frequentist inference (such as maximum likelihood) or Bayesian inference.    Bayesian inference with exponential family likelihoods tends to be especially nice,  as all exponential family likelihoods have conjugate priors,  and distributions with conjugate priors are often also exponential families \cite{bernardo2009bayesian}. \redfootnote{TODO:  Get clearer on the relationship.  There is a brief discussion on this in \cite{bernardo2009bayesian}}   More complicated models may not be exponential families,  but may have exponential family complete conditional distributions;  in such situation,  we can appeal to exponential family formalisms to more easily work out inference schemes for expectation maximization,  variational inference,  or Gibbs sampling.   
 
-\subsection{Definition}
-An \textit{exponential family} is a set of probability distributions whose probability density functions have the following form
+\subsection{Definitions}
+\begin{definition}
+We can define an \textit{exponential family} as a set of probability distributions, indexed by natural parameter $\eta$,\redfootnote{TODO: Add restriction on parameter space so that the density is normalizable}  whose probability density functions have the following form
+\begin{align}
+\label{eqn:exponential_family_natural}
+ p(x \cond \eta) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
+ \end{align}
+where we refer to $h$ as the base measure\redfootnote{This an abuse of notation. For a better definition, as explained in an immediately following footnote.}, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
+\begin{equation}
+\label{eqn:partition_function}
+ Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \nu_\X(dx) 	
+\end{equation}
+
+where $\nu$ is a measure on $\X$.\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\nu_\X$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\nu_\X$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \nu_\X (dx) $.  In the former case, the term \textit{base measure} refers to $h(x)$ -- although this is an abuse of notation.  In the latter case, the term \textit{base measure} refers to $\nu_\X$.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."}   
+\end{definition} 
+
+
+\begin{definition}
+The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $H:=\set{\eta : Z(\eta) < \infty}$
+\end{definition}
+
+\begin{definition}
+An exponential family is said to be \textit{regular} if the natural parameter space is an open set.
+\end{definition}
+
+One can \textit{reparameterize} a regular exponential family with some other coordinates $\theta$.  If one writes the natural parameter as a continuous function $\eta(\theta)$, then the density \eqref{eqn:exponential_family_natural} becomes
 \begin{align}
 \label{eqn:exponential_family}
- p(x \cond \theta) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\theta)\} 
+ p(x \cond \theta) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\eta(\theta))\} 
  \end{align}
-where we refer to $h$ as the base measure, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer.  \redfootnote{TODO: It would be helpful to get more solid on integrating against probability measure here, so that I can set this up in a more precise way, as Jordan does.    He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."}
+ The reparameterized family is regular as well, since $\Theta := \eta^{-1}(H)$ is open. 
+ 
+\begin{definition}
+An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\nu_\X$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\nu_\X$-a.e.).
+\end{definition}
 
+  An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify, and state how to rectify. Also demonstrate the importance of this.} 
 
 
 \subsection{Examples}
-\subsubsection{Dirichlet distribution}
 
+Here we give examples of exponential families. 
+\subsubsection{Categorical distribution}
+
+\begin{example}{(Categorical Distribution)}
+\label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $x \in [0,1]^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
+\[p(x \cond \pi) = \prod_{k=1}^K \pi_k^{x_k} = \exp \{ \sum_{k=1}^K x_k \log \pi_k\} \]
+ with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $t(x) = x$, base measure $h(x)=1$ and log normalizer $0$.\redfootnote{TODO: Write this up as its own example.}
+\end{example}
+
+\subsubsection{Dirichlet distribution}
 \begin{example}{(Dirichlet Distribution)} 
 \label{ex:dirichlet_as_ef} We can write the density of the Dirichlet distribution in exponential family form:
 \begin{align*}
