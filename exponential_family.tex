@@ -54,7 +54,7 @@ where we refer to $h$ as the base measure\redfootnote{This an abuse of notation.
  Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \nu_\X(dx) 	
 \end{equation}
 
-where $\nu$ is a measure on $\X$.\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\nu_\X$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\nu_\X$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \nu_\X (dx) $.  In the former case, the term \textit{base measure} refers to $h(x)$ -- although this is an abuse of notation.  In the latter case, the term \textit{base measure} refers to $\nu_\X$.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."}   
+where $\nu$ is a measure on $\X$.\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\nu_\X$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\nu_\X$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \nu_\X (dx) $.  In the former case, the term \textit{base measure} refers to $h(x)$ -- although this is an abuse of notation.  In the latter case, the term \textit{base measure} refers to $\nu_\X$.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."} \redfootnote{TODO: The $\X$ appears out of nowhere. It needs to be defined.}
 \end{definition} 
 
 
@@ -74,7 +74,7 @@ One can \textit{reparameterize} a regular exponential family with some other coo
  The reparameterized family is regular as well, since $\Theta := \eta^{-1}(H)$ is open. 
  
 \begin{definition}
-An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\nu_\X$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\nu_\X$-a.e.).
+An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\nu_\X$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\nu_\X$-a.e.).\redfootnote{TODO: Until now, I haven't yet assumed that the parameters are real valued.  Is this necessary?}
 \end{definition}
 
   An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify, and state how to rectify. Also demonstrate the importance of this.} 
@@ -706,6 +706,7 @@ The hierarchical linear regression model \eqref{eqn:hierarchical_linear_regressi
 \end{question}
 
 \subsection{General formalism} \label{sec:ef_general_formalism}
+
 Here we provide some notes, following \cite{jordan_ef}, about conjugate priors for exponential family data models. 
 
 Writing the exponential family density in canonical form, we have
@@ -721,15 +722,15 @@ as the likelihood function.
 
 A conjugate prior can be obtained by mimicking the likelihood
 \begin{equation}
-p (\eta \cond \tau, \eta_0) = H(\tau, \eta_0) \exp \{ \tau^T \eta - \eta_o A(\eta)\}
+p (\eta \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^T \eta - n_0 A(\eta)\}
 \label{eqn:conjugate_prior_exptl_family}
 \end{equation}
 
-where now $H(\tau, \eta_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
+where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan_ef}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
 
 To verify conjugacy, we compute the posterior density
 \[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^T \eta - (n_0 + N) A(\eta) \bigg\} \]
-which retains the form of \eqref{eqn:conjugate_prior_exptl_family}
+which retains the form of \eqref{eqn:conjugate_prior_exptl_family}.  For an argument that is perhaps more intuitive, see Section \ref{sec:general_conjugacy_alternate_argument} 
 
 Thus, the prior-to-posterior conversion can be summarized with the following update rules
 \begin{align*}
@@ -819,6 +820,38 @@ The necesary computation in \eqref{eqn:computation_for_the_simplest_linear_gauss
 \begin{remark}
 This scheme can be generalized to \textit{linear Gaussian models}.  These are probabilistic graphical models whose conditional distributions are all Gaussian,  with a mean that is a linear function of parents,  and a covariance that is independent of parents.   See Sec 8.1.4 of \cite{bishop2006pattern}, or \cite{roweis1999unifying}.   
 \end{remark}
+
+
+\section{General Conjugacy Formalism: Alternate Approach}
+\label{sec:general_conjugacy_alternate_argument}
+
+This argument follows the argument (and notation) of \cite{johnson2016composing}, Appendix B.  As of now, I find it more intuitive then the argument given in the main body.
+
+Let $p(y \cond \theta)$ be an exponential family likelihood, and let $p(\theta)$ be its conjugate prior. 
+
+We can write the prior as 
+\[p(\theta ) \propto \exp \biggset{\biggip{\eta_\theta, t_\theta (\theta)}} \]
+
+And the likelihood as 
+\begin{align*}
+p(y \cond \theta)  & \stackrel{1}{=} \exp \biggset{ \biggip{\eta_y(\theta), \;  t_y(y)} - \log Z_y (\eta_y(\theta)) } \\
+& \stackrel{2}{=} \exp \biggset{ \biggip{ \bigparenth{\eta_y(\theta), \; - \log Z_y (\eta_y(\theta))}, \; \bigparenth{t_y(y), \; 1}}  } \\
+& \stackrel{3}{=} \exp \biggset{ \biggip{t_\theta(\theta), \; \bigparenth{t_y(y),1}}}   
+\end{align*}
+where (1) is true by the exponential family assumption, (2) regroups terms to make conjugacy clearer and (3) must be true given conjugacy. 
+
+
+By Bayes law, the posterior is given by
+\begin{align*}
+p(\theta \cond y)  \propto \exp \biggset{ \biggip{ \eta_\theta + \bigparenth{t_y(y),1}, \;   t_\theta(\theta) }} 
+\end{align*}
+  
+After seeing multiple i.i.d observations $y=(y_1,...,y_n)$ from the likelihood, the posterior is given by
+\begin{align*}
+p(\theta \cond y)  \propto \exp \biggset{ \biggip{ \eta_\theta + \bigparenth{ \sum_{i=1}^n t_y(y_i),n}, \;   t_\theta(\theta) }} 
+\end{align*}
+
+which yields the same parameter updating scheme of \eqref{eqn:general_formalism_prior_to_posterior_conversion}, and motivates interpreting the prior parameter as $\eta_\theta = (\tau_0, n_0)$, where $\tau_0 \in \R^{\dim(\eta_\theta) - 1}$ is interpreted as sufficient statistics and $n_0 \in \R$ is interpreted as a the sample size of a prior psuedo-dataset. 
 
 
 
