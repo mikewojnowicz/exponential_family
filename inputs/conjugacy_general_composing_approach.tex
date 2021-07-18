@@ -1,0 +1,25 @@
+Let $p(y \cond \theta)$ be an exponential family likelihood, and let $p(\theta)$ be its conjugate prior. 
+
+We can write the prior as 
+\[p(\theta ) \propto \exp \biggset{\biggip{\eta_\theta, t_\theta (\theta)}} \]
+
+And the likelihood as 
+\begin{align*}
+p(y \cond \theta)  & \stackrel{1}{=} \exp \biggset{ \biggip{\eta_y(\theta), \;  t_y(y)} - \log Z_y (\eta_y(\theta)) } \\
+& \stackrel{2}{=} \exp \biggset{ \biggip{ \bigparenth{\eta_y(\theta), \; - \log Z_y (\eta_y(\theta))}, \; \bigparenth{t_y(y), \; 1}}  } \\
+& \stackrel{3}{=} \exp \biggset{ \biggip{t_\theta(\theta), \; \bigparenth{t_y(y),1}}}   
+\end{align*}
+where (1) is true by the exponential family assumption, (2) regroups terms to make conjugacy clearer and (3) must be true given conjugacy. 
+
+
+By Bayes law, the posterior is given by
+\begin{align*}
+p(\theta \cond y)  \propto \exp \biggset{ \biggip{ \eta_\theta + \bigparenth{t_y(y),1}, \;   t_\theta(\theta) }} 
+\end{align*}
+  
+After seeing multiple i.i.d observations $y=(y_1,...,y_n)$ from the likelihood, the posterior is given by
+\begin{align*}
+p(\theta \cond y)  \propto \exp \biggset{ \biggip{ \eta_\theta + \bigparenth{ \sum_{i=1}^n t_y(y_i),n}, \;   t_\theta(\theta) }} 
+\end{align*}
+
+which yields the same parameter updating scheme of \eqref{eqn:general_formalism_prior_to_posterior_conversion}, and motivates interpreting the prior parameter as $\eta_\theta = (\tau_0, n_0)$, where $\tau_0 \in \R^{\dim(\eta_\theta) - 1}$ is interpreted as sufficient statistics and $n_0 \in \R$ is interpreted as a the sample size of a prior psuedo-dataset. 
