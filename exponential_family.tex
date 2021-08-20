@@ -272,6 +272,7 @@ The sufficient statistics for $\log \pi_k$ are $\state_1^k$, and the sufficient 
 
 \subsection{Properties}
 
+\subsubsection{Relationship between moments and the normalizer function}
 \begin{proposition}
 Let $X$ have an exponential family distribution with sufficient statistics function $t$ and log normalizer function $a$.   Then  
 \begin{align*}
@@ -315,14 +316,22 @@ In fact, all moments of an exponential family are finite (recall from Definition
 
 For more information on Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, see \cite{jordan_ef}, \cite{nielsen2010entropies}, or \cite{nielsen2010entropies}.   
 
-\subsection{i.i.d samples from an exponential family}
+\subsubsection{Entropy, cross-entropy, and KL divergence}
+
+For a general scheme to derive entropies and cross-entropies for exponential families,  see \cite{nielsen2010entropies}.
+
+
+
+\subsubsection{i.i.d samples from an exponential family}
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
 \begin{align}
 \label{eqn:exponential_family_iid}
  p(\+x \cond \theta) = \ds\prod_{i=1}^n h(x_i) \exp \big\{ \eta(\theta)^T \sum_{i=1}^n t(x_i) - n \,a(\eta(\theta))\big\} 
  \end{align}
 
-\section{Exponential Family: Maximum Likelihood Estimation} \label{sec:ml_with_ef}
+
+\section{Frequentist Inference}
+\subsection{Maximum Likelihood Estimation} \label{sec:ml_with_ef}
 
 The goal for maximum likelihood is to determine the parameter
 \begin{equation}
@@ -343,7 +352,7 @@ But $\nabla_\eta a(\eta) = \E [t(X)]$  (see Proposition \ref{prop:expected_suffi
 \[ \mu(\theta_{ML}) = \df{1}{n} \ds\sum_{i=1}^n t(x_i) \]
 where $\mu := \E[t(X)]$ refers to the mean parametrization of the likelihood. \redfootnote{TODO: This switching of parameterization should be handled much more explicitly.}
 
- \section{Exponential Family: Expectation Maximization} \label{sec:em_with_ef}
+\subsection{Expectation Maximization} \label{sec:em_with_ef}
 
 Some models have latent variables associated with each observation, and so maximum likelihood is not possible.  Let us see how expectation maximization looks when the complete data likelihood is an exponential family.
 
@@ -1113,10 +1122,6 @@ However, these messages have an intuitive form when considered in terms of the n
 \caption{Lemma 12 of \cite{bickson2008gaussian}}
 \label{fig:lemma_twelve_bickson}
 \end{figure}
-
-\section{Further information}
-
-For a general scheme to derive entropies and cross-entropies for exponential families,  see \cite{nielsen2010entropies}.
 
 \bibliography{references_exponential_family}{}
 \bibliographystyle{unsrt}
