@@ -48,13 +48,14 @@ We can define an \textit{exponential family} as a set of probability distributio
 \label{eqn:exponential_family_natural}
  p(x \cond \eta) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
  \end{align}
-where we refer to $h$ as the base measure\redfootnote{This an abuse of notation. For a better definition, as explained in an immediately following footnote.}, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
+where $a(\eta)$ is a $C^{\infty}$ differentiable real-valued convex function. We refer to $h$ as the base measure\footnote{This an abuse of notation, as explained in the immediately following footnotes.}, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
 \begin{equation}
 \label{eqn:partition_function}
- Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \nu_\X(dx) 	
+ Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \nu_\X(dx)	
 \end{equation}
 
 where $\nu$ is a measure on $\X$.\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\nu_\X$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\nu_\X$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \nu_\X (dx) $.  In the former case, the term \textit{base measure} refers to $h(x)$ -- although this is an abuse of notation.  In the latter case, the term \textit{base measure} refers to $\nu_\X$.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."} \redfootnote{TODO: The $\X$ appears out of nowhere. It needs to be defined.}
+\label{def:exponential_family}
 \end{definition} 
 
 
@@ -73,6 +74,16 @@ One can \textit{reparameterize} a regular exponential family with some other coo
  \end{align}
  The reparameterized family is regular as well, since $\Theta := \eta^{-1}(H)$ is open. 
  
+\begin{remark}{\remarktitle{Non-uniqueness of natural parameter}}
+\label{rk:nonuniqueness_of_natural_parameter}
+Note from \eqref{eqn:exponential_family} that natural parameters are not unique since,  for example,  $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$. \redfootnote{Are they unique up to scalar multiplication?} Thus,  we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\end{remark}
+
+\begin{remark}
+Exponential family members can have intractable normalization constants.  Consider, for example,  the Ising model.  See pp. 3 of \cite{taylorXXXXmultiparameter}.
+\end{remark}
+
+
 \begin{definition}
 An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\nu_\X$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\nu_\X$-a.e.).\redfootnote{TODO: Until now, I haven't yet assumed that the parameters are real valued.  Is this necessary?}
 \end{definition}
@@ -259,16 +270,50 @@ The sufficient statistics for $\log \pi_k$ are $\state_1^k$, and the sufficient 
 \end{example}
 
 
-\subsection{Remarks}
-\begin{remark}{\remarktitle{Non-uniqueness of natural parameter}}
-\label{rk:nonuniqueness_of_natural_parameter}
-Note from \eqref{eqn:exponential_family} that natural parameters are not unique since,  for example,  $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$. \redfootnote{Are they unique up to scalar multiplication?} Thus,  we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
-\end{remark}
+\subsection{Properties}
+
+\begin{proposition}
+Let $X$ have an exponential family distribution with sufficient statistics function $t$ and log normalizer function $a$.   Then  
+\begin{align*}
+\nabla a(\eta) = \E[t(X)] 
+\labelit \label{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}	
+\end{align*}
+
+\begin{proof}
+
+Since $X$ is in the exponential family, its density can be written in the form\footnote{Note that here we let $k(x) = log(h(x))$.t}  
+ \[ p(x \cond \eta) =  \exp \{ \eta^T t(x) - a(\eta) + k(x)\} \] 
+where 
+\[a(\eta) = \log \int_{\mathcal{X}} \exp \{ <t(x), \eta> + k(x) \} \; d\nu_{\mathcal{X}} \] 
+
+Thus
+\begin{align*}
+\nabla a (\eta) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} t(x)  \exp \{ <t(x), \eta> + k(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <t(x), \eta> + k(x) \} \; d\nu_{\mathcal{X}} } \\
+& \stackrel{2}{=} \int_{\mathcal{X}} t(x)  \exp \{ <t(x), \eta> - a(\eta) + k(x) \} \; d\nu_{\mathcal{X}}  \\
+& = \int_{\mathcal{X}} t(x)  \; p(x \cond \eta) \; d\nu_{\mathcal{X}}  \\
+&= \E[t(X)]
+\end{align*}
+
+where in  Equation (1) we take the derivative of a logarithm, and in Equation (2) we recognize the denominator as $\exp a(\eta)$.	
+\end{proof}
+
+\label{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}
+\end{proposition}
+
+\begin{task}
+Justify formally the interchange of gradient and integral in Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}.	
+\end{task}
 
 \begin{remark}
-Exponential family members can have intractable normalization constants.  Consider, for example,  the Ising model.  See pp. 3 of \cite{taylorXXXXmultiparameter}.
+In a manner similar to that of Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, we can show that the covariance matrix of the sufficient statistics is the Hessian of the log-normalizer calculated at its natural parameter:
+\[ \Cov[t(X)] = \nabla^2 a(\eta) \]	
+
+In fact, all moments of an exponential family are finite (recall from Definition \ref{def:exponential_family} that exponential family membership requires $a$ to be a $C^\infty$ function).  This explains why the Cauchy distribution (of undefined mean) is not an exponential family.
 \end{remark}
 
+
+
+For more information on Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, see \cite{jordan_ef}, \cite{nielsen2010entropies}, or \cite{nielsen2010entropies}.   
 
 \subsection{i.i.d samples from an exponential family}
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
@@ -293,10 +338,10 @@ Setting the gradient to zero, we obtain
 
 \[ \nabla_\eta a(\eta) = \df{1}{n}  \ds\sum_{i=1}^n t(x_i) \]
 
-But $\nabla_\eta a(\eta) = \E [t(X)]$ \cite{jordan_ef}.  Thus, we should set $\theta_{ML}$ such that
+But $\nabla_\eta a(\eta) = \E [t(X)]$  (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}).  Thus, we should set $\theta_{ML}$ such that
 
 \[ \mu(\theta_{ML}) = \df{1}{n} \ds\sum_{i=1}^n t(x_i) \]
-where $\mu := \E[t(x)]$ refers to the mean parametrization of the likelihood. \redfootnote{TODO: This switching of parameterization should be handled much more explicitly.}
+where $\mu := \E[t(X)]$ refers to the mean parametrization of the likelihood. \redfootnote{TODO: This switching of parameterization should be handled much more explicitly.}
 
  \section{Exponential Family: Expectation Maximization} \label{sec:em_with_ef}
 
@@ -375,7 +420,7 @@ We have
 \begin{align*}
 p(\sigma^2 \cond \+y,  \mu) &\stackrel{1}{\propto}  \explaintermbrace{prior}{ p(\sigma^2)} \quad \explaintermbrace{likelihood}{ \ds\prod_{i=1}^n p(y_i \cond \mu,  \sigma^2)} \\
 & \stackrel{2}{\propto} \explaintermbrace{prior}{(\sigma^2)^{-\alpha_0 - 1} \exp \big\{ -\df{\beta_0}{\sigma^2} \big\}} \quad  \explaintermbrace{likelihood}{(\sigma^2)^{-n/2}  \,  \exp \big\{ -\df{1}{2\sigma^2}  \ds\sum_{i=1}^n (y_i - \mu)^2 \big\}}  \\
-& \stackrel{3}{\propto} (\sigma^2)^{- (\alpha_0 + n/2) - 1} \exp \bigg\{ -\df{\beta_0 + \half \sum_{i=1}^n (x_i - \mu)^2}{\sigma^2} \bigg\}
+& \stackrel{3}{\propto} (\sigma^2)^{- (\alpha_0 + n/2) - 1} \exp \bigg\{ -\df{\beta_0 + \half \sum_{i=1}^n (y_i - \mu)^2}{\sigma^2} \bigg\}
 \end{align*}
 where (1) is by Bayes rule (and conditional independence of the observation model),  (2) fills in the pdfs,  and (3) combines like terms so as to look like an Inverse Gamma density.
 \end{proof}
