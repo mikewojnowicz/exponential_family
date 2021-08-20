@@ -45,8 +45,8 @@ We are interested in  exponential families primarily because they makes inferenc
 \begin{definition}
 We can define an \textit{exponential family} as a set of probability distributions, indexed by natural parameter $\eta$,\redfootnote{TODO: Add restriction on parameter space so that the density is normalizable}  whose probability density functions have the following form
 \begin{align}
-\label{eqn:exponential_family_natural}
  p(x \cond \eta) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
+\label{eqn:exponential_family_natural}
  \end{align}
 where $a(\eta)$ is a $C^{\infty}$ differentiable real-valued convex function. We refer to $h$ as the base measure\footnote{This an abuse of notation, as explained in the immediately following footnotes.}, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
 \begin{equation}
@@ -269,6 +269,14 @@ The sufficient statistics for $\log \pi_k$ are $\state_1^k$, and the sufficient 
 
 \end{example}
 
+\subsubsection{Non-examples}
+
+Some non-examples include 
+\begin{itemize}
+\item The Cauchy distribution (since, as we will see in Remark \ref{rk:any_exponential_family_has_finite_moments}, any exponential family must have finite moments)
+\item The uniform distribution, whose density cannot be written in the form \eqref{eqn:exponential_family}. %(Loosely speaking, its base measure is a function of the parameter.)
+\end{itemize}
+
 
 \subsection{Properties}
 
@@ -295,7 +303,7 @@ Thus
 &= \E[t(X)]
 \end{align*}
 
-where in  Equation (1) we take the derivative of a logarithm, and in Equation (2) we recognize the denominator as $\exp a(\eta)$.	
+where in  Equation (1) we take the derivative of a logarithm (interchanging the gradient and the integral), and in Equation (2) we recognize the denominator as $\exp a(\eta)$.	
 \end{proof}
 
 \label{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}
@@ -310,6 +318,7 @@ In a manner similar to that of Proposition \ref{prop:expected_sufficient_statist
 \[ \Cov[t(X)] = \nabla^2 a(\eta) \]	
 
 In fact, all moments of an exponential family are finite (recall from Definition \ref{def:exponential_family} that exponential family membership requires $a$ to be a $C^\infty$ function).  This explains why the Cauchy distribution (of undefined mean) is not an exponential family.
+\label{rk:any_exponential_family_has_finite_moments}
 \end{remark}
 
 
