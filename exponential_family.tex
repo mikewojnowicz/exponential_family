@@ -48,13 +48,13 @@ We can define an \textit{exponential family} as a set of probability distributio
  p(x \cond \eta) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
 \label{eqn:exponential_family_natural}
  \end{align}
-where $a(\eta)$ is a $C^{\infty}$ differentiable real-valued convex function. We refer to $h$ as the base measure\footnote{This an abuse of notation, as explained in the immediately following footnotes.}, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
+where $a(\eta)$ is a strictly convex and $C^{\infty}$ differentiable real-valued function. We refer to $h$ as the base measure\footnote{This an abuse of notation, as explained in the immediately following footnotes.}, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
 \begin{equation}
 \label{eqn:partition_function}
  Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \nu_\X(dx)	
 \end{equation}
 
-where $\nu_\X$ is a measure on $\X$.\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\nu_\X$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\nu_\X$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \nu_\X (dx) $.  In the former case, the term \textit{base measure} refers to $h(x)$ -- although this is an abuse of notation.  In the latter case, the term \textit{base measure} refers to $\nu_\X$.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."} \redfootnote{TODO: The $\X$ appears out of nowhere. It needs to be defined.}
+where $\nu_\X$ is a measure on $\X$ (typically Lesbesgue measure or counting measure).\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\nu_\X$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\nu_\X$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \nu_\X (dx) $.  In the former case, the term \textit{base measure} refers to $h(x)$ -- although this is an abuse of notation.  In the latter case, the term \textit{base measure} refers to $\nu_\X$.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."} \redfootnote{TODO: The $\X$ appears out of nowhere. It needs to be defined.}
 \label{def:exponential_family}
 \end{definition} 
 
@@ -93,7 +93,9 @@ An exponential family is said to be \textit{minimal} if the components of the su
 
 \subsection{Examples}
 
-Here we give examples of exponential families. 
+Here we give examples of exponential families, showing how to derive the exponential family forms.   Note that the result of such computations are readily available for a wide variety of exponential family members (see e.g. \cite{nielsen2009statistical} or the Wikipedia page on exponential families). 
+
+ 
 \subsubsection{Categorical distribution}
 
 \begin{example}{(Categorical Distribution)}
@@ -290,15 +292,15 @@ Let $X$ have an exponential family distribution with sufficient statistics funct
 
 \begin{proof}
 
-Since $X$ is in the exponential family, its density can be written in the form\footnote{Note that here we let $k(x) = \log h(x)$.}  
- \[ p(x \cond \eta) =  \exp \{ \eta^T t(x) - a(\eta) + k(x)\} \] 
+Since $X$ is in the exponential family, its density can be written in the form
+ \[ p(x \cond \eta) =  \exp \{ \eta^T t(x) - a(\eta) + \log h(x)\} \] 
 where 
-\[a(\eta) = \log \int_{\mathcal{X}} \exp \{ <t(x), \eta> + k(x) \} \; d\nu_{\mathcal{X}} \] 
+\[a(\eta) = \log \int_{\mathcal{X}} \exp \{ <t(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} \] 
 
 Thus
 \begin{align*}
-\nabla a (\eta) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} t(x)  \exp \{ <t(x), \eta> + k(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <t(x), \eta> + k(x) \} \; d\nu_{\mathcal{X}} } \\
-& \stackrel{2}{=} \int_{\mathcal{X}} t(x)  \exp \{ <t(x), \eta> - a(\eta) + k(x) \} \; d\nu_{\mathcal{X}}  \\
+\nabla a (\eta) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} t(x)  \exp \{ <t(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <t(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} } \\
+& \stackrel{2}{=} \int_{\mathcal{X}} t(x)  \exp \{ <t(x), \eta> - a(\eta) + \log h(x) \} \; d\nu_{\mathcal{X}}  \\
 & = \int_{\mathcal{X}} t(x)  \; p(x \cond \eta) \; d\nu_{\mathcal{X}}  \\
 &= \E[t(X)]
 \end{align*}
@@ -325,7 +327,7 @@ In fact, all moments of an exponential family are finite (recall from Definition
 
 For more information on Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, see \cite{jordan_ef}, \cite{nielsen2010entropies}, or \cite{nielsen2009statistical}.   
 
-\subsubsection{Entropy, cross-entropy, and KL divergence between members}
+\subsubsection{Entropy, cross-entropy, and KL divergence}
 
 We can provide a closed-form expression for the KL divergence between two members of the same exponential family. 
 
@@ -333,7 +335,7 @@ We can provide a closed-form expression for the KL divergence between two member
 Consider two probability distributions from the same exponential family with density $p$, and and let their natural  parameters denoted $\eta$ and $\wt{\eta}$, respectively.  Then the KL-divergence (i.e. relative entropy) is given by
 
 \begin{align*}
-\texttt{KL}(\wt{\eta} || \eta) = \bigip{\nabla a(\wt{\eta}), \wt{\eta} - \eta} + a(\eta) - a(\wt{\eta}) 
+\texttt{KL}(\eta || \wt{\eta}) = \bigip{\nabla a(\eta), \eta - \wt{\eta}} + a(\eta) - a(\eta) 
 \labelit \label{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}
 \end{align*}
  
@@ -343,31 +345,64 @@ Consider two probability distributions from the same exponential family with den
 We assume for simplicity of notation (but without loss of generality) that $\nu_\X$ in Definition \ref{def:exponential_family} is the Lesbesgue measure. 
 
 \begin{align*}
-\texttt{KL}(\wt{\eta} || \eta) &= \ds\int p(x \cond \wt{\eta}) \log \bigg( \df{p(x \cond \wt{\eta})}{p(x \cond \eta)}\bigg) \;dx \\ 
-& = \ds\int p(x \cond \wt{\eta}) \; \bigg[ \bigip{t(x), \wt{\eta} - \eta}  + a(\eta) - a(\wt{\eta}) \bigg] \; dx \\
-&= \bigip{\E_{\wt{\eta}}[t(X)],  \wt{\eta} - \eta } + a(\eta) - a(\wt{\eta}) \\
-& \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla a(\wt{\eta}), \wt{\eta} - \eta } + a(\eta) - a(\wt{\eta})
+\texttt{KL}(\eta || \wt{\eta}) &= \ds\int p(x \cond \eta) \log \bigg( \df{p(x \cond \eta)}{p(x \cond \wt{\eta})}\bigg) \;dx \\ 
+& = \ds\int p(x \cond \eta) \; \bigg[ \bigip{t(x), \eta - \wt{\eta}}  + a(\wt{\eta}) - a(\eta) \bigg] \; dx \\
+&= \bigip{\E_{\eta}[t(X)],  \eta - \wt{\eta} } + a(\wt{\eta}) - a(\eta) \\
+& \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla a(\eta), \eta - \wt{\eta} } + a(\wt{\eta}) - a(\eta)
 \end{align*}
 	
 \end{proof}
 \label{prop:kl_divergence_between_members_of_same_exponential_family}
 \end{proposition}
 
-By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergence_between_members_of_same_exponential_family}, expressions for the entropy $\H[\eta] = -\E_{\eta}[\log p(\eta)]$ and cross-entropy $\H[\wt{\eta}, \eta] = -\E_{\wt{\eta}}[\log p(\eta)]$ can also be provided:
+By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergence_between_members_of_same_exponential_family}, expressions for the entropy $\H[\eta] = -\E_{\eta}[\log p(\eta)]$ and cross-entropy $\H[\eta, \wt{\eta}] = -\E_{\eta}[\log p(\wt{\eta})]$ can also be provided:
 
 \begin{subequations}
 \begin{align}
-\H[\wt{\eta}]&= a(\wt{\eta}) - \bigip{\wt{\eta}, \nabla a(\wt{\eta})} - \E_{\wt{\eta}} [\log h(X)]	\\
-\H[\wt{\eta}, \eta] &=  -a(\eta) + \bigip{\eta, \nabla a(\wt{\eta})} + \E_{\wt{\eta}}  [\log h(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
+\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} - \E_{\eta} [\log h(X)]	\label{eqn:entropy_of_an_exponential_family}\\
+\H[\eta, \wt{\eta}] &=  a(\wt{\eta}) - \bigip{\wt{\eta}, \nabla a(\eta)} - \E_{\eta}  [\log h(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
 \end{align}
 \label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members}
 \end{subequations}
 
 
 
-Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the base measure satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.
+Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the base measure satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $h(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $a(\eta)$.}
 
 % NOT EXACTLY Note that the cross-entropy formula \eqref{eqn:cross_entropy_between_two_exponential_family_members} still applies even when the two distributions are \textit{different} exponential families!
+
+\begin{example}
+Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a centered Laplace distribution, which has pdf
+\[ f(x \cond \sigma) = -\frac{1}{2 \sigma} \exp \bigg\{ - \frac{|x|}{\sigma}\bigg\}  \]	
+The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $a(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla a(\eta) = -\frac{1}{\eta}$), and the base measure is $h(x)=1$.    Using this, we can easily compute 
+\begin{align*}
+\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} - \cancelto{0}{\E_{\eta} [\log h(X)]} \\
+&= \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta, - \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
+\implies \H[\sigma] & = \log 2\sigma + 1
+\end{align*}
+\end{example}
+
+
+\begin{remark}{\remarktitle{Cross-entropy between two distributions which belong to different exponential families}}
+
+What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look like in the case that we we want to compute the cross-entropy between two distributions which belong to \textit{different} exponential families?
+
+Let 
+\begin{align*}
+p(x \cond \eta) &=  \exp \{ \eta^T t(x) - a(\eta) + \log \wt{h}(x)\}  \\
+\wt{p}(x \cond \wt{\eta}) &=  \exp \{ \wt{\eta}^T \wt{t}(x) - \wt{a}(\wt{\eta}) + \log \wt{h}(x)\}  \\	
+\end{align*}
+ 
+Then the cross entropy is given by
+\begin{align*}
+\H(p, \wt{p}) &= -\E_p [\log \wt{p}(x)]	\\
+&= -\ds\int p(x \cond \eta) \; \log \wt{p} (x \cond \wt{\eta}) \; dx \\
+&= -\ds\int p(x \cond \eta) \bigg[ \bigip{\wt{t}(x), \wt{\eta}} - \wt{a} (\wt{\eta}) + \log \wt{h}(x)  \bigg] dx \\
+&= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{t}(x)], \wt{\eta}} - \E_p[\log \wt{h}(x)]
+\end{align*}
+
+So there are now two potentially problematic terms, although in the case where $h(x) \equiv 1$, only one potentially problematic term remains.
+\end{remark}
 
 
 For more information on information theoretical quantities in exponential families, including connection to Bregman divergences,  see \cite{nielsen2010entropies} or \cite{nielsen2009statistical}.
