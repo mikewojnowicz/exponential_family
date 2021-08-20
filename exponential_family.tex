@@ -353,19 +353,22 @@ We assume for simplicity of notation (but without loss of generality) that $\nu_
 \label{prop:kl_divergence_between_members_of_same_exponential_family}
 \end{proposition}
 
-By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergence_between_members_of_same_exponential_family}, expressions for the entropy $\H[\eta] = \E_{\eta}[- \log p(\eta)]$ and cross-entropy $\H[\wt{\eta}, \eta] = \E_{\wt{\eta}}[- \log p(\eta)]$ can also be provided:
+By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergence_between_members_of_same_exponential_family}, expressions for the entropy $\H[\eta] = -\E_{\eta}[\log p(\eta)]$ and cross-entropy $\H[\wt{\eta}, \eta] = -\E_{\wt{\eta}}[\log p(\eta)]$ can also be provided:
 
 \begin{subequations}
 \begin{align}
 \H[\wt{\eta}]&= a(\wt{\eta}) - \bigip{\wt{\eta}, \nabla a(\wt{\eta})} - \E_{\wt{\eta}} [\log h(X)]	\\
-\H[\wt{\eta}, \eta] &=  -a(\eta) + \bigip{\eta, \nabla a(\wt{\eta})} + \E_{\wt{\eta}}  [\log h(X)]
+\H[\wt{\eta}, \eta] &=  -a(\eta) + \bigip{\eta, \nabla a(\wt{\eta})} + \E_{\wt{\eta}}  [\log h(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
 \end{align}
-\label{eqn:entropy_and_cross_entropy_between_two_members_of_same_exponential_family}
+\label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members}
 \end{subequations}
 
 
 
-Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_members_of_same_exponential_family} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the base measure satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.
+Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the base measure satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.
+
+% NOT EXACTLY Note that the cross-entropy formula \eqref{eqn:cross_entropy_between_two_exponential_family_members} still applies even when the two distributions are \textit{different} exponential families!
+
 
 For more information on information theoretical quantities in exponential families, including connection to Bregman divergences,  see \cite{nielsen2010entropies} or \cite{nielsen2009statistical}.
 
