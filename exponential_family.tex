@@ -367,21 +367,45 @@ By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergenc
 
 
 
-Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the base measure satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $h(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $a(\eta)$.}
+Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the base measure satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $h(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $a(\eta)$.}. In that case, we have 
+
+\begin{subequations}
+\begin{align}
+\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} \label{eqn:entropy_of_an_exponential_family_with_base_measure_unity}\\
+\H[\eta, \wt{\eta}] &=  a(\wt{\eta}) - \bigip{\wt{\eta}, \nabla a(\eta)}  \label{eqn:cross_entropy_between_two_exponential_family_members_with_base_measure_unity}
+\end{align}
+\label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members_with_base_measure_unit}
+\end{subequations}
+
 
 % NOT EXACTLY Note that the cross-entropy formula \eqref{eqn:cross_entropy_between_two_exponential_family_members} still applies even when the two distributions are \textit{different} exponential families!
 
 \begin{example}
 Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a centered Laplace distribution, which has pdf
 \[ f(x \cond \sigma) = -\frac{1}{2 \sigma} \exp \bigg\{ - \frac{|x|}{\sigma}\bigg\}  \]	
-The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $a(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla a(\eta) = -\frac{1}{\eta}$), and the base measure is $h(x)=1$.    Using this, we can easily compute 
+The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $a(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla a(\eta) = -\frac{1}{\eta}$), and the base measure is $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
+Using this, we can easily compute 
 \begin{align*}
-\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} - \cancelto{0}{\E_{\eta} [\log h(X)]} \\
-&= \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta, - \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
+\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} = \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta, - \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
 \implies \H[\sigma] & = \log 2\sigma + 1
 \end{align*}
 \end{example}
 
+
+\begin{example}
+Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a univariate Gaussian.  The necessary exponential family quantities can be found in many tables (e.g. see \cite{nielsen2009statistical}); they are:
+\[ \eta=\bigg(\frac{\mu}{\sigma^2}, \; -\frac{1}{2\sigma^2}\bigg)^T, \quad a(\eta) = \frac{-\eta_1^2}{4 \eta_2} + \half \log (-\frac{\pi}{\eta_2}), \quad  \nabla a(\eta) = \bigg( -\frac{\eta_1}{2\eta_2}, \; -\frac{1}{2\eta_2} + \frac{\eta_1^2}{4\eta_2^2}\bigg)^T\] 
+and $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).
+
+Using this, we can easily compute 
+\begin{align*}
+\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} \\
+&=  \cancel{\frac{-\eta_1^2}{4 \eta_2}} + \half \log (-\frac{\pi}{\eta_2}) - \Big[ \cancel{\frac{-\eta_1^2}{2 \eta_2}} -\half + \cancel{\frac{\eta_1^2}{4 \eta_2}} \Big] \\ 
+\implies \H[\sigma] & = \half \log (2 \pi \sigma^2) + \half
+\end{align*}
+
+Consider how much easier this computation is than that of, say, \url{https://proofwiki.org/wiki/Differential_Entropy_of_Gaussian_Distribution}.
+\end{example}
 
 \begin{remark}{\remarktitle{Cross-entropy between two distributions which belong to different exponential families}}
 
