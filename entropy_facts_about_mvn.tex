@@ -1,0 +1,21 @@
+
+If $p, q$ are the densities of two different $d$-variate Gaussian distributions with parameters $\+\mu_p,  \+\Sigma_p$ and $\+\mu_q,  \+\Sigma_q$,  respectively,  then  the entropy is given by
+\begin{align}
+\H[q]= \half \log \bigg[ (2 \pi e)^d | \+\Sigma_q |\bigg]  
+\label{eqn:entropy_mvns}	
+\end{align}
+ 
+The KL divergence is given by
+
+\begin{align*}
+\KL{q}{p} =  \frac{1}{2} \bigg[ \log \frac{|\+\Sigma_p|}{|\+\Sigma_q|} - d + (\+\mu_q - \+\mu_p)^T  \+\Sigma_p^{-1} (\+\mu_q - \+\mu_p) + \tr \big( \+\Sigma_p^{-1} \+\Sigma_q \big)  \bigg]  
+\labelit \label{eqn:kl_divergence_mvns}
+\end{align*}
+
+
+The cross-entropy of two multivariate Gaussians can then be determined from \eqref{eqn:entropy_mvns} and \eqref{eqn:kl_divergence_mvns} via the relation
+\begin{align*}
+ \H[q,p] = \H[q] + \KL{q}{p} 
+\labelit \label{eqn:cross_entropy_of_two_mvns} 
+  \end{align*}
+ 
