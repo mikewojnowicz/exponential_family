@@ -990,6 +990,49 @@ This scheme can be generalized to \textit{linear Gaussian models}.  These are pr
 \end{remark}
 
 
+ \subsection{Exponential family representation of Multivariate Gaussian in message passing}
+ \label{sec:mvn_in_message_passing}
+ 
+In a dissertation on Gaussian Belief Propagation \cite{bickson2008gaussian}, referred to in \cite{krishnan2016structured}, a multivariate Gaussian is considered as a Markov Random Field. 
+
+In particular, consider the Markov Random field
+
+\begin{equation}
+p(x) = \df{1}{Z}\bp{ \ds\prod_{i=1}^n \selfpotential(x_i) \ds\prod_{i,j} \edgepotential(x_i, x_j)  } 
+\label{eqn:mrf_dyadic}
+\end{equation}
+
+Now note that a multivariate Gaussian has a joint distribution which can be expressed as
+\[ p(x) \propto \exp \bigg\{ -\df{1}{2} x^T A x + b^T x \bigg\} \]
+
+as this is just the exponential family form of a Gaussian (e.g., see  \cite{englehardt_gaussian_models}), where the natural parameters are
+given in terms of the \textit{precision} $\Sigma^{-1}$
+\begin{align*}
+A &= \Sigma^{-1} \\
+b &= \Sigma^{-1} \mu
+\end{align*}
+
+Thus, the multivariate Gaussian is a MRF where the potentials in \eqref{eqn:mrf_dyadic} are given by
+
+\begin{align*}
+\edgepotential_{ij}(x_i, x_j) & := \exp \bigg\{ -\df{1}{2} x_i A_{ij} x_j \bigg\}  \\
+\selfpotential_{i}(x_i) & := \exp \bigg\{ -\df{1}{2} A_{ii} x_i^2 + b_i x_i \bigg\}  
+\end{align*}
+
+This seems to be useful in inference for state space models, where one multiplies multiple ``messages" that are different Gaussian densities \textit{over the same variable}.   For example, see  the equations for $\mu_t$ and $\sigma^2_t$ in Section 4 of \cite{krishnan2016structured}, where messages from the past and the future of a time series model are combined to get a posterior distribution on the state $z_t$.   The combined parameters have an expression which may at first be puzzling:
+
+\[ \mu_t = \df{\mu_1 \sigma^2_2 + \mu_2 \sigma^2_1}{\sigma^2_1 + \sigma^2_2}  , \quad \sigma^2_t = \df{\sigma^2_1 \sigma^2_2}{ \sigma^2_1 + \sigma^2_2} \]
+
+However, these messages have an intuitive form when considered in terms of the natural parameterizations:  the combined mean is a weighted combination of the original means, with the weights given by the precisions.   The combined precision (inverse covariance) is given simply by the sum of the original precisions.  Very nice! 
+
+ See Figure \ref{fig:lemma_twelve_bickson} for the general expression, which explains the formula in  \cite{krishnan2016structured}.  This is an example of where the natural parametrization provides more insight than the standard parametrization. 
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{images/bickson_lemma_12}
+\caption{Lemma 12 of \cite{bickson2008gaussian}}
+\label{fig:lemma_twelve_bickson}
+\end{figure}
+
 \section{General Conjugacy Formalism: Alternate Approach\footnote{This argument follows the argument (and notation) of \cite{johnson2016composing}, Appendix B.  As of now, I find it more intuitive then the argument given in the main body.}}
 \label{sec:general_conjugacy_alternate_argument}
 
@@ -1194,48 +1237,6 @@ are associated with correlations near zero.
 For additional discussion on the problems with Inverse Wishart,  especially when used in hierarchical models,  and for a remedy using a half-t distribution that also has a conditionally conjugate construction,  see \cite{wojnowiczXXXXcategorical}.
 
 
- \section{EF representation of Multivariate Gaussian in message passing}
- \label{sec:mvn_in_message_passing}
- 
-In a dissertation on Gaussian Belief Propagation \cite{bickson2008gaussian}, referred to in \cite{krishnan2016structured}, a multivariate Gaussian is considered as a Markov Random Field. 
-
-In particular, consider the Markov Random field
-
-\begin{equation}
-p(x) = \df{1}{Z}\bp{ \ds\prod_{i=1}^n \selfpotential(x_i) \ds\prod_{i,j} \edgepotential(x_i, x_j)  } 
-\label{eqn:mrf_dyadic}
-\end{equation}
-
-Now note that a multivariate Gaussian has a joint distribution which can be expressed as
-\[ p(x) \propto \exp \bigg\{ -\df{1}{2} x^T A x + b^T x \bigg\} \]
-
-as this is just the exponential family form of a Gaussian (e.g., see  \cite{englehardt_gaussian_models}), where the natural parameters are
-given in terms of the \textit{precision} $\Sigma^{-1}$
-\begin{align*}
-A &= \Sigma^{-1} \\
-b &= \Sigma^{-1} \mu
-\end{align*}
-
-Thus, the multivariate Gaussian is a MRF where the potentials in \eqref{eqn:mrf_dyadic} are given by
-
-\begin{align*}
-\edgepotential_{ij}(x_i, x_j) & := \exp \bigg\{ -\df{1}{2} x_i A_{ij} x_j \bigg\}  \\
-\selfpotential_{i}(x_i) & := \exp \bigg\{ -\df{1}{2} A_{ii} x_i^2 + b_i x_i \bigg\}  
-\end{align*}
-
-This seems to be useful in inference for state space models, where one multiplies multiple ``messages" that are different Gaussian densities \textit{over the same variable}.   For example, see  the equations for $\mu_t$ and $\sigma^2_t$ in Section 4 of \cite{krishnan2016structured}, where messages from the past and the future of a time series model are combined to get a posterior distribution on the state $z_t$.   The combined parameters have an expression which may at first be puzzling:
-
-\[ \mu_t = \df{\mu_1 \sigma^2_2 + \mu_2 \sigma^2_1}{\sigma^2_1 + \sigma^2_2}  , \quad \sigma^2_t = \df{\sigma^2_1 \sigma^2_2}{ \sigma^2_1 + \sigma^2_2} \]
-
-However, these messages have an intuitive form when considered in terms of the natural parameterizations:  the combined mean is a weighted combination of the original means, with the weights given by the precisions.   The combined precision (inverse covariance) is given simply by the sum of the original precisions.  Very nice! 
-
- See Figure \ref{fig:lemma_twelve_bickson} for the general expression, which explains the formula in  \cite{krishnan2016structured}.  This is an example of where the natural parametrization provides more insight than the standard parametrization. 
-
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{images/bickson_lemma_12}
-\caption{Lemma 12 of \cite{bickson2008gaussian}}
-\label{fig:lemma_twelve_bickson}
-\end{figure}
 
 \bibliography{references_exponential_family}{}
 \bibliographystyle{unsrt}
