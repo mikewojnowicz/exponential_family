@@ -413,11 +413,11 @@ What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look 
 
 Let 
 \begin{align*}
-p(x \cond \eta) &=  \exp \{ \eta^T t(x) - a(\eta) + \log \wt{h}(x)\}  \\
+p(x \cond \eta) &=  \exp \{ \eta^T t(x) - a(\eta) + \log h(x)\}  \\
 \wt{p}(x \cond \wt{\eta}) &=  \exp \{ \wt{\eta}^T \wt{t}(x) - \wt{a}(\wt{\eta}) + \log \wt{h}(x)\}  \\	
 \end{align*}
  
-Then the cross entropy is given by
+Then the cross entropy from $\wt{p}$ to $p$ is given by
 \begin{align*}
 \H(p, \wt{p}) &= -\E_p [\log \wt{p}(x)]	\\
 &= -\ds\int p(x \cond \eta) \; \log \wt{p} (x \cond \wt{\eta}) \; dx \\
@@ -425,7 +425,7 @@ Then the cross entropy is given by
 &= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{t}(x)], \wt{\eta}} - \E_p[\log \wt{h}(x)]
 \end{align*}
 
-So there are now two potentially problematic terms, although in the case where $h(x) \equiv 1$, only one potentially problematic term remains.
+So there are now two potentially problematic terms, although in the case where $\wt{h}(x) \equiv 1$, only one potentially problematic term remains.
 \end{remark}
 
 
