@@ -43,24 +43,37 @@ We are interested in  exponential families primarily because they makes inferenc
 
 \subsection{Definitions}
 \begin{definition}
-We can define an \textit{exponential family} as a set of probability distributions, indexed by natural parameter $\eta$,\redfootnote{TODO: Add restriction on parameter space so that the density is normalizable}  whose probability density functions have the following form
+We can define an \textit{exponential family} as a set of probability distributions, indexed by natural parameter $\eta \in H$,%\redfootnote{TODO: Add restriction on parameter space so that the density is normalizable}  
+ whose probability density functions with respect to measure $\mu$ on $\X$ have the following form
 \begin{align}
- p(x \cond \eta) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
+ p_\eta(x) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
 \label{eqn:exponential_family_natural}
  \end{align}
-where $a(\eta)$ is a strictly convex and $C^{\infty}$ differentiable real-valued function. We refer to $h$ as the carrier density, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
+where $t : \X \to \R^p$ is the \textit{sufficient statistics function}, $h : \X \to \R$ is the \textit{carrier density}, $\eta \in \H \subset \R^p$ is the \textit{natural parameter},  and $a : H \to \R$ is a strictly convex and $C^{\infty}$ differentiable real-valued function known as the \textit{log normalizer} or \textit{log partition function};  that is $a(\eta) = \log Z(\eta)$ where 
 \begin{equation}
 \label{eqn:partition_function}
  Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \mu(dx)	
 \end{equation}
+%TODO add in interpetation as \textit{cumulative generating function};
 
-where $\mu$ is a measure on $\X$ (typically Lesbesgue measure or counting measure).\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\mu$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\mu$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \mu (dx) $.  In the former case, the term \textit{carrier density} refers to $h(x)$ -- although this is an abuse of notation.  We use the term \textit{base measure} refers to $\mu$. Some presentations use the term ``base measure" to refer to $h(x)$, but that is an abuse of notation, as $h$ is not a measure.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."} \redfootnote{TODO: The $\X$ appears out of nowhere. It needs to be defined.}
+We refer to $\mu$ as the \textit{base measure}.\footnote{Some presentations use the term ``base measure" to refer to $h(x)$, but that is an abuse of notation, as $h$ is not a measure.}  Typically $\mu$ is the Lesbesgue measure or counting measure.  If $\mu$ is the Lesbesgue measure, then the density $p_\eta$ is a probability density function.  If $\mu$ is the counting measure, then the density $p_\eta$ is a probability mass function.\footnote{So measure theory is off-putting, just take $\mu$ to be the Lesbesgue measure for continuous random variables, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $, and take $\mu$ to be the counting measure for discrete random variables, in which case one can write $Z(\eta) := \ds\sum_{x \in \X} h(x) \exp \{ \eta^T t(x)  \} $. Indeed, we will make precisely these assumptions throughout the document, unless otherwise noted. }  %\footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\mu$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\mu$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \mu (dx) $.  In the former case, the term \textit{carrier density} refers to $h(x)$ -- although this is an abuse of notation.  We use the term \textit{base measure} refers to $\mu$. Some presentations use the term ``base measure" to refer to $h(x)$, but that is an abuse of notation, as $h$ is not a measure.}  
+%\redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."}  
 \label{def:exponential_family}
 \end{definition} 
 
+\begin{remark}
+Observe \cite{chuaXXXXstats} that without loss of generality, we can 
+\begin{itemize}
+\item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $a(\eta)$ to $\wt{a}(\eta) = a(\eta) - a(0)$ results in an equivalent family.  
+\item Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{t} = M t(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.
+\item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^T t(x) - a(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu} = \ds\int h d\mu$. }
+\end{itemize}
+
+\end{remark}
+
 
 \begin{definition}
-The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $H:=\set{\eta : a(\eta) < \infty}$
+The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $H:=\set{\eta : Z(\eta) < \infty}$.
 \end{definition}
 
 \begin{definition}
@@ -70,7 +83,7 @@ An exponential family is said to be \textit{regular} if the natural parameter sp
 One can \textit{reparameterize} a regular exponential family with some other coordinates $\theta$.  If one writes the natural parameter as a continuous function $\eta(\theta)$, then the density \eqref{eqn:exponential_family_natural} becomes
 \begin{align}
 \label{eqn:exponential_family}
- p(x \cond \theta) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\eta(\theta))\} 
+ p_\theta(x) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\eta(\theta))\} 
  \end{align}
  The reparameterized family is regular as well, since $\Theta := \eta^{-1}(H)$ is open. 
  
@@ -85,7 +98,7 @@ Exponential family members can have intractable normalization constants.  Consid
 
 
 \begin{definition}
-An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\mu$-a.e.).\redfootnote{TODO: Until now, I haven't yet assumed that the parameters are real valued.  Is this necessary?}
+An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
 \end{definition}
 
   An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify, and state how to rectify. Also demonstrate the importance of this.} 
