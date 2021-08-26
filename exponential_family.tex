@@ -897,7 +897,7 @@ t(x) \\
 \eta \\
 a(\eta)
 \end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{explained below} \\
-&= \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
+&= \wt{h}(\eta) \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
 t(x) \\
 1 \\
 \end{bmatrix} \bigg)^T \; \begin{bmatrix} 
@@ -930,6 +930,8 @@ n_0 & \to  n_0 + 1 \\
 
 \begin{question}
 Doesn't this derivation show that there are multiple possible conjugate priors, depending on the choice of $\wt{h}$? For instance, is a truncated normal conjugate whenever a normal is conjugate?	
+
+\textit{Update: it appears that the answer is yes. See \href{https://stats.stackexchange.com/questions/176668/can-anyone-explain-conjugate-priors-in-simplest-possible-terms}{\blue{\underline{this webpage}}}.}
 \end{question}
 
 
@@ -959,10 +961,60 @@ n_0 & \to  n_0 + n \\
 \labelit \label{eqn:general_formalism_prior_to_posterior_conversion}
 \end{align*}
 
-%\subsubsection{Application}
-%
-%In application, we don't often use 
-%
+\subsubsection{Application: Finding conjugate priors (and identifying when there isn't one)}
+
+In application, we don't often use $\begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix}$ to identify the sufficient statistics, but the set of basis functions necessary to construct $\begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix}$. 
+
+\begin{example}
+Let $X \sim \N(\mu, \beta^{-1})$, where we parameterize in terms of the precision parameter $\beta$.  The log pdf under the natural parameterization is given by 
+\begin{align*} 
+\log p(x \cond \mu, \beta) = 
+\begin{bmatrix} 
+\beta \mu \\
+-\half \beta
+\end{bmatrix}^T 
+\begin{bmatrix} 
+x \\
+x^2
+\end{bmatrix} 
++ \half \big(\log \beta - \beta \mu^2 - \log (2 \pi) \big)	
+\labelit \label{eqn:gaussian_pdf_precision_parametrization}
+\end{align*}
+
+Suppose we want to find a (semi-)conjugate prior for the precision parameter $\beta$.  Considering \eqref{eqn:gaussian_pdf_precision_parametrization} as a function of $\beta$, the basis functions needed are
+\[ \wt{t}(\beta) := 
+\begin{bmatrix} 
+\beta \\
+\log \beta
+\end{bmatrix} 
+  \]
+ which is the sufficient statistics function of the gamma distribution.  Thus, a conjugate prior for the precision parameter is the gamma distribution.
+\end{example}
+
+
+\begin{example} 
+Let $X \sim \GammaDist(\alpha, \beta)$, where $\GammaDist(\alpha, \beta)$ refers to the shape-rate parametrization.  The log pdf is given by
+
+\begin{align*}
+ \log p(x \cond \alpha, \beta) = \alpha \log \beta - \ln \Gamma(\alpha) - (\alpha -1 ) x - \beta x 
+ \labelit \label{eqn:gamma_pdf}
+\end{align*}  
+Suppose we want to find a (semi-)conjugate prior for the shape parameter $\alpha$.  Considering \eqref{eqn:gaussian_pdf_precision_parametrization} as a function of $\alpha$, the basis functions needed are
+\[ \wt{t}(\alpha) := 
+\begin{bmatrix} 
+\alpha \\
+\Gamma(\alpha) 
+\end{bmatrix} 
+  \]
+There is no exponential family distribution with these sufficient statistics. \red{TODO: Explain.}
+\end{example}
+
 
 \newpage 
  \appendix
