@@ -432,7 +432,7 @@ So there are now two potentially problematic terms, although in the case where $
 For more information on information theoretical quantities in exponential families, including connection to Bregman divergences,  see \cite{nielsen2010entropies} or \cite{nielsen2009statistical}.
 
 
-\subsubsection{i.i.d samples from an exponential family}
+\subsubsection{i.i.d samples from an exponential family} \label{sec:iid_samples_from_an_exponential_family}
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
 \begin{align}
 \label{eqn:exponential_family_iid}
@@ -871,48 +871,84 @@ The hierarchical linear regression model \eqref{eqn:hierarchical_linear_regressi
 
 \subsection{General formalism} \label{sec:ef_general_formalism}
 
-Here we provide some notes, following \cite{jordan_ef}, about conjugate priors for exponential family data models. 
+Let us write the data model's density $p(x \cond \eta)$ in exponential family form, and assume that the prior $p(\eta \cond \phi)$ has an exponential family construction as well.  
+\begin{align*}
+p(x \cond \eta) &= h(x) \exp \{\eta^T t(x) - a(\eta)   \}	 \\
+p(\eta \cond \phi) &= \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	
+\end{align*}
+We use the tilde to denote that the base measure $h$, sufficient statistics function $t$, and log normalizer $a$ can differ for these densities.  
 
-Writing the exponential family density in canonical form, we have
-\[ p(x \cond \eta) = h(x) \exp \{ \eta^T T(x) - A(\eta) \} \]
-where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $h(x)$ is the base measure, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
+Our goal is to find the form of a conjugate prior, given the form of the data model.    To do this, we work with the posterior 
 
-The natural parameter space is 
-\[  \bigg\{\eta : \ds\int h(x) \exp \{ \eta^T T(x) - A(\eta) \} < \infty \bigg \}\]
+\begin{align*}
+p(\eta \cond x, \phi) & \propto p(x \cond \eta) \quad p(\eta \cond \phi) && \tinytext{bayes law}  \\
+&=  \cancel{h(x)} \exp \{\eta^T t(x) - a(\eta)  \}  \quad \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	&& \tinytext{e.f. form; constant of prop.}\\
+& \stackreltext{1}{=} \exp \bigg\{
+\begin{bmatrix} 
+t(x) \\
+1 \\
+\end{bmatrix}^T
+\begin{bmatrix} 
+\eta \\
+a(\eta)
+\end{bmatrix}
+\bigg\} \quad 
+\wt{h}(\eta) \exp \bigg\{ \phi^T \; \begin{bmatrix} 
+\eta \\
+a(\eta)
+\end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{see below} \\
+&= \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
+t(x) \\
+1 \\
+\end{bmatrix} \bigg)^T \; \begin{bmatrix} 
+\eta \\
+a(\eta)
+\end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{see below} 
+\labelit \label{eqn:posterior_under_conjugate_prior}\\
+\end{align*}
 
-Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we obtain:
-\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^N T(x_i) - N A(\eta) \bigg\} \]
-as the likelihood function.
+where in (1) we reorganize the likelihood to isolate terms in $\eta$, and then take $\wt{t}(\eta)$ to have this same form in order to get conjugacy.  
 
-A conjugate prior can be obtained by mimicking the likelihood
-\begin{equation}
-p (\eta \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^T \eta - n_0 A(\eta)\}
-\label{eqn:conjugate_prior_exptl_family}
-\end{equation}
+From this, we conclude
+\begin{enumerate} 
+\item The vector $\begin{bmatrix} 
+\eta \\
+a(\eta)
+\end{bmatrix}$ gives sufficient statistics of the conjugate prior, which can be used to identify it (or identify its non-existence).	
+\end{enumerate}
 
-where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan_ef}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
 
-To verify conjugacy, we compute the posterior density
-\[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^T \eta - (n_0 + N) A(\eta) \bigg\} \]
-which retains the form of \eqref{eqn:conjugate_prior_exptl_family}.  For an argument that is perhaps more intuitive, see Section \ref{sec:general_conjugacy_alternate_argument} 
+Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we have:
+\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^N t(x_i) - n \; a(\eta) \bigg\} \]
+as the likelihood (see Section \ref{sec:iid_samples_from_an_exponential_family}). In this case, the posterior under the conjugate prior \eqref{eqn:posterior_under_conjugate_prior} becomes
 
-Thus, the prior-to-posterior conversion can be summarized with the following update rules
+\begin{align*}
+p(\eta \cond \+x, \phi) &\propto \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
+\sum_{i=1}^n t(x_i) \\
+n \\
+\end{bmatrix} \bigg)^T \; \begin{bmatrix} 
+\eta \\
+a(\eta)
+\end{bmatrix} - \wt{a}(\phi)  \bigg\} \\
+\end{align*}
+
+
+From this, we can additionally conclude
+\begin{enumerate}
+\item[2.] We can decompose the prior hyperparameter as $\phi = \begin{bmatrix} 
+\tau \\
+n_0
+\end{bmatrix}$,   
+where $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.  Moreover, $\tau$ can be interpreted as the prior sufficient statistics and $n_0$ can be interpreted as the prior sample size.
+\item[3.] The prior-to-posterior conversion can be summarized with the following update rules
 \begin{align*}
 \tau & \to \tau + \ds\sum_{n=1}^N T(x_n) \\
 n_0 & \to  n_0 + N \\
 \labelit \label{eqn:general_formalism_prior_to_posterior_conversion}
 \end{align*}
+\end{enumerate}
 
-For conjugate Bayesian models, the predictive posterior distribution, $p(x_{\text{new}} \cond x)$ is always tractable, because it has the same form (integrating a likelihood against the parameter distribution) as does the evidence term in Bayes law.   For exponential family models, the predictive posterior takes the form of a ratio of normalizing factors
-
-\begin{equation}
-p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}, n_0 + N)}{H(\tau_{\text{post}} + T(x_{\text{new}}), n_0 + N + 1)}
-\label{eqn:predictive_posterior_exptl_family}
-\end{equation}
-
-\red{TODO:  Redo some of the examples using the exponential family conjugate prior formalism.    A possibly useful resource in the giant table at \url{https://en.wikipedia.org/wiki/Exponential_family}.}
-
-
+Note that for conjugate Bayesian models, the predictive posterior distribution, $p(x_{\text{new}} \cond x)$ is always tractable, because it has the same form (integrating a likelihood against the parameter distribution) as does the evidence term in Bayes law.   See Section \ref{sec:ef_general_formalism_jordan}.
 
 \newpage 
  \appendix
@@ -1033,13 +1069,59 @@ However, these messages have an intuitive form when considered in terms of the n
 \label{fig:lemma_twelve_bickson}
 \end{figure}
 
-\section{General Conjugacy Formalism: Alternate Approach\footnote{This argument follows the argument (and notation) of \cite{johnson2016composing}, Appendix B.  As of now, I find it more intuitive then the argument given in the main body.}}
+\section{General Conjugacy Formalism: Alternate Approaches}
+
+\subsection{General Conjugacy Formalism: Alternate Approach 1\footnote{This argument follows the argument (and notation) of \cite{johnson2016composing}, Appendix B.  As of now, I find it more intuitive then the argument given in the main body.}}
 \label{sec:general_conjugacy_alternate_argument}
 
 
 \input{inputs/conjugacy_general_composing_approach.tex}
 
 Note that this argument yields the same parameter updating scheme of \eqref{eqn:general_formalism_prior_to_posterior_conversion}.
+
+
+\subsection{Alternate approach 2} \label{sec:ef_general_formalism_jordan}
+
+Following \cite{jordan_ef}, here we provide a general formalism for conjugate priors for exponential family data models. 
+
+Writing the exponential family density in canonical form, we have
+\[ p(x \cond \eta) = h(x) \exp \{ \eta^T T(x) - A(\eta) \} \]
+where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $h(x)$ is the base measure, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
+
+The natural parameter space is 
+\[  \bigg\{\eta : \ds\int h(x) \exp \{ \eta^T T(x) - A(\eta) \} < \infty \bigg \}\]
+
+Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we obtain:
+\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^N T(x_i) - N A(\eta) \bigg\} \]
+as the likelihood function.
+
+A conjugate prior can be obtained by mimicking the likelihood
+\begin{equation}
+p (\eta \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^T \eta - n_0 A(\eta)\}
+\label{eqn:conjugate_prior_exptl_family}
+\end{equation}
+
+where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan_ef}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
+
+To verify conjugacy, we compute the posterior density
+\[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^T \eta - (n_0 + N) A(\eta) \bigg\} \]
+which retains the form of \eqref{eqn:conjugate_prior_exptl_family}.  For an argument that is perhaps more intuitive, see Section \ref{sec:general_conjugacy_alternate_argument} 
+
+Thus, the prior-to-posterior conversion can be summarized with the following update rules
+\begin{align*}
+\tau & \to \tau + \ds\sum_{n=1}^N T(x_n) \\
+n_0 & \to  n_0 + N \\
+\labelit \label{eqn:general_formalism_prior_to_posterior_conversion}
+\end{align*}
+
+For conjugate Bayesian models, the predictive posterior distribution, $p(x_{\text{new}} \cond x)$ is always tractable, because it has the same form (integrating a likelihood against the parameter distribution) as does the evidence term in Bayes law.   For exponential family models, the predictive posterior takes the form of a ratio of normalizing factors
+
+\begin{equation}
+p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}, n_0 + N)}{H(\tau_{\text{post}} + T(x_{\text{new}}), n_0 + N + 1)}
+\label{eqn:predictive_posterior_exptl_family}
+\end{equation}
+
+\red{TODO:  Redo some of the examples using the exponential family conjugate prior formalism.    A possibly useful resource in the giant table at \url{https://en.wikipedia.org/wiki/Exponential_family}.}
 
 \section{More on Bayesian multivariate linear regression}  \label{sec:more_bayesian_multivariate_linear_regression} 
 
