@@ -48,19 +48,19 @@ We can define an \textit{exponential family} as a set of probability distributio
  p(x \cond \eta) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
 \label{eqn:exponential_family_natural}
  \end{align}
-where $a(\eta)$ is a strictly convex and $C^{\infty}$ differentiable real-valued function. We refer to $h$ as the base measure\footnote{This an abuse of notation, as explained in the immediately following footnotes.}, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
+where $a(\eta)$ is a strictly convex and $C^{\infty}$ differentiable real-valued function. We refer to $h$ as the carrier density, $\eta$ as the natural parameter, $t$ as the sufficient statistics, and $a$ as the log normalizer or log partition function;  that is $a(\eta) = \log Z(\eta)$ where 
 \begin{equation}
 \label{eqn:partition_function}
  Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \nu_\X(dx)	
 \end{equation}
 
-where $\nu_\X$ is a measure on $\X$ (typically Lesbesgue measure or counting measure).\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\nu_\X$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\nu_\X$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \nu_\X (dx) $.  In the former case, the term \textit{base measure} refers to $h(x)$ -- although this is an abuse of notation.  In the latter case, the term \textit{base measure} refers to $\nu_\X$.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."} \redfootnote{TODO: The $\X$ appears out of nowhere. It needs to be defined.}
+where $\nu_\X$ is a measure on $\X$ (typically Lesbesgue measure or counting measure).\footnote{If measure theory is off-putting, just take $\nu$ to be the familiar Lesbesgue measure, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $ }  \footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\nu_\X$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\nu_\X$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \nu_\X (dx) $.  In the former case, the term \textit{carrier density} refers to $h(x)$ -- although this is an abuse of notation.  We use the term \textit{base measure} refers to $\nu_\X$. Some presentations use the term ``base measure" to refer to $h(x)$, but that is an abuse of notation, as $h$ is not a measure.}  \redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."} \redfootnote{TODO: The $\X$ appears out of nowhere. It needs to be defined.}
 \label{def:exponential_family}
 \end{definition} 
 
 
 \begin{definition}
-The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $H:=\set{\eta : Z(\eta) < \infty}$
+The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $H:=\set{\eta : a(\eta) < \infty}$
 \end{definition}
 
 \begin{definition}
@@ -101,7 +101,7 @@ Here we give examples of exponential families, showing how to derive the exponen
 \begin{example}{(Categorical Distribution)}
 \label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $x \in [0,1]^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
 \[p(x \cond \pi) = \prod_{k=1}^K \pi_k^{x_k} = \exp \{ \sum_{k=1}^K x_k \log \pi_k\} \]
- with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $t(x) = x$, base measure $h(x)=1$ and log normalizer $0$.\redfootnote{TODO: Write this up as its own example.}
+ with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $t(x) = x$, carrier density $h(x)=1$ and log normalizer $0$.\redfootnote{TODO: Write this up as its own example.}
 \end{example}
 
 \subsubsection{Dirichlet distribution}
@@ -111,7 +111,7 @@ Here we give examples of exponential families, showing how to derive the exponen
 p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
 &= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^T$, sufficient statistics $t(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^T$, base measure $h(\pi)=1$, and log normalizer $a(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
+with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^T$, sufficient statistics $t(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^T$, carrier density $h(\pi)=1$, and log normalizer $a(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
   
 \end{example} 
 
@@ -147,12 +147,12 @@ If we write
 f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\half \df{(x-\mu)^2}{\sigma^2}}  \indicate{a \leq x \leq b} \\
 & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
 \end{align*} 
-where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (- \frac{1}{2 \sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $t(x) = (x^2,  x)^T$,  base measure $h(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
+where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (- \frac{1}{2 \sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $t(x) = (x^2,  x)^T$,  carrier density $h(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
  
 \end{example}
 
 \begin{remark}
-The truncated normal distribution differs from the normal distribution only in its base measure $h(x)$ and log normalizer $a(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $T(x)$ are identical.   Thus,  knowing $\eta$ and $T(x)$ is not sufficient to determine the form of the probability distribution.
+The truncated normal distribution differs from the normal distribution only in its carrier density $h(x)$ and log normalizer $a(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $T(x)$ are identical.   Thus,  knowing $\eta$ and $T(x)$ is not sufficient to determine the form of the probability distribution.
 \end{remark}
 
 
@@ -164,7 +164,7 @@ The truncated normal distribution differs from the normal distribution only in i
 p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1} \exp \bigg(- \df{\beta}{x} \bigg) \\
 &= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient statistics $t(x) = [\log x ,  \frac{1}{x}]^T$, base measure $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
+with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient statistics $t(x) = [\log x ,  \frac{1}{x}]^T$, carrier density $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
   
 \end{example} 
 
@@ -178,7 +178,7 @@ We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribu
 & \stackrel{1}{=} (2\pi)^{-d/2} \exp \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T) $}{\+x^T \+\Sigma^{-1} \+x} + \+x^T \+\Sigma^{-1} \+\mu -\half \+\mu^T \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
 	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
-with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $t(\+x) = \big(\vectorize (\+x \+x^T), \+x \big)$, base measure $h(x) = (2\pi)^{-d/2}$ and log normalizing $a(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
+with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $t(\+x) = \big(\vectorize (\+x \+x^T), \+x \big)$, carrier density $h(x) = (2\pi)^{-d/2}$ and log normalizing $a(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
 \end{example}
 
 \begin{remark}
@@ -211,7 +211,7 @@ p (\+X  \cond \+\Psi,  \nu) & \stackrel{1}{=} C(\+\Psi,  \nu) \; | \+X | ^{-(\nu
 Equation (1) gives the standard representation of the $\InverseWishart(\+\Psi,  \nu)$ density,  where   $C(\+\Psi,  \nu)$ is the normalizing constant,  $| \cdot |$ refers to the determinant,  $\+X,  \+\Psi \in \R^{p \times p}$ are positive definite matrices,  and $\nu > p-1$.    Equation (2) uses the fact that the trace of a matrix product behaves like a dot product \eqref{eqn:trace_of_matrix_product}.      
 
 
-As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^T$, sufficient statistics $t(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^T$, base measure $h(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
+As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^T$, sufficient statistics $t(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^T$, carrier density $h(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
   
 \end{example} 
 
@@ -276,7 +276,7 @@ The sufficient statistics for $\log \pi_k$ are $\state_1^k$, and the sufficient 
 Some non-examples include 
 \begin{itemize}
 \item The Cauchy distribution (since, as we will see in Remark \ref{rk:any_exponential_family_has_finite_moments}, any exponential family must have finite moments)
-\item The uniform distribution, whose density cannot be written in the form \eqref{eqn:exponential_family}. %(Loosely speaking, its base measure is a function of the parameter.)
+\item The uniform distribution, whose density cannot be written in the form \eqref{eqn:exponential_family}. %(Loosely speaking, its carrier density is a function of the parameter.)
 \end{itemize}
 
 
@@ -367,7 +367,7 @@ By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergenc
 
 
 
-Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the base measure satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $h(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $a(\eta)$.}. In that case, we have 
+Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the carrier density satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $h(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $a(\eta)$.}. In that case, we have 
 
 \begin{subequations}
 \begin{align}
@@ -383,7 +383,7 @@ Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members
 \begin{example}
 Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a centered Laplace distribution, which has pdf
 \[ f(x \cond \sigma) = -\frac{1}{2 \sigma} \exp \bigg\{ - \frac{|x|}{\sigma}\bigg\}  \]	
-The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $a(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla a(\eta) = -\frac{1}{\eta}$), and the base measure is $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
+The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $a(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla a(\eta) = -\frac{1}{\eta}$), and the carrier density is $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
 Using this, we can easily compute 
 \begin{align*}
 \H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} = \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta, - \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
@@ -876,7 +876,7 @@ Let us write the data model's density $p(x \cond \eta)$ in exponential family fo
 p(x \cond \eta) &= h(x) \exp \{\eta^T t(x) - a(\eta)   \}	 \\
 p(\eta \cond \phi) &= \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	
 \end{align*}
-We use the tilde to denote that the base measure $h$, sufficient statistics function $t$, and log normalizer $a$ can differ for these densities.  
+We use the tilde to denote that the carrier density $h$, sufficient statistics function $t$, and log normalizer $a$ can differ for these densities.  
 
 Our goal is to find the form of a conjugate prior, given the form of the data model.    To do this, we work with the posterior 
 
@@ -1152,7 +1152,7 @@ Following \cite{jordan_ef}, here we provide a general formalism for conjugate pr
 
 Writing the exponential family density in canonical form, we have
 \[ p(x \cond \eta) = h(x) \exp \{ \eta^T T(x) - A(\eta) \} \]
-where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $h(x)$ is the base measure, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
+where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $h(x)$ is the carrier density, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
 
 The natural parameter space is 
 \[  \bigg\{\eta : \ds\int h(x) \exp \{ \eta^T T(x) - A(\eta) \} < \infty \bigg \}\]
