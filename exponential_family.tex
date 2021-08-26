@@ -882,7 +882,7 @@ Our goal is to find the form of a conjugate prior, given the form of the data mo
 
 \begin{align*}
 p(\eta \cond x, \phi) & \propto p(x \cond \eta) \quad p(\eta \cond \phi) && \tinytext{bayes law}  \\
-&=  \cancel{h(x)} \exp \{\eta^T t(x) - a(\eta)  \}  \quad \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	&& \tinytext{e.f. form; constant of prop.}\\
+&\propto  \cancel{h(x)} \exp \{\eta^T t(x) - a(\eta)  \}  \quad \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	&& \tinytext{e.f. form; constant of prop.}\\
 & \stackreltext{1}{=} \exp \bigg\{
 \begin{bmatrix} 
 t(x) \\
@@ -896,14 +896,14 @@ t(x) \\
 \wt{h}(\eta) \exp \bigg\{ \phi^T \; \begin{bmatrix} 
 \eta \\
 a(\eta)
-\end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{see below} \\
+\end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{explained below} \\
 &= \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
 t(x) \\
 1 \\
 \end{bmatrix} \bigg)^T \; \begin{bmatrix} 
 \eta \\
 -a(\eta)
-\end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{see below} 
+\end{bmatrix} - \wt{a}(\phi)  \bigg\} && 
 \labelit \label{eqn:posterior_under_conjugate_prior}\\
 \end{align*}
 
@@ -911,15 +911,15 @@ where in (1) we reorganize the likelihood to isolate terms in $\eta$, and then t
 
 From this, we conclude
 \begin{enumerate} 
-\item The vector $\begin{bmatrix} 
+\item The vector $\wt{t}(\eta) = \begin{bmatrix} 
 \eta \\
 -a(\eta)
-\end{bmatrix}$ gives sufficient statistics of the conjugate prior, which can be used to identify it (or identify its non-existence).
+\end{bmatrix}$ gives sufficient statistics of the conjugate prior, which can be used to identify its (or identify its non-existence).
 \item We can decompose the prior hyperparameter as $\phi = \begin{bmatrix} 
 \tau \\
 n_0
 \end{bmatrix}$,   
-where $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.  Moreover, $\tau$ can be interpreted as the prior sufficient statistics and $n_0$ can be interpreted as the prior sample size.	
+where $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.  Moreover, $\tau$ can be interpreted as the prior sufficient statistics and $n_0$ can be interpreted as the prior sample size.  (The latter becomes more clear below in the case of i.i.d samples.)	
 \item  The prior-to-posterior conversion can be summarized with the following update rules
 \begin{align*}
 \tau & \to \tau + t(x) \\
@@ -928,10 +928,16 @@ n_0 & \to  n_0 + 1 \\
 \end{align*}
 \end{enumerate}
 
+\begin{question}
+Doesn't this derivation show that there are multiple possible conjugate priors, depending on the choice of $\wt{h}$? For instance, is a truncated normal conjugate whenever a normal is conjugate?	
+\end{question}
+
+
+\begin{remark}
 Note that for conjugate Bayesian models, the predictive posterior distribution, $p(x_{\text{new}} \cond x)$ is always tractable, because it has the same form (integrating a likelihood against the parameter distribution) as does the evidence term in Bayes law.   See Section \ref{sec:ef_general_formalism_jordan}.
+\end{remark}
 
-
-\paragraph{Multiple i.i.d samples.} Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we have:
+\subsubsection{General formalism for multiple i.i.d samples} Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we have:
 \[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^n h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^n t(x_i) - n \; a(\eta) \bigg\} \]
 as the likelihood (see Section \ref{sec:iid_samples_from_an_exponential_family}). In this case, the posterior under the conjugate prior \eqref{eqn:posterior_under_conjugate_prior} becomes
 
@@ -953,7 +959,10 @@ n_0 & \to  n_0 + n \\
 \labelit \label{eqn:general_formalism_prior_to_posterior_conversion}
 \end{align*}
 
-
+%\subsubsection{Application}
+%
+%In application, we don't often use 
+%
 
 \newpage 
  \appendix
