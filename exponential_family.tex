@@ -49,7 +49,7 @@ We can define an \textit{exponential family} as a set of probability distributio
  p_\eta(x) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
 \label{eqn:exponential_family_natural}
  \end{align}
-where $t : \X \to \R^p$ is the \textit{sufficient statistics function}, $h : \X \to \R$ is the \textit{carrier density}, $\eta \in \H \subset \R^p$ is the \textit{natural parameter},  and $a : H \to \R$ is a strictly convex and $C^{\infty}$ differentiable real-valued function known as the \textit{log normalizer} or \textit{log partition function};  that is $a(\eta) = \log Z(\eta)$ where 
+where $t : \X \to \R^p$ is the \textit{sufficient statistics function}, $h : \X \to \R$ is the \textit{carrier density}, $\eta \in H \subset \R^p$ is the \textit{natural parameter},  and $a : H \to \R$ is a strictly convex and $C^{\infty}$ differentiable real-valued function known as the \textit{log normalizer} or \textit{log partition function};  that is $a(\eta) = \log Z(\eta)$ where 
 \begin{equation}
 \label{eqn:partition_function}
  Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \mu(dx)	
@@ -65,10 +65,10 @@ We refer to $\mu$ as the \textit{base measure}.\footnote{Some presentations use 
 
 \begin{remark}
 Observe \cite{chuaXXXXstats} that without loss of generality, we can 
-\begin{alphabate}
-\item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $a(\eta)$ to $\wt{a}(\eta) = a(\eta) - a(0)$ results in an equivalent family.  
-\item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{t} = M t(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\begin{alphabate} 
 \item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^T t(x) - a(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu} = \ds\int h d\mu$. }
+\item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{t} = M t(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $a(\eta)$ to $\wt{a}(\eta) = a(\eta) - a(0)$ results in an equivalent family. 
 \end{alphabate}
 \label{rk:alternate_constructions_for_the_exponential_family}
 \end{remark}
@@ -135,7 +135,7 @@ In those notes,  we see
 \E [ \log \pi_k] &= \E [t_k(p)] \stackrel{1}{=} \df{\partial}{\partial \eta_k} a(\eta) \nonumber \\
 &=\Psi(\alpha_k) -  \Psi(\sum_k  \alpha_k) \label{eqn:expectation_of_log_probability} 
 \end{align}
-where (1) uses a well-known exponential family property and where $\Psi(\cdot)$ is the first derivative of the $\log \Gamma$ function.   It is known as the \textit{digamma function}.  $ $
+where (1) uses a well-known exponential family property (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}) and where $\Psi(\cdot)$ is the first derivative of the $\log \Gamma$ function.   It is known as the \textit{digamma function}.  $ $
 
 % See e.g., https://zhiyzuo.github.io/Exponential-Family-Distributions/
 \end{remark}
@@ -421,7 +421,7 @@ Consider how much easier this computation is than that of, say, \url{https://pro
 
 \begin{remark}{\remarktitle{Cross-entropy between two distributions which belong to different exponential families}}
 
-What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look like in the case that we we want to compute the cross-entropy between two distributions which belong to \textit{different} exponential families?
+What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look like in the case that we we want to compute the cross-entropy between two distributions which belong to \textit{different} exponential families (with the same support)?
 
 Let 
 \begin{align*}
@@ -907,7 +907,7 @@ t(x) \\
 \bigg\} \quad 
 \wt{h}(\eta) \exp \bigg\{ \phi^T \; \begin{bmatrix} 
 \eta \\
-a(\eta)
+-a(\eta)
 \end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{explained below} \\
 &= \wt{h}(\eta) \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
 t(x) \\
@@ -942,6 +942,7 @@ n_0 & \to  n_0 + 1 \\
 
 \begin{remark}
 As this derivation shows, there are multiple possible conjugate priors, depending on the choice of $\wt{h}$.   For instance, whenever the normal distribution is conjugate, so is the	truncated normal, since those distributions differ only in their carrier density (see Remark \ref{rk:truncated_normal_differs_from_normal_only_in_terms_of_carrier_density}.)  More generally, the prior density can be defined with respect to an arbitrarily-chosen dominating measure $\nu$ on $\Phi$; for a discussion, see  \href{https://stats.stackexchange.com/questions/176668/can-anyone-explain-conjugate-priors-in-simplest-possible-terms}{\blue{\underline{here}}}.
+\label{rk:conjugate_prior_can_have_any_desired_carrier_density}
 \end{remark}
 
 
@@ -954,22 +955,28 @@ Note that for conjugate Bayesian models, the predictive posterior distribution, 
 as the likelihood (see Section \ref{sec:iid_samples_from_an_exponential_family}). In this case, the posterior under the conjugate prior \eqref{eqn:posterior_under_conjugate_prior} becomes
 
 \begin{align*}
-p(\eta \cond \+x, \phi) &\propto \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
+p(\eta \cond \+x, \phi) & \propto \ds\sum_{i=1}^\infty p(x_i \cond \eta) \; p(\eta \cond \phi) \\
+&\propto \exp \bigg\{ \bigg( \phi + 
+\begin{bmatrix} 
 \sum_{i=1}^n t(x_i) \\
 n \\
-\end{bmatrix} \bigg)^T \; \begin{bmatrix} 
+\end{bmatrix} \bigg)^T \; 
+\begin{bmatrix} 
 \eta \\
 -a(\eta)
-\end{bmatrix} - \wt{a}(\phi)  \bigg\} \\
+\end{bmatrix} 
+- \wt{a}(\phi)  \bigg\} 
+\labelit \label{eqn:general_formalism_prior_to_posterior_conversion_after_multiple_iid_samples}
 \end{align*}
 
 
 From this, we see that under multiple i.i.d samples, the prior-to-posterior conversion can be summarized with the following update rules
-\begin{align*}
+\begin{subequations}
+	\begin{align}
 \tau & \to \tau + \ds\sum_{i=1}^n t(x_i) \\
-n_0 & \to  n_0 + n \\
-\labelit \label{eqn:general_formalism_prior_to_posterior_conversion}
-\end{align*}
+n_0 & \to  n_0 + n 
+\end{align} \label{eqn:general_formalism_prior_to_posterior_conversion}
+\end{subequations}
 
 \subsubsection{Application: Finding conjugate priors (and identifying when there isn't one)}
 
@@ -979,7 +986,7 @@ In application, we don't often use $\begin{bmatrix}
 \end{bmatrix}$ to identify the sufficient statistics, but the set of basis functions necessary to construct $\begin{bmatrix} 
 \eta \\
 -a(\eta)
-\end{bmatrix}$. 
+\end{bmatrix}$. Said differently, below we show how a (semi-)conjugate prior can be determined by simply rewriting the likelihood as a function of the parameter for which we want to set the (semi-)conjugate prior.  
 
 \begin{example}
 Let $X \sim \N(\mu, \beta^{-1})$, where we parameterize in terms of the precision parameter $\beta$.  The log pdf under the natural parameterization is given by 
@@ -1004,7 +1011,7 @@ Suppose we want to find a (semi-)conjugate prior for the precision parameter $\b
 \log \beta
 \end{bmatrix} 
   \]
- which is the sufficient statistics function of the gamma distribution.  Thus, a conjugate prior for the precision parameter is the gamma distribution.
+ which is the sufficient statistics function of the gamma distribution.  Thus, a conjugate prior for the precision parameter is the gamma distribution. (Note that a conjugate prior can have any desired carrier density, so we can freely set $h \equiv 1$; see Remark \ref{rk:conjugate_prior_can_have_any_desired_carrier_density}.)\redfootnote{Well, technically, the carrier density must be chosen such that the ambient measure dominates the prior distribution.  I think that will always hold regardless of choice of $h$ (since $h$ basically is a Radon-Nikodym derivative), but I should double check this.}
 \end{example}
 
 
@@ -1022,9 +1029,16 @@ Suppose we want to find a (semi-)conjugate prior for the shape parameter $\alpha
 \Gamma(\alpha) 
 \end{bmatrix} 
   \]
-There is no exponential family distribution with these sufficient statistics. \red{TODO: Explain.}
+There is no exponential family distribution with these sufficient statistics.\footnote{This is stated by \cite{winn2005variational}, although I am not currently sure why this is true.} \red{TODO: Explain.}
 \end{example}
 
+
+\subsection{Conjugate-exponential Bayesian networks}
+
+\input{conjugate_exponential_bayesian_nets}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage 
  \appendix
@@ -1145,6 +1159,102 @@ However, these messages have an intuitive form when considered in terms of the n
 \label{fig:lemma_twelve_bickson}
 \end{figure}
 
+\section{The Inverse Wishart Distribution} \label{sec:inverse_wishart_distribution}
+ 
+The Inverse Wishart is a distribution on symmetric,  positive definite matrices.     The Inverse Wishart distribution,  denoted $\InverseWishart(\nu, \+\Psi)$,  has density
+
+\begin{align}
+p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+\Psi) } 
+\label{eqn:inverse_wishart_density}
+\end{align}
+where $\+\Sigma \succ 0$ and $\nu > d-1$ to have a proper prior.     The expected value of an Inverse Wishart random variable parametrized as in \eqref{eqn:inverse_wishart_density} is given by $\E[\+\Sigma] = \frac{\+\Psi}{\nu -d -1}$.   
+
+\begin{remark}{\remarktitle{Interpreting the parameters of the Inverse Wishart}}
+\label{rk:inverse_wishart_parameter_interpretation}
+Note that the parameters of the Inverse Wishart can be interpreted (as per conjugacy;  see \eqref{eqn:Sigma_cc_normal_model_cond_conj_prior}) in the following way: the covariance was estimated from $\nu$ observations with a residual sum of squares (a.k.a.  sum of pairwise deviation products) $\+\Psi$. 
+ 
+\end{remark}
+
+Remark \ref{rk:inverse_wishart_parameter_interpretation} also provides inuition on the expected value.      For a visualization of how samples are affected by the parameters,  see \cite{hughesXXXXinverse}. 
+
+\begin{remark}{\remarktitle{Peter Hoff's notation for the Inverse Wishart: A warning}}
+\label{rk:peter_hoffs_notation_for_inverse_wishart}
+Note that some authors (e.g.  \cite{hoff2009first},  pp.257) use the notation $\InverseWishart(\nu,  \+M)$ to refer to the density under reparametrization
+\begin{align}
+p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+M^{-1}) } 
+\label{eqn:inverse_wishart_density_hoff}
+\end{align}
+and therefore appropriately altered normalization constant.  The expected value of an Inverse Wishart random variable parametrized as in   \eqref{eqn:inverse_wishart_density_hoff},  is given by $\E[\+\Sigma] = \frac{\+M^{-1}}{\nu -d -1}$.     
+
+However,  Hoff later introduces the reparametrization $\+S := \+M^{-1}$,  and so writes $\InverseWishart(\nu, \+S^{-1})$ to mean 
+\begin{align}
+p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+S) } 
+\label{eqn:inverse_wishart_density_hoffs_alternate}
+\end{align}
+which is \eqref{eqn:inverse_wishart_density}, and which we would write as $\InverseWishart(\nu, \+S)$.
+ 
+\end{remark}
+
+\begin{remark}{\remarktitle{Comparing parametrizations}}
+Regarding Remark \ref{rk:peter_hoffs_notation_for_inverse_wishart},  prefer our notation because 
+\begin{itemize}
+\item It is the natural parameterization (see Example \ref{ex:inverse_wishart_as_ef}).
+\item It lets $\+\Psi$ be interpreted directly as a prior residual sum of squares (see Remark \ref{rk:inverse_wishart_parameter_interpretation}). 
+\item It matches the parametrization used throughout Wikipedia,  e.g. in its conjugacy tables.
+\end{itemize}
+ 
+\end{remark}
+
+
+
+\subsection{Relation to other distributions}
+The Wishart distribution has the same support as the Inverse Wishart;  however,  the Wishart does not give a conditionally conjugate prior on the covariance of a normal distribution.    The Inverse Wishart density can be derived from the Wishart via the multivariate change of variables  \cite{wolpert2011change}. \footnote{It is claimed in Wikipedia that if $\+X \sim \Wishart(\nu,  \+\Psi)$  then $\+X^{-1} \sim \InverseWishart(\nu,  \+\Psi^{-1})$.   I almost was able to show this using the multivariate change of variables  \cite{wolpert2011change} along with (15.15) of \cite{dwyer1967some},  but I  was off by a negative when attempting to combine the two terms with $|\+X^{-1}|$ raised to an exponent.}\redfootnote{TO DO: Provide derivation.}
+
+In particular,  we have the relation $\+\Sigma \sim \InverseWishart(\nu, \+\Psi) \implies \+\Sigma^{-1} \sim \Wishart(\nu,  \+\Psi^{-1})$.    Thus,  if covariance matrix $\+\Sigma$ has this Inverse Wishart distribution,  then we obtain the expected value of the precision matrix as $\E[\+\Sigma^{-1}] = \nu \+\Psi^{-1}$.
+
+The inverse Wishart can be seen as a generalization of the inverse gamma distribution to multiple dimensions.\redfootnote{TODO: fill in.   Make explicit how it is a generalization.}
+
+
+\subsection{Entropy and relative entropy}
+
+Let $\+\Sigma$ have an Inverse Wishart distribution (parametrized to have density \eqref{eqn:inverse_wishart_density}).  Then its entropy is given by \cite{gupta2010parametric}:
+
+\begin{align*}
+\H(\+\Sigma) = \ln \Gamma_d \bigg(\frac{\nu}{2} \bigg) + \frac{\nu d}{2}
++ \frac{d+1}{2} \ln \bigg| \frac{\+\Psi}{2} \bigg| - \frac{\nu + d+ 1}{2} \sum_{i=1}^d \psi \bigg( \frac{\nu - d + i}{2} \bigg)
+\end{align*}
+where $\psi$ denotes the digamma function,  $\psi(x) = \frac{d}{dx} \Gamma(x)$.\redfootnote{It is unfortunate that in our notation,  $\+\Psi$ and $\psi$ mean completely different things;  fix this.}
+
+The relative entropy between two Inverse Wishart distributions $p_1, p_2$ with parameters $\nu_1,  \+\Psi_1$ and $\nu_2,  \+\Psi_2$ is given by \cite{gupta2010parametric}:
+
+\begin{align*}
+\KL{p_1}{p_2} &= \ln \bigg( \df{\Gamma_d ( \frac{\nu_2}{2})}{\Gamma_d (\frac{\nu_1}{2})} \bigg) + \df{\nu_1}{2} \tr(\+\Psi_1^{-1} \+\Psi_2) - \df{\nu_1 d}{2} - \df{\nu_2}{2} \ln \bigg| \+\Psi_1^{-1} \+\Psi_2 \bigg| - \df{\nu_2 - \nu_1}{2}\sum_{i=1}^d \psi \bigg( \frac{\nu_1 - d + i}{2}  \bigg)
+\end{align*}
+
+\subsection{Sampling}
+
+A sample $\+\Sigma$ from the $\InverseWishart(\nu, \+\Psi)$ distribution (using the natural parametrization of \eqref{eqn:inverse_wishart_density}) can be obtained by the following scheme\redfootnote{TODO: Provide derivation of this scheme.  See perhaps \url{https://www.math.wustl.edu/~sawyer/hmhandouts/Wishart.pdf}.} \cite{hoff2009first}:
+
+\begin{enumerate}
+\item Sample $\+z_1, ..., \+z_{\nu} \iid \N (\+0,  \+\Psi^{-1})$
+\item Calculate $\+Z^T \+Z = \sum_{i=1}^\nu \+z_i \+z_i^T$.
+\item Set $\+\Sigma = ( \+Z^T \+Z )^{-1}$.
+\end{enumerate}
+The intuition is that the Inverse Wishart models covariance matrices as an inverse sum of squares (again, see Remark \ref{rk:inverse_wishart_parameter_interpretation}).  
+
+\subsection{Evaluation as a model for covariance matrices}
+
+The  Inverse Wishart is a popular choice for modeling covariance matrices (e.g.  see \cite{hoff2009first}),  due to at least the fact that is a  conditionally conjugate prior on the covariance of a normal distribution.   (See Section \ref{sec:normal_data_with_non_conjugate_prior}.)   It seems to me that a weakly informative prior could be constructed by setting  $\nu = d+2$ (the smallest integer for which $\nu$ is in the parameter space) and $\+\Psi = (\nu -d - 1) \+I = \+I$.   This would presumably be reasonable at least if one expected unit variances and wanted to make a prior assumption of independence across dimensions.
+
+Some problems with the Inverse Wishart as a model for covariance matrices is summarized in  \cite{alvarez2014bayesian}.    We highlight that:
+\begin{enumerate}
+\item  When $\nu  > 1$,   the implied scaled inv-$\chi^2$ distribution on the individual variances has extremely low density in the region near zero.   
+\item The prior imposes a dependency between the correlations and the variances. In particular,  larger variances are associated with absolute values of the correlations near 1 while small variances
+are associated with correlations near zero.    
+\end{enumerate}
+For additional discussion on the problems with Inverse Wishart,  especially when used in hierarchical models,  and for a remedy using a half-t distribution that also has a conditionally conjugate construction,  see \cite{wojnowiczXXXXcategorical}.
+
+
 \section{General Conjugacy Formalism: Alternate Approaches}
 
 \subsection{General Conjugacy Formalism: Alternate Approach 1\footnote{This argument follows the argument (and notation) of \cite{johnson2016composing}, Appendix B.  As of now, I find it more intuitive then the argument given in the main body.}}
@@ -1199,7 +1309,23 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}, n_0 + N)}{H(\tau_{\text{po
 
 \red{TODO:  Redo some of the examples using the exponential family conjugate prior formalism.    A possibly useful resource in the giant table at \url{https://en.wikipedia.org/wiki/Exponential_family}.}
 
-\section{More on Bayesian multivariate linear regression}  \label{sec:more_bayesian_multivariate_linear_regression} 
+\section{Bayesian networks} \label{sec:bayesian_networks}
+
+
+\subsection{Overview}
+
+\input{/Users/mwojno01/Research/Learning/minis/pgms/bayesian_network}
+
+
+
+\subsection{Markov blankets} \label{sec:markov_blankets}
+
+\input{/Users/mwojno01/Research/Learning/minis/pgms/markov_blankets_and_complete_conditionals}
+
+
+
+
+\section{Bayesian multivariate linear regression: Alternate derivations}  \label{sec:more_bayesian_multivariate_linear_regression} 
 
 
 Below we give two alternate proofs for the posterior of the regression weights in multivariate linear regression,  compared to what was given in Proposition \ref{prop:bayes_linear_regression_with_known_ssq}.  
@@ -1298,102 +1424,6 @@ The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
 
 Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$
 \end{proof}
-
-\section{The Inverse Wishart Distribution} \label{sec:inverse_wishart_distribution}
- 
-The Inverse Wishart is a distribution on symmetric,  positive definite matrices.     The Inverse Wishart distribution,  denoted $\InverseWishart(\nu, \+\Psi)$,  has density
-
-\begin{align}
-p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+\Psi) } 
-\label{eqn:inverse_wishart_density}
-\end{align}
-where $\+\Sigma \succ 0$ and $\nu > d-1$ to have a proper prior.     The expected value of an Inverse Wishart random variable parametrized as in \eqref{eqn:inverse_wishart_density} is given by $\E[\+\Sigma] = \frac{\+\Psi}{\nu -d -1}$.   
-
-\begin{remark}{\remarktitle{Interpreting the parameters of the Inverse Wishart}}
-\label{rk:inverse_wishart_parameter_interpretation}
-Note that the parameters of the Inverse Wishart can be interpreted (as per conjugacy;  see \eqref{eqn:Sigma_cc_normal_model_cond_conj_prior}) in the following way: the covariance was estimated from $\nu$ observations with a residual sum of squares (a.k.a.  sum of pairwise deviation products) $\+\Psi$. 
- 
-\end{remark}
-
-Remark \ref{rk:inverse_wishart_parameter_interpretation} also provides inuition on the expected value.      For a visualization of how samples are affected by the parameters,  see \cite{hughesXXXXinverse}. 
-
-\begin{remark}{\remarktitle{Peter Hoff's notation for the Inverse Wishart: A warning}}
-\label{rk:peter_hoffs_notation_for_inverse_wishart}
-Note that some authors (e.g.  \cite{hoff2009first},  pp.257) use the notation $\InverseWishart(\nu,  \+M)$ to refer to the density under reparametrization
-\begin{align}
-p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+M^{-1}) } 
-\label{eqn:inverse_wishart_density_hoff}
-\end{align}
-and therefore appropriately altered normalization constant.  The expected value of an Inverse Wishart random variable parametrized as in   \eqref{eqn:inverse_wishart_density_hoff},  is given by $\E[\+\Sigma] = \frac{\+M^{-1}}{\nu -d -1}$.     
-
-However,  Hoff later introduces the reparametrization $\+S := \+M^{-1}$,  and so writes $\InverseWishart(\nu, \+S^{-1})$ to mean 
-\begin{align}
-p(\+\Sigma) \propto | \+\Sigma|^{-(\nu+d +1) /2}  \exp \bb{ -\df{1}{2} \tr ( \+\Sigma^{-1} \+S) } 
-\label{eqn:inverse_wishart_density_hoffs_alternate}
-\end{align}
-which is \eqref{eqn:inverse_wishart_density}, and which we would write as $\InverseWishart(\nu, \+S)$.
- 
-\end{remark}
-
-\begin{remark}{\remarktitle{Comparing parametrizations}}
-Regarding Remark \ref{rk:peter_hoffs_notation_for_inverse_wishart},  prefer our notation because 
-\begin{itemize}
-\item It is the natural parameterization (see Example \ref{ex:inverse_wishart_as_ef}).
-\item It lets $\+\Psi$ be interpreted directly as a prior residual sum of squares (see Remark \ref{rk:inverse_wishart_parameter_interpretation}). 
-\item It matches the parametrization used throughout Wikipedia,  e.g. in its conjugacy tables.
-\end{itemize}
- 
-\end{remark}
-
-
-
-\subsection{Relation to other distributions}
-The Wishart distribution has the same support as the Inverse Wishart;  however,  the Wishart does not give a conditionally conjugate prior on the covariance of a normal distribution.    The Inverse Wishart density can be derived from the Wishart via the multivariate change of variables  \cite{wolpert2011change}. \footnote{It is claimed in Wikipedia that if $\+X \sim \Wishart(\nu,  \+\Psi)$  then $\+X^{-1} \sim \InverseWishart(\nu,  \+\Psi^{-1})$.   I almost was able to show this using the multivariate change of variables  \cite{wolpert2011change} along with (15.15) of \cite{dwyer1967some},  but I  was off by a negative when attempting to combine the two terms with $|\+X^{-1}|$ raised to an exponent.}\redfootnote{TO DO: Provide derivation.}
-
-In particular,  we have the relation $\+\Sigma \sim \InverseWishart(\nu, \+\Psi) \implies \+\Sigma^{-1} \sim \Wishart(\nu,  \+\Psi^{-1})$.    Thus,  if covariance matrix $\+\Sigma$ has this Inverse Wishart distribution,  then we obtain the expected value of the precision matrix as $\E[\+\Sigma^{-1}] = \nu \+\Psi^{-1}$.
-
-The inverse Wishart can be seen as a generalization of the inverse gamma distribution to multiple dimensions.\redfootnote{TODO: fill in.   Make explicit how it is a generalization.}
-
-
-\subsection{Entropy and relative entropy}
-
-Let $\+\Sigma$ have an Inverse Wishart distribution (parametrized to have density \eqref{eqn:inverse_wishart_density}).  Then its entropy is given by \cite{gupta2010parametric}:
-
-\begin{align*}
-\H(\+\Sigma) = \ln \Gamma_d \bigg(\frac{\nu}{2} \bigg) + \frac{\nu d}{2}
-+ \frac{d+1}{2} \ln \bigg| \frac{\+\Psi}{2} \bigg| - \frac{\nu + d+ 1}{2} \sum_{i=1}^d \psi \bigg( \frac{\nu - d + i}{2} \bigg)
-\end{align*}
-where $\psi$ denotes the digamma function,  $\psi(x) = \frac{d}{dx} \Gamma(x)$.\redfootnote{It is unfortunate that in our notation,  $\+\Psi$ and $\psi$ mean completely different things;  fix this.}
-
-The relative entropy between two Inverse Wishart distributions $p_1, p_2$ with parameters $\nu_1,  \+\Psi_1$ and $\nu_2,  \+\Psi_2$ is given by \cite{gupta2010parametric}:
-
-\begin{align*}
-\KL{p_1}{p_2} &= \ln \bigg( \df{\Gamma_d ( \frac{\nu_2}{2})}{\Gamma_d (\frac{\nu_1}{2})} \bigg) + \df{\nu_1}{2} \tr(\+\Psi_1^{-1} \+\Psi_2) - \df{\nu_1 d}{2} - \df{\nu_2}{2} \ln \bigg| \+\Psi_1^{-1} \+\Psi_2 \bigg| - \df{\nu_2 - \nu_1}{2}\sum_{i=1}^d \psi \bigg( \frac{\nu_1 - d + i}{2}  \bigg)
-\end{align*}
-
-\subsection{Sampling}
-
-A sample $\+\Sigma$ from the $\InverseWishart(\nu, \+\Psi)$ distribution (using the natural parametrization of \eqref{eqn:inverse_wishart_density}) can be obtained by the following scheme\redfootnote{TODO: Provide derivation of this scheme.  See perhaps \url{https://www.math.wustl.edu/~sawyer/hmhandouts/Wishart.pdf}.} \cite{hoff2009first}:
-
-\begin{enumerate}
-\item Sample $\+z_1, ..., \+z_{\nu} \iid \N (\+0,  \+\Psi^{-1})$
-\item Calculate $\+Z^T \+Z = \sum_{i=1}^\nu \+z_i \+z_i^T$.
-\item Set $\+\Sigma = ( \+Z^T \+Z )^{-1}$.
-\end{enumerate}
-The intuition is that the Inverse Wishart models covariance matrices as an inverse sum of squares (again, see Remark \ref{rk:inverse_wishart_parameter_interpretation}).  
-
-\subsection{Evaluation as a model for covariance matrices}
-
-The  Inverse Wishart is a popular choice for modeling covariance matrices (e.g.  see \cite{hoff2009first}),  due to at least the fact that is a  conditionally conjugate prior on the covariance of a normal distribution.   (See Section \ref{sec:normal_data_with_non_conjugate_prior}.)   It seems to me that a weakly informative prior could be constructed by setting  $\nu = d+2$ (the smallest integer for which $\nu$ is in the parameter space) and $\+\Psi = (\nu -d - 1) \+I = \+I$.   This would presumably be reasonable at least if one expected unit variances and wanted to make a prior assumption of independence across dimensions.
-
-Some problems with the Inverse Wishart as a model for covariance matrices is summarized in  \cite{alvarez2014bayesian}.    We highlight that:
-\begin{enumerate}
-\item  When $\nu  > 1$,   the implied scaled inv-$\chi^2$ distribution on the individual variances has extremely low density in the region near zero.   
-\item The prior imposes a dependency between the correlations and the variances. In particular,  larger variances are associated with absolute values of the correlations near 1 while small variances
-are associated with correlations near zero.    
-\end{enumerate}
-For additional discussion on the problems with Inverse Wishart,  especially when used in hierarchical models,  and for a remedy using a half-t distribution that also has a conditionally conjugate construction,  see \cite{wojnowiczXXXXcategorical}.
-
 
 
 \bibliography{references_exponential_family}{}

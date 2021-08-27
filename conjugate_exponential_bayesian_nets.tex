@@ -1,0 +1,36 @@
+
+
+\begin{definition}
+We define a \textit{conjugate-exponential Bayesian network} as a Bayesian network (see \eqref{eqn:joint_factorization_for_bayes_net}\footnote{For an overview of Bayesian networks, see Section \ref{sec:bayesian_networks}.})  where the following conditions hold for all nodes $v \in V$.\footnote{Our Definition \ref{def:conjugate_exponential_bayesian_network} closely parallels the so-called conjugate-exponential Bayesian network defined in \cite{winn2005variational} (see pp.666), but their definition is a bit looser.  In particular, it is unclear if they want the conditional distributions over $\set{\parents_v}$ to be \textit{jointly} conjugate to the conditional distribution over $x_v$, or just \textit{individually} (i.e. semi-)conjugate.  I believe the latter was the intent -- but I am not currently completely sure.}  
+\begin{enumerate}
+%\item The conditional distributions of all random variables given their parents are exponential families.   [In other words, all factors $p(x_j \cond \parents_j$) from the definition of Bayesian networks \eqref{eqn:joint_factorization_for_bayes_net} are exponential families.]
+\item $p(x_v \cond \parents_v$) is an exponential family.
+\item For all $k \in \parents_v$, \; $p(x_k \cond \parents_k)$ is a semi-conjugate prior to $p(x_v \cond \parents_v)$.
+\end{enumerate}
+\label{def:conjugate_exponential_bayesian_network}
+\end{definition}
+
+We apply the general conjugacy formalism \eqref{eqn:general_formalism_prior_to_posterior_conversion_after_multiple_iid_samples} to Bayesian networks as well.  Consider a node of interest, $y$.  From Proposition \ref{prop:complete_conditional_depends_only_on_markov_blanket}, we know that $y$ depends only on $\parents_y$, $\children_y$, and $\coparents_y$.   Using the exponential family forms assumed by Definition \ref{def:conjugate_exponential_bayesian_network}, we obtain the following expressions
+
+\begin{align*}
+\intertext{Prior}
+\log p(y \cond \parents_y) &= \bigg[\eta_y(\parents_y) \bigg]^T t_y(y) - a_y(\parents_y) + \log h_y(y) && \\
+\intertext{Likelihood}
+\log p( \children_y &\cond y, \coparents_y) =\ds\sum_{i \in \children_y} \log p( x_i \cond y, \coparents_y) && \tinytext{def. Bayesian network} \\
+&=\ds\sum_{i \in \children_y}  \bigg( \eta_{x_i}(y, \coparents_y)^T t_{x_i}(x_i) - a_{x_i}(y, \coparents_y) + \log h_{x_i}(x_i) \bigg) && \tinytext{Def. \ref{def:conjugate_exponential_bayesian_network}, item 1} \\ %\eta_{\child_{y,i}} (y, \coparents_y)^T t_{\child_{y,i}({\child_{y,i}) - a_{{\child_{y,i}}(y, \coparents_y) + \log h_{\child_{y,i}(\child_{y,i}) && \\
+& \stackrel{1}{=}\ds\sum_{i \in \children_y}  f_i(x_i, \coparents_y)^T t_y(y) - g_i(x_i, \coparents_y)  && \tinytext{explained below}\\
+& \stackrel{2}{=}\ds\sum_{i \in \children_y}  \bigg[ m_i \bigg(t_{x_i}(x_i), \+t_{\coparents_y}(\coparents_y) \bigg) \bigg]^T t_y(y) - g_i(x_i, \coparents_y)  && \tinytext{explained below}\\
+\intertext{Posterior}
+\log p(y \cond \children_y, \parents_y, \coparents_y) &= \log p(y \cond \parents_y) + \log p( \children_y \cond y, \coparents_y)  + \text{const.} && \tinytext{Bayes' law} \\
+&= \bigg[ \eta_y(\parents_y) +  \ds\sum_{i \in \children_y} m_i \bigg(t_{x_i}(x_i), \+t_{\coparents_y}(\coparents_y) \bigg) \bigg]^T t_y(y) + \log h_y(y) + \text{const.}
+\end{align*}
+where in Equation (1) we use the same trick as in \eqref{eqn:posterior_under_conjugate_prior}, re-expressing each unit likelihood in terms of the sufficient statistics of the parent ($y$) rather than in terms of the child ($x_i$). This produces some new functions, $f$ and $g$.  However, $f$ is multilinear in the sufficient statistics of its arguments\redfootnote{TO DO: Prove the multilinearity.  It is mentioned in both \cite{winn2005variational} and \cite{johnson2016composing}.}. In Equation 2, we attempt to make this more explicit by writing 
+$f_i(x_i, \coparents_y) = m_i \bigg(t_{x_i}(x_i), \+t_{\coparents_y}(\coparents_y) \bigg)$,  where $t_{\coparents_y}(\coparents_y)$ is shorthand for $\set{t_{x_k}(x_k)}_{k \in \coparents_y} $.  
+ 
+ %& \stackrel{2}{=}\ds\sum_{i \in \children_y}  \bigg[ m_i \bigg(t_{x_i}(x_i), \set{t_{x_k}(x_k)}_{k \in \coparents_y} \bigg)\bigg]^T t_y(y) - g_i(x_i, \coparents_y)  && \tinytext{explained below}\\
+ 
+ 
+The prior-to-posterior conversion can be summarized with the following update rule
+\[ 
+\eta_y(\parents_y)  \to \eta_y(\parents_y) +  \ds\sum_{i \in \children_y} m_i \bigg(t_{x_i}(x_i), \+t_{\coparents_y}(\coparents_y) \bigg) \] 
+
