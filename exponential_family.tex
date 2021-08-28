@@ -42,65 +42,8 @@
 We are interested in  exponential families primarily because they makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.    This is true regardless of whether we're doing frequentist inference (such as maximum likelihood) or Bayesian inference.    Bayesian inference with exponential family likelihoods tends to be especially nice,  as all exponential family likelihoods have conjugate priors,  and distributions with conjugate priors are often also exponential families \cite{bernardo2009bayesian}. \redfootnote{TODO:  Get clearer on the relationship.  There is a brief discussion on this in \cite{bernardo2009bayesian}}   More complicated models may not be exponential families,  but may have exponential family complete conditional distributions;  in such situation,  we can appeal to exponential family formalisms to more easily work out inference schemes for expectation maximization,  variational inference,  or Gibbs sampling.   
 
 \subsection{Definitions}
-\begin{definition}
-We can define an \textit{exponential family} as a set of probability distributions, indexed by natural parameter $\eta \in H$,%\redfootnote{TODO: Add restriction on parameter space so that the density is normalizable}  
- whose probability density functions with respect to measure $\mu$ on $\X$ have the following form
-\begin{align}
- p_\eta(x) = h(x) \exp \{ \eta^T t(x) - a(\eta)\} 
-\label{eqn:exponential_family_natural}
- \end{align}
-where $t : \X \to \R^p$ is the \textit{sufficient statistics function}, $h : \X \to \R$ is the \textit{carrier density}, $\eta \in H \subset \R^p$ is the \textit{natural parameter},  and $a : H \to \R$ is a strictly convex and $C^{\infty}$ differentiable real-valued function known as the \textit{log normalizer} or \textit{log partition function};  that is $a(\eta) = \log Z(\eta)$ where 
-\begin{equation}
-\label{eqn:partition_function}
- Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; \mu(dx)	
-\end{equation}
-%and so $a$ is determined by the other components of density. 
-%TODO add in interpetation as \textit{cumulative generating function};
 
-
-We refer to $\mu$ as the \textit{base measure}.\footnote{Some presentations use the term ``base measure" to refer to $h(x)$, but that is an abuse of notation, as $h$ is not a measure.}  Typically $\mu$ is the Lesbesgue measure or counting measure.  If $\mu$ is the Lesbesgue measure, then the density $p_\eta$ is a probability density function.  If $\mu$ is the counting measure, then the density $p_\eta$ is a probability mass function.\footnote{So measure theory is off-putting, just take $\mu$ to be the Lesbesgue measure for continuous random variables, in which case one can remove it from the equation, and simply write $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $, and take $\mu$ to be the counting measure for discrete random variables, in which case one can write $Z(\eta) := \ds\sum_{x \in \X} h(x) \exp \{ \eta^T t(x)  \} $. Indeed, we will make precisely these assumptions throughout the document, unless otherwise noted. }  %\footnote{Some presentations assume Lebesgue measure on $\X$, and write \eqref{eqn:partition_function} more simply as $Z(\eta) := \ds\int  h(x) \exp \{ \eta^T t(x)  \} \; dx $.  In contrast, presentations which allow for general measures $\mu$ (e.g. \cite{johnson2016composing}, or this one)  can simply absorb $h(x)$ into the measure $\mu$ and write \eqref{eqn:partition_function} as $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \mu (dx) $.  In the former case, the term \textit{carrier density} refers to $h(x)$ -- although this is an abuse of notation.  We use the term \textit{base measure} refers to $\mu$. Some presentations use the term ``base measure" to refer to $h(x)$, but that is an abuse of notation, as $h$ is not a measure.}  
-%\redfootnote{TODO: Align more closely with Jordan, who uses integration against probability measure here.  He remarks on this somewhere in his exponential family lecture notes.   What also may be helpful is this beautiful excerpt from pp.38 of \cite{wainwright2008graphical}: `` $[...]$ we represent the probability distribution as a density $p$ absolutely continuous with respect to some measure $\eta$.   This base measure $\eta$ might be the counting measure on $\set{0, 1, ..., r-1}$,  in which case $p$ is a probability mass function; alternatively, for a continuous random vector, the base measure $\eta$ could be the ordinary Lebesgue measure on $\R$."}  
-\label{def:exponential_family}
-\end{definition} 
-
-\begin{remark}
-Observe \cite{chuaXXXXstats} that without loss of generality, we can 
-\begin{alphabate} 
-\item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^T t(x) - a(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu} = \ds\int h d\mu$. }
-\item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{t} = M t(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
-\item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $a(\eta)$ to $\wt{a}(\eta) = a(\eta) - a(0)$ results in an equivalent family. 
-\end{alphabate}
-\label{rk:alternate_constructions_for_the_exponential_family}
-\end{remark}
-
-
-\begin{definition}
-The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $H:=\set{\eta : Z(\eta) < \infty}$.
-\end{definition}
-
-\begin{definition}
-An exponential family is said to be \textit{regular} if the natural parameter space is an open set.
-\end{definition}
-
-One can \textit{reparameterize} a regular exponential family with some other coordinates $\theta$.  If one writes the natural parameter as a continuous function $\eta(\theta)$, then the density \eqref{eqn:exponential_family_natural} becomes
-\begin{align}
-\label{eqn:exponential_family}
- p_\theta(x) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\eta(\theta))\} 
- \end{align}
- The reparameterized family is regular as well, since $\Theta := \eta^{-1}(H)$ is open. 
-
-
-\begin{remark}
-Exponential family members can have intractable normalization constants.  Consider, for example,  the Ising model.  See pp. 3 of \cite{taylorXXXXmultiparameter}.
-\end{remark}
-
-
-\begin{definition}
-An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
-\end{definition}
-
-  An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify, and state how to rectify. Also demonstrate the importance of this.} 
-
+\input{definitions_exponential_family}
 
 \subsection{Examples}
 
@@ -506,12 +449,8 @@ This is why an EM iteration is often described and/or implemented as performing 
 \red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \theta, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
  
  \section{Conjugate and semi-conjugate models} \label{sec:conjugate_exponential_family_models}
- 
-Conjugacy can be defined as follows \cite{gelman2013bayesian}. If $\mathcal{F}$ is a class of sampling distributions and $\mathcal{P}$ is a class of prior distributions for $\theta$, then the class $\mathcal{P}$ is \textit{conjugate} for $\mathcal{F}$ if
-\[  p(\theta \cond y ) \in \mathcal{P} \; \text{for all} \; p(\cdot \cond \theta) \in \mathcal{F} \; \text{and} \; p(\cdot) \in \mathcal{P} \]
 
-Conditional conjugacy (sometimes called semi-conjugacy) can be defined similarly  \cite{gelman2013bayesian}.  If $\mathcal{F}$ is a class of sampling distributions and $\mathcal{P}$ is a class of prior distributions for $\theta \cond \phi$, then the class $\mathcal{P}$ is \textit{conditionally conjugate} for $\mathcal{F}$ if
-\[  p(\theta \cond \phi, y) \in \mathcal{P} \; \text{for all} \; p(\cdot \cond \theta, \phi) \in \mathcal{F} \; \text{and} \; p(\cdot \cond \phi) \in \mathcal{P} \]
+\input{conjugacy_and_semi_conjugacy}
 
 \begin{remark}{\remarktitle{On conditional conjugacy}}
 In other words,  a family of prior distributions for a parameter is called conditionally conjugate if the conditional posterior distribution (often called the \textit{complete conditional}),  given the data and all other parameters in the model,  is also in that class  \cite{gelman2006prior}. \redfootnote{Add some notes,  or refer back to notes from regular conjugacy (once they're created),  pointing out how this definition can be vapid,  and also how conjugate priors are not unique. }    In Section \ref{sec:normal_data_with_non_conjugate_prior}, we give perhaps the simplest example of a conditionally conjugate model.
@@ -883,159 +822,9 @@ The hierarchical linear regression model \eqref{eqn:hierarchical_linear_regressi
 
 \subsection{General formalism} \label{sec:ef_general_formalism}
 
-Let us write the data model's density $p(x \cond \eta)$ in exponential family form, and assume that the prior $p(\eta \cond \phi)$ has an exponential family construction as well.  
-\begin{align*}
-p(x \cond \eta) &= h(x) \exp \{\eta^T t(x) - a(\eta)   \}	 \\
-p(\eta \cond \phi) &= \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	
-\end{align*}
-We use the tilde to denote that the carrier density $h$, sufficient statistics function $t$, and log normalizer $a$ can differ for these densities.  
-
-Our goal is to find the form of a conjugate prior, given the form of the data model.    To do this, we work with the posterior 
-
-\begin{align*}
-p(\eta \cond x, \phi) & \propto p(x \cond \eta) \quad p(\eta \cond \phi) && \tinytext{bayes law}  \\
-&\propto  \cancel{h(x)} \exp \{\eta^T t(x) - a(\eta)  \}  \quad \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	&& \tinytext{e.f. form; constant of prop.}\\
-& \stackreltext{1}{=} \exp \bigg\{
-\begin{bmatrix} 
-t(x) \\
-1 \\
-\end{bmatrix}^T
-\begin{bmatrix} 
-\eta \\
--a(\eta)
-\end{bmatrix}
-\bigg\} \quad 
-\wt{h}(\eta) \exp \bigg\{ \phi^T \; \begin{bmatrix} 
-\eta \\
--a(\eta)
-\end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{explained below} \\
-&= \wt{h}(\eta) \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
-t(x) \\
-1 \\
-\end{bmatrix} \bigg)^T \; \begin{bmatrix} 
-\eta \\
--a(\eta)
-\end{bmatrix} - \wt{a}(\phi)  \bigg\} && 
-\labelit \label{eqn:posterior_under_conjugate_prior}\\
-\end{align*}
-
-where in (1) we reorganize the likelihood to isolate terms in $\eta$, and then take $\wt{t}(\eta)$ to have this same form in order to get conjugacy.  
-
-From this, we conclude
-\begin{enumerate} 
-\item The vector $\wt{t}(\eta) = \begin{bmatrix} 
-\eta \\
--a(\eta)
-\end{bmatrix}$ gives sufficient statistics of the conjugate prior, which can be used to identify its (or identify its non-existence).
-\item We can decompose the prior hyperparameter as $\phi = \begin{bmatrix} 
-\tau \\
-n_0
-\end{bmatrix}$,   
-where $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.  Moreover, $\tau$ can be interpreted as the prior sufficient statistics and $n_0$ can be interpreted as the prior sample size.  (The latter becomes more clear below in the case of i.i.d samples.)	
-\item  The prior-to-posterior conversion can be summarized with the following update rules
-\begin{align*}
-\tau & \to \tau + t(x) \\
-n_0 & \to  n_0 + 1 \\
-\labelit \label{eqn:general_formalism_prior_to_posterior_conversion_after_single_observation}
-\end{align*}
-\end{enumerate}
-
-\begin{remark}
-As this derivation shows, there are multiple possible conjugate priors, depending on the choice of $\wt{h}$.   For instance, whenever the normal distribution is conjugate, so is the	truncated normal, since those distributions differ only in their carrier density (see Remark \ref{rk:truncated_normal_differs_from_normal_only_in_terms_of_carrier_density}.)  More generally, the prior density can be defined with respect to an arbitrarily-chosen dominating measure $\nu$ on $\Phi$; for a discussion, see  \href{https://stats.stackexchange.com/questions/176668/can-anyone-explain-conjugate-priors-in-simplest-possible-terms}{\blue{\underline{here}}}.
-\label{rk:conjugate_prior_can_have_any_desired_carrier_density}
-\end{remark}
+\input{general_conjugacy_formalism}
 
 
-\begin{remark}
-Note that for conjugate Bayesian models, the predictive posterior distribution, $p(x_{\text{new}} \cond x)$ is always tractable, because it has the same form (integrating a likelihood against the parameter distribution) as does the evidence term in Bayes law.   See Section \ref{sec:ef_general_formalism_jordan}.
-\end{remark}
-
-\subsubsection{General formalism for multiple i.i.d samples} Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we have:
-\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^n h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^n t(x_i) - n \; a(\eta) \bigg\} \]
-as the likelihood (see Section \ref{sec:iid_samples_from_an_exponential_family}). In this case, the posterior under the conjugate prior \eqref{eqn:posterior_under_conjugate_prior} becomes
-
-\begin{align*}
-p(\eta \cond \+x, \phi) & \propto \ds\sum_{i=1}^\infty p(x_i \cond \eta) \; p(\eta \cond \phi) \\
-&\propto \exp \bigg\{ \bigg( \phi + 
-\begin{bmatrix} 
-\sum_{i=1}^n t(x_i) \\
-n \\
-\end{bmatrix} \bigg)^T \; 
-\begin{bmatrix} 
-\eta \\
--a(\eta)
-\end{bmatrix} 
-- \wt{a}(\phi)  \bigg\} 
-\labelit \label{eqn:general_formalism_prior_to_posterior_conversion_after_multiple_iid_samples}
-\end{align*}
-
-
-From this, we see that under multiple i.i.d samples, the prior-to-posterior conversion can be summarized with the following update rules
-\begin{subequations}
-	\begin{align}
-\tau & \to \tau + \ds\sum_{i=1}^n t(x_i) \\
-n_0 & \to  n_0 + n 
-\end{align} \label{eqn:general_formalism_prior_to_posterior_conversion}
-\end{subequations}
-
-\subsubsection{Application: Finding conjugate priors (and identifying when there isn't one)}
-
-In application, we don't often use $\begin{bmatrix} 
-\eta \\
--a(\eta)
-\end{bmatrix}$ to identify the sufficient statistics, but the set of basis functions necessary to construct $\begin{bmatrix} 
-\eta \\
--a(\eta)
-\end{bmatrix}$. Said differently, below we show how a (semi-)conjugate prior can be determined by simply rewriting the likelihood as a function of the parameter for which we want to set the (semi-)conjugate prior.  
-
-\begin{example}
-Let $X \sim \N(\mu, \beta^{-1})$, where we parameterize in terms of the precision parameter $\beta$.  The log pdf under the natural parameterization is given by 
-\begin{align*} 
-\log p(x \cond \mu, \beta) = 
-\begin{bmatrix} 
-\beta \mu \\
--\half \beta
-\end{bmatrix}^T 
-\begin{bmatrix} 
-x \\
-x^2
-\end{bmatrix} 
-+ \half \big(\log \beta - \beta \mu^2 - \log (2 \pi) \big)	
-\labelit \label{eqn:gaussian_pdf_precision_parametrization}
-\end{align*}
-
-Suppose we want to find a (semi-)conjugate prior for the precision parameter $\beta$.  Considering \eqref{eqn:gaussian_pdf_precision_parametrization} as a function of $\beta$, the basis functions needed are
-\[ \wt{t}(\beta) := 
-\begin{bmatrix} 
-\beta \\
-\log \beta
-\end{bmatrix} 
-  \]
- which is the sufficient statistics function of the gamma distribution.  Thus, a conjugate prior for the precision parameter is the gamma distribution. (Note that a conjugate prior can have any desired carrier density, so we can freely set $h \equiv 1$; see Remark \ref{rk:conjugate_prior_can_have_any_desired_carrier_density}.)\redfootnote{Well, technically, the carrier density must be chosen such that the ambient measure dominates the prior distribution.  I think that will always hold regardless of choice of $h$ (since $h$ basically is a Radon-Nikodym derivative), but I should double check this.}
-\end{example}
-
-
-\begin{example} 
-Let $X \sim \GammaDist(\alpha, \beta)$, where $\GammaDist(\alpha, \beta)$ refers to the shape-rate parametrization.  The log pdf is given by
-
-\begin{align*}
- \log p(x \cond \alpha, \beta) = \alpha \log \beta - \ln \Gamma(\alpha) - (\alpha -1 ) x - \beta x 
- \labelit \label{eqn:gamma_pdf}
-\end{align*}  
-Suppose we want to find a (semi-)conjugate prior for the shape parameter $\alpha$.  Considering \eqref{eqn:gaussian_pdf_precision_parametrization} as a function of $\alpha$, the basis functions needed are
-\[ \wt{t}(\alpha) := 
-\begin{bmatrix} 
-\alpha \\
-\Gamma(\alpha) 
-\end{bmatrix} 
-  \]
-There is no exponential family distribution with these sufficient statistics.\footnote{This is stated by \cite{winn2005variational}, although I am not currently sure why this is true.} \red{TODO: Explain.}
-\end{example}
-
-
-\subsection{Conjugate-exponential Bayesian networks}
-
-\input{conjugate_exponential_bayesian_nets}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

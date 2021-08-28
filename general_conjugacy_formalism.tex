@@ -1,0 +1,149 @@
+
+Let us write the data model's density $p(x \cond \eta)$ in exponential family form, and assume that the prior $p(\eta \cond \phi)$ has an exponential family construction as well.  
+\begin{align*}
+p(x \cond \eta) &= h(x) \exp \{\eta^T t(x) - a(\eta)   \}	 \\
+p(\eta \cond \phi) &= \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	
+\end{align*}
+We use the tilde to denote that the carrier density $h$, sufficient statistics function $t$, and log normalizer $a$ can differ for these densities.  
+
+Our goal is to find the form of a conjugate prior, given the form of the data model.    To do this, we work with the posterior 
+
+\begin{align*}
+p(\eta \cond x, \phi) & \propto p(x \cond \eta) \quad p(\eta \cond \phi) && \tinytext{bayes law}  \\
+&\propto  \cancel{h(x)} \exp \{\eta^T t(x) - a(\eta)  \}  \quad \wt{h}(\eta) \exp \{\phi^T \; \wt{t}(\eta) - \wt{a}(\phi)   \}	&& \tinytext{e.f. form; constant of prop.}\\
+& \stackreltext{1}{=} \exp \bigg\{
+\begin{bmatrix} 
+t(x) \\
+1 \\
+\end{bmatrix}^T
+\begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix}
+\bigg\} \quad 
+\wt{h}(\eta) \exp \bigg\{ \phi^T \; \begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix} - \wt{a}(\phi)  \bigg\} && \tinytext{explained below} \\
+&= \wt{h}(\eta) \exp \bigg\{ \bigg( \phi + \begin{bmatrix} 
+t(x) \\
+1 \\
+\end{bmatrix} \bigg)^T \; \begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix} - \wt{a}(\phi)  \bigg\} && 
+\labelit \label{eqn:posterior_under_conjugate_prior}\\
+\end{align*}
+
+where in (1) we reorganize the likelihood to isolate terms in $\eta$, and then take $\wt{t}(\eta)$ to have this same form in order to get conjugacy.  
+
+From this, we conclude
+\begin{enumerate} 
+\item The vector $\wt{t}(\eta) = \begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix}$ gives sufficient statistics of the conjugate prior, which can be used to identify its (or identify its non-existence).
+\item We can decompose the prior hyperparameter as $\phi = \begin{bmatrix} 
+\tau \\
+n_0
+\end{bmatrix}$,   
+where $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.  Moreover, $\tau$ can be interpreted as the prior sufficient statistics and $n_0$ can be interpreted as the prior sample size.  (The latter becomes more clear below in the case of i.i.d samples.)	
+\item  The prior-to-posterior conversion can be summarized with the following update rules
+\begin{align*}
+\tau & \to \tau + t(x) \\
+n_0 & \to  n_0 + 1 \\
+\labelit \label{eqn:general_formalism_prior_to_posterior_conversion_after_single_observation}
+\end{align*}
+\end{enumerate}
+
+\begin{remark}
+As this derivation shows, there are multiple possible conjugate priors, depending on the choice of $\wt{h}$.   For instance, whenever the normal distribution is conjugate, so is the	truncated normal, since those distributions differ only in their carrier density (see Remark \ref{rk:truncated_normal_differs_from_normal_only_in_terms_of_carrier_density}.)  More generally, the prior density can be defined with respect to an arbitrarily-chosen dominating measure $\nu$ on $\Phi$; for a discussion, see  \href{https://stats.stackexchange.com/questions/176668/can-anyone-explain-conjugate-priors-in-simplest-possible-terms}{\blue{\underline{here}}}.
+\label{rk:conjugate_prior_can_have_any_desired_carrier_density}
+\end{remark}
+
+
+\begin{remark}
+Note that for conjugate Bayesian models, the predictive posterior distribution, $p(x_{\text{new}} \cond x)$ is always tractable, because it has the same form (integrating a likelihood against the parameter distribution) as does the evidence term in Bayes law.   See Section \ref{sec:ef_general_formalism_jordan}.
+\end{remark}
+
+\subsubsection{General formalism for multiple i.i.d samples} Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we have:
+\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^n h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^n t(x_i) - n \; a(\eta) \bigg\} \]
+as the likelihood (see Section \ref{sec:iid_samples_from_an_exponential_family}). In this case, the posterior under the conjugate prior \eqref{eqn:posterior_under_conjugate_prior} becomes
+
+\begin{align*}
+p(\eta \cond \+x, \phi) & \propto \ds\sum_{i=1}^\infty p(x_i \cond \eta) \; p(\eta \cond \phi) \\
+&\propto \exp \bigg\{ \bigg( \phi + 
+\begin{bmatrix} 
+\sum_{i=1}^n t(x_i) \\
+n \\
+\end{bmatrix} \bigg)^T \; 
+\begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix} 
+- \wt{a}(\phi)  \bigg\} 
+\labelit \label{eqn:general_formalism_prior_to_posterior_conversion_after_multiple_iid_samples}
+\end{align*}
+
+
+From this, we see that under multiple i.i.d samples, the prior-to-posterior conversion can be summarized with the following update rules
+\begin{subequations}
+	\begin{align}
+\tau & \to \tau + \ds\sum_{i=1}^n t(x_i) \\
+n_0 & \to  n_0 + n 
+\end{align} \label{eqn:general_formalism_prior_to_posterior_conversion}
+\end{subequations}
+
+\subsubsection{Application: Finding conjugate priors (and identifying when there isn't one)}
+
+In application, we don't often use $\begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix}$ to identify the sufficient statistics, but the set of basis functions necessary to construct $\begin{bmatrix} 
+\eta \\
+-a(\eta)
+\end{bmatrix}$. Said differently, below we show how a (semi-)conjugate prior can be determined by simply rewriting the likelihood as a function of the parameter for which we want to set the (semi-)conjugate prior.  
+
+\begin{example}
+Let $X \sim \N(\mu, \beta^{-1})$, where we parameterize in terms of the precision parameter $\beta$.  The log pdf under the natural parameterization is given by 
+\begin{align*} 
+\log p(x \cond \mu, \beta) = 
+\begin{bmatrix} 
+\beta \mu \\
+-\half \beta
+\end{bmatrix}^T 
+\begin{bmatrix} 
+x \\
+x^2
+\end{bmatrix} 
++ \half \big(\log \beta - \beta \mu^2 - \log (2 \pi) \big)	
+\labelit \label{eqn:gaussian_pdf_precision_parametrization}
+\end{align*}
+
+Suppose we want to find a (semi-)conjugate prior for the precision parameter $\beta$.  Considering \eqref{eqn:gaussian_pdf_precision_parametrization} as a function of $\beta$, the basis functions needed are
+\[ \wt{t}(\beta) := 
+\begin{bmatrix} 
+\beta \\
+\log \beta
+\end{bmatrix} 
+  \]
+ which is the sufficient statistics function of the gamma distribution.  Thus, a conjugate prior for the precision parameter is the gamma distribution. (Note that a conjugate prior can have any desired carrier density, so we can freely set $h \equiv 1$; see Remark \ref{rk:conjugate_prior_can_have_any_desired_carrier_density}.)\redfootnote{Well, technically, the carrier density must be chosen such that the ambient measure dominates the prior distribution.  I think that will always hold regardless of choice of $h$ (since $h$ basically is a Radon-Nikodym derivative), but I should double check this.}
+\end{example}
+
+
+\begin{example} 
+Let $X \sim \GammaDist(\alpha, \beta)$, where $\GammaDist(\alpha, \beta)$ refers to the shape-rate parametrization.  The log pdf is given by
+
+\begin{align*}
+ \log p(x \cond \alpha, \beta) = \alpha \log \beta - \ln \Gamma(\alpha) - (\alpha -1 ) x - \beta x 
+ \labelit \label{eqn:gamma_pdf}
+\end{align*}  
+Suppose we want to find a (semi-)conjugate prior for the shape parameter $\alpha$.  Considering \eqref{eqn:gaussian_pdf_precision_parametrization} as a function of $\alpha$, the basis functions needed are
+\[ \wt{t}(\alpha) := 
+\begin{bmatrix} 
+\alpha \\
+\Gamma(\alpha) 
+\end{bmatrix} 
+  \]
+There is no exponential family distribution with these sufficient statistics.\footnote{This is stated by \cite{winn2005variational}, although I am not currently sure why this is true.} \red{TODO: Explain.}
+\end{example}
