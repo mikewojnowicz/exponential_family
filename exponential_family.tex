@@ -39,7 +39,7 @@
 
 \section{Exponential Families} \label{sec:ef}
 
-We are interested in  exponential families primarily because they makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.    This is true regardless of whether we're doing frequentist inference (such as maximum likelihood) or Bayesian inference.    Bayesian inference with exponential family likelihoods tends to be especially nice,  as all exponential family likelihoods have conjugate priors,  and distributions with conjugate priors are often also exponential families \cite{bernardo2009bayesian}. \redfootnote{TODO:  Get clearer on the relationship.  There is a brief discussion on this in \cite{bernardo2009bayesian}}   More complicated models may not be exponential families,  but may have exponential family complete conditional distributions;  in such situation,  we can appeal to exponential family formalisms to more easily work out inference schemes for expectation maximization,  variational inference,  or Gibbs sampling.   
+We are interested in  exponential families primarily because they makes inference easier.   When a problem can be cast within the exponential family framework,  inference can be tied to general principles,  and parameter updates often have nice interpretations.    This is true regardless of whether we're doing frequentist inference (such as maximum likelihood) or Bayesian inference.    Bayesian inference with exponential family likelihoods tends to be especially nice,  as all exponential family likelihoods have conjugate priors,  and distributions with conjugate priors are often also exponential families \cite{bernardo2009bayesian}. \redfootnote{TODO:  Get clearer on the relationship.  There is a brief discussion on this in \cite{bernardo2009bayesian}.  An answer from mathstackexchange at \url{https://stats.stackexchange.com/questions/176668/can-anyone-explain-conjugate-priors-in-simplest-possible-terms} gives a promising quote, although I do not know the source: ``Outside this exponential family setting, there is no non-trivial family of distributions with a fixed support that allows for conjugate priors. This is a consequence of the Darmois-Pitman-Koopman lemma." }   More complicated models may not be exponential families,  but may have exponential family complete conditional distributions;  in such situation,  we can appeal to exponential family formalisms to more easily work out inference schemes for expectation maximization,  variational inference,  or Gibbs sampling.   
 
 \subsection{Definitions}
 
@@ -53,9 +53,9 @@ Here we give examples of exponential families, showing how to derive the exponen
 \subsubsection{Categorical distribution}
 
 \begin{example}{(Categorical Distribution)}
-\label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $x \in [0,1]^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
+\label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $x \in \set{0,1}^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
 \[p(x \cond \pi) = \prod_{k=1}^K \pi_k^{x_k} = \exp \{ \sum_{k=1}^K x_k \log \pi_k\} \]
- with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $t(x) = x$, carrier density $h(x)=1$ and log normalizer $0$.\redfootnote{TODO: Write this up as its own example.}
+ with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $t(x) = x$, carrier density $h(x)=1$ and log normalizer $0$.
 \end{example}
 
 \subsubsection{Dirichlet distribution}
@@ -99,14 +99,14 @@ where $\phi_{\mu,  \sigma^2}$ and $\Phi_{\mu,  \sigma^2}$ denote the pdf and cdf
 If we write
 \begin{align*}
 f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\half \df{(x-\mu)^2}{\sigma^2}}  \indicate{a \leq x \leq b} \\
-& = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
+& = K \df{1}{\sqrt{2 \pi}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
 \end{align*} 
-where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (- \frac{1}{2 \sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $t(x) = (x^2,  x)^T$,  carrier density $h(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
+where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (\frac{1}{\sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $t(x) = (-\half x^2,  x)^T$,  carrier density $h(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
  
 \end{example}
 
 \begin{remark}
-The truncated normal distribution differs from the normal distribution only in its carrier density $h(x)$ and log normalizer $a(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $T(x)$ are identical.   Thus,  knowing $\eta$ and $T(x)$ is not sufficient to determine the form of the probability distribution.
+The truncated normal distribution differs from the normal distribution only in its carrier density $h(x)$ and therefore log normalizer $a(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $t(x)$ are identical.   Thus,  knowing $\eta$ and $t(x)$ is not sufficient to determine the form of the probability distribution.
 \label{rk:truncated_normal_differs_from_normal_only_in_terms_of_carrier_density}
 \end{remark}
 
