@@ -3,7 +3,7 @@
 
 %STANDARD PREAMBLE
 %https://tex.stackexchange.com/questions/68821/is-it-possible-to-create-a-latex-preamble-header
-\usepackage{/Users/mwojno01/Research/Learning/latex_preamble/preamble}
+\usepackage{/Users/mwojno01/Repos/latex_preamble/preamble}
 
 
 %%% CONTROL SIZE OF BLOCK MATRICES
@@ -387,12 +387,22 @@ So there are now two potentially problematic terms, although in the case where $
 For more information on information theoretical quantities in exponential families, including connection to Bregman divergences,  see \cite{nielsen2010entropies} or \cite{nielsen2009statistical}.
 
 
+\subsubsection{Identifiability}
+
+A model is called \textit{globally identifiable} if $p(\cdot \cond \theta_1) = p(\cdot \cond \theta_2)$ implies $\theta_1=\theta_2$ \cite{cole2020parameter}. For exponential families as defined in Def.~\ref{def:exponential_family},\footnote{Note that the log normalizer function is assumed to be continuously differentiable by definition.} if the Fisher information matrix is non-singular, then the model is globally identifiable.  For exponential families, we may compute the Fisher information matrix as\footnote{For justification, see \url{https://www2.stat.duke.edu/courses/Spring05/sta215/lec/wk06a.pdf.}}
+\begin{align*}
+I(\theta) = \E [ -\nabla^2 \log p(x \cond \theta)]
+\labelit \label{eqn:fisher_information_matrix_for_exponential_families}	
+\end{align*}
+For more information on identifiability in exponential families, see \cite{cole2020parameter} pp.62. 
+
 \subsubsection{i.i.d samples from an exponential family} \label{sec:iid_samples_from_an_exponential_family}
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
 \begin{align}
 \label{eqn:exponential_family_iid}
  p(\+x \cond \theta) = \ds\prod_{i=1}^n h(x_i) \exp \big\{ \eta(\theta)^T \sum_{i=1}^n t(x_i) - n \,a(\eta(\theta))\big\} 
  \end{align}
+
 
 
 \section{Frequentist Inference}
@@ -548,12 +558,12 @@ And similarly, we write the likelihood $	L(\+\mu) = p(\+y \cond \+\mu) = \prod_{
 So by Bayes' law, combining the like terms in $\+\mu$ of \eqref{eqn:prior_for_mvn_fixed_cov} and \eqref{eqn:likelihood_for_mvn_fixed_cov}, we find
 \begin{align*}
  p(\+\mu \cond \+y) &\propto \explaintermbrace{prior}{p(\+\mu)}\explaintermbrace{likelihood}{p(\+y \cond \+\mu)} \\
- &= \exp \bigg\{ - \half \+\mu^T \bigg( \+\Sigma_0^{-1} + n  \+\Sigma^{-1}\bigg)  \+\mu + \+\mu^T \bigg( \+\Sigma_0 \+\mu_0 + \+\Sigma^{-1} n \bar{\+y} \bigg) \bigg\} 
+ &= \exp \bigg\{ - \half \+\mu^T \bigg( \+\Sigma_0^{-1} + n  \+\Sigma^{-1}\bigg)  \+\mu + \+\mu^T \bigg( \+\Sigma_0^{-1} \+\mu_0 + n \+\Sigma^{-1} \bar{\+y} \bigg) \bigg\} 
 \end{align*}
 which reveals that the posterior is normal (Remark \ref{rk:mvn_from_ef}), along with the particular forms for its natural parameters (precision and precision-weighted mean).  In particular, we have, $\+\mu \cond \+y \sim \N(\+\mu_n, \+\Sigma_n)$, where
 \begin{align*}
 	\+\Sigma_n &= \bigg( \+\Sigma_0^{-1} + n \+\Sigma^{-1}\bigg)^{-1} \\
-	\+\mu_n &= \+\Sigma_n \bigg(\+\Sigma_0 \+\mu_0 + n \+\Sigma^{-1} \bar{\+y}  \bigg)
+	\+\mu_n &= \+\Sigma_n \bigg(\+\Sigma_0^{-1} \+\mu_0 + n \+\Sigma^{-1} \bar{\+y}  \bigg)
 \end{align*}
 
 On the precision scale,  $\+\Sigma_n$ is the sum of the prior precision matrix $\+\Sigma_0^{-1}$ and $n$ copies of the precision for each observation,  $\+\Sigma^{-1}$.    Similarly,  $\+\mu_n$ is the precision-weighted convex combination of $\+\mu_0$, the prior mean, and the empirical average, $\bar{\+y}$.

@@ -22,7 +22,7 @@ We refer to $\mu$ as the \textit{base measure}.\footnote{Some presentations use 
 \begin{remark}
 Observe \cite{chuaXXXXstats} that without loss of generality, we can 
 \begin{alphabate} 
-\item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^T t(x) - a(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu} = \ds\int h d\mu$. }
+\item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^T t(x) - a(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A h d\mu$ for any measurable set $A$. }
 \item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{t} = M t(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
 \item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $a(\eta)$ to $\wt{a}(\eta) = a(\eta) - a(0)$ results in an equivalent family. 
 \end{alphabate}
