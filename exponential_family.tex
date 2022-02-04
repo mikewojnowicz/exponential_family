@@ -26,6 +26,8 @@
 
 %%% BAYESIAN LINEAR REGRESSION
 \newcommand{\new}{\text{new}}
+\newcommand{\betaML}{\wh{\+\beta}_{\text{ML}}}
+
 
 \begin{document}
 
@@ -698,14 +700,18 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 \begin{proof}
 
 First,  we consider the likelihood $L(\+\beta) := p(\+y \cond \+\beta,  \sigma^2$),  dropping terms proportional to  $\+\beta$.
-\begin{align*}
-p(\+y \cond \+\beta,  \sigma^2) & \propto  \exp \bigg\{  -\df{1}{2 \sigma^2}  (\+y - \+X \+\beta)^T (\+y - \+X \+\beta) \bigg\} \\ 
-&=   \exp \bigg\{  -\df{1}{2 \sigma^2}  (- 2 \+\beta^T \+X^T \+y + \+\beta^T \+X^T \+X \+\beta) \bigg\} \\ 
-\end{align*}
+\begin{subequations}
+\begin{align}
+p(\+y \cond \+\beta,  \sigma^2) & \propto  \exp \bigg\{  -\df{1}{2 \sigma^2}  (\+y - \+X \+\beta)^T (\+y - \+X \+\beta) \bigg\} \label{eqn:bayesian_lin_regression_likelihood_direct_expression}\\ 
+&=   \exp \bigg\{  -\df{1}{2 \sigma^2}  (- 2 \+\beta^T \+X^T \+y + \+\beta^T \+X^T \+X \+\beta) \bigg\} 
+\end{align}
+\label{eqn:bayesian_lin_regression_likelihood}
+\end{subequations}
 Doing the same for the prior $p(\+\beta)$,  we have 
-\begin{align*}
-p(\+\beta) & \propto  \exp \bigg\{  -\df{1}{2}  (- 2 \+\beta^T \+\Sigma_0 \+\mu_0 + \+\beta^T \+\Sigma_0^{-1} \+\beta) \bigg\} \\ 
-\end{align*}
+\begin{align}
+p(\+\beta) & \propto  \exp \bigg\{  -\df{1}{2}  (- 2 \+\beta^T \+\Sigma_0 \+\mu_0 + \+\beta^T \+\Sigma_0^{-1} \+\beta) \bigg\}
+\label{eqn:bayesian_lin_regression_prior}
+\end{align}
 
 Thus,  by Bayes rule
 \begin{align*}
@@ -720,11 +726,36 @@ which reveals that the posterior is normal (Remark \ref{rk:mvn_from_ef}),  along
 
 
 \begin{remark}
-For a nice conceptual overview of Bayesian linear regression., see \cite{groseeXXXXbayesian} or \cite{bishop2006pattern}.   Among other things, these resources demonstrate how Bayesian regression makes predictions using an infinite collection of regression models (whose contributions are weighted by their posterior probabilities).  They also show how the linear model is less restrictive than it might first seem;  it can be used to model nonlinear functional relationships by using nonlinear basis functions. 
+For a nice conceptual overview of Bayesian linear regression, see \cite{groseeXXXXbayesian} or \cite{bishop2006pattern}.   Among other things, these resources demonstrate how Bayesian regression makes predictions using an infinite collection of regression models (whose contributions are weighted by their posterior probabilities).  They also show how the linear model is less restrictive than it might first seem;  it can be used to model nonlinear functional relationships by using nonlinear basis functions. 
 \end{remark}
 
+\begin{remark}{\remarktitle{Posterior parameters in terms of maximum likelihood estimates}} Now recall
+\begin{align*}
+\betaML &= (\+X^T \+X)^{-1} \+X^T \+y \\
+\Var(\betaML) &= \sigma^2 (\+X^T \+X)^{-1}  
+\end{align*}
 
-\begin{remark}{\remarktitle{Intuition about posterior of Bayesian linear regression}}
+So the posterior parameters in \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var} have the interpretation 
+\begin{align*}
+\explaintermbrace{posterior precision}{\wt{\+\Sigma}^{-1}} &= \explaintermbrace{prior precision}{\+\Sigma_0^{-1}} +  \explaintermbrace{``data" precision,  \; $\Var(\betaML)^{-1}$}{\frac{1}{\sigma^2} \+X^T \+X}   \\
+\explaintermbrace{posterior precision-weighted mean}{\wt{\+\Sigma}^{-1} \wt{\+\mu}} &= \explaintermbrace{prior precision-weighted mean}{\+\Sigma_0^{-1} \+\mu_0} +  \explaintermbrace{``data" pwm\; $\Var(\betaML)^{-1} \betaML$}{\frac{1}{\sigma^2} \+X^T  \+y}
+\end{align*}
+\label{rk:relation_of_bayesian_posterior_parameters_to_maximum_likelihood_estimate}
+\end{remark}
+
+% NOTE TO SELF: The following provides more mechanistic insight into the relationship between the Bayesian posterior and the maximum likelihood estimates, but there were a few holes, and I wasn't able to address them before getting pulled into an annoying meeting.  So I am just commenting them out in favor of Remark~\ref{rk:relation_of_bayesian_posterior_parameters_to_maximum_likelihood_estimate}, which provides the same take-home message but without the mechanistic insight. 
+%
+%\begin{remark}
+%By the form of the exponential family density \eqref{eqn:exponential_family_natural}, we immediately see that the product of two exponential family densities with identical sufficient statistics but different natural parameters is obtained by simply summing the natural parameters.  So if we see the likelihood \eqref{eqn:bayesian_lin_regression_likelihood} and the prior \eqref{eqn:bayesian_lin_regression_prior} both as functions of $\+\beta$, we notice that the posterior parameters in \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var} have the interpretation 
+%%
+%\begin{align*}
+%\explaintermbrace{posterior precision}{\+\Sigma^{-1}} &= \explaintermbrace{prior precision}{\+\Sigma_0^{-1}} +  \explaintermbrace{data precision}{\frac{1}{\sigma^2} \+X^T \+X}   \\
+% \explaintermbrace{posterior precision-weighted mean}{\+\Sigma^{-1} \+\mu} &=   \explaintermbrace{prior precision-weighted mean}{\+\Sigma_0^{-1} \+\mu_0} +   \explaintermbrace{data precision-weighted mean}{\frac{1}{\sigma^2} \+X^T  \+y}  
+%\end{align*}
+%where the data precision can be obtained by refactoring the likelihood \eqref{eqn:bayesian_lin_regression_likelihood_direct_expression} so that $\frac{1}{\sigma^2} \+X^T \+X$ is the matrix in the quadratic form  and where the ``data mean" is the maximum likelihood estimator $(\+X^T\+X)^{-1} \+X^T \+y$. 
+%\end{remark}
+
+\begin{remark}{\remarktitle{Bayesian  linear regression as a compromise between the prior and maximum likelihood value.}}
 Equation \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var}
 gives the posterior for Bayesian linear multiple regression in the case where the observation noise is known.    As pointed out by \cite{hoff2009first} (pp. 155),  intuition can be obtained by considering the limiting cases.  When the prior on the regression coefficients $\+\beta$ is diffuse,  the elements of the prior precision matrix $\+\Sigma_0^{-1}$ will be small,  and so the posterior mean satisfies
 $\+\mu \approx ( \+X^T \+X)^{-1} \+X^T \+y$,  i.e.  it approximately equals the standard least squares estimate.   On the other hand,   when the observation variance $\sigma^2$ is large,  then the measurement precision is small, and the posterior mean satisfies $\+\mu \approx \+\mu_0$,  i.e.  it approximately equals the prior mean.
