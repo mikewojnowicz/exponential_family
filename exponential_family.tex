@@ -780,27 +780,38 @@ In this section,  we will show that the Inverse Gamma prior on $\sigma^2$ is a c
 
 
 \begin{proposition} \label{prop:bayes_linear_regression_with_known_weights}
-Consider the Bayesian linear multiple regression model with known regression weights  $\+\beta$. 
-\begin{align*}
+Consider the Bayesian linear multiple regression model with known regression weights  $\+\beta$ 
+\begin{subequations}
+\begin{align}
 \sigma^2 &\sim \InverseGamma \bigg(\frac{\nu_0}{2},  \frac{\nu_0 \sigma^2_0}{2} \bigg) \\
-y_i \cond \+\beta,  \sigma^2  &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n \\
-\labelit \label{eqn:bayesian_multiple_linear_regression_with_known_weights}
-\end{align*}
+\+y \cond \+\beta,  \sigma^2  &\sim \N (\+X \+\beta, \sigma^2 \+I_n) 
+\end{align}
+\label{eqn:bayesian_multiple_linear_regression_with_known_weights}
+\end{subequations}
+
 where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
 
 
 The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_with_known_weights} is given by 
-\begin{align*}
+\begin{subequations}
+\begin{align}
 \sigma^2 \cond \+y,    \+\beta  & \sim \InverseGamma \bigg(\frac{\nu_0 + n }{2},  \frac{\nu_0 \sigma^2_0  + \text{SSR}(\+\beta)}{2} \bigg)  
 \intertext{where the sum of squared residuals is}
-\text{SSR}(\+\beta)  &= (\+y - \+X \+\beta)^T  (\+y - \+X \+\beta) \\
-\labelit \label{eqn:posterior_bayesian_lin_regression_with_known_weights}
-\end{align*}
+\text{SSR}(\+\beta)  &= (\+y - \+X \+\beta)^T  (\+y - \+X \+\beta)
+\end{align}
+\label{eqn:posterior_bayesian_lin_regression_with_known_weights}
+\end{subequations}
 
 \end{proposition}
 
-\begin{proof}
-See \cite{hoff2009first} pp. 155.
+\begin{proof}\footnote{For corroboration, see \cite[pp.~155]{hoff2009first}, who obtains the same result.}
+
+\begin{align*}
+p(\sigma^2 \cond \text{rest}) & \propto \explaintermbrace{$\+y \cond \+\beta,  \sigma^2  \sim \N (\+X \+\beta, \sigma^2 \+I_n) $}{\bigg(\frac{1}{\sigma}\bigg)^n	 \exp \bigg( -\half \frac{1}{\sigma^2} (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)}\bigg) \; \explaintermbrace{$\sigma^2 \sim \InverseGamma \big(\frac{\nu_0}{2},  \frac{\nu_0 \sigma^2_0}{2}\big)$}{\bigg( \sigma^2 \bigg )^{-\frac{\nu_0}{2} -1}  \exp \bigg( -\frac{\half \nu_0 \sigma_0^2}{\sigma^2} \bigg)} \\
+& = (\sigma^2)^{-\frac{n}{2} - \frac{\nu_0}{2} - 1} \exp \bigg( -\frac{\half (\text{SSR}(\+\beta) + \nu_0 \sigma_0^2)}{\sigma^2}\bigg)
+\end{align*}
+
+
 \end{proof}
 %\red{TODO: Add expression for the marginal likelihood,  which is available in closed form.  See e.g.  \cite{gundersonXXXXbayesian},  although that resource uses a NIG and not independent N and IG priors.}
  
@@ -1144,13 +1155,13 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}, n_0 + N)}{H(\tau_{\text{po
 
 \subsection{Overview}
 
-\input{/Users/mwojno01/Research/Learning/minis/pgms/bayesian_network}
+\input{/Users/mwojno01/Repos/minis/pgms/bayesian_network}
 
 
 
 \subsection{Markov blankets} \label{sec:markov_blankets}
 
-\input{/Users/mwojno01/Research/Learning/minis/pgms/markov_blankets_and_complete_conditionals}
+\input{/Users/mwojno01/Repos/minis/pgms/markov_blankets_and_complete_conditionals}
 
 
 
@@ -1257,7 +1268,7 @@ Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (
 
 
 \bibliography{references_exponential_family}{}
-\bibliographystyle{unsrt}
+\bibliographystyle{apalike}
 
 
 \end{document}
