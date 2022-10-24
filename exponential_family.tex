@@ -45,7 +45,46 @@ We are interested in  exponential families primarily because they makes inferenc
 
 \subsection{Definitions}
 
-\input{definitions_exponential_family}
+\input{inputs/definition_exponential_family}
+
+\begin{remark}
+Observe \cite{chua2019stats} that without loss of generality, we can 
+\begin{alphabate} 
+\item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^T t(x) - a(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A h d\mu$ for any measurable set $A$. }
+\item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{t} = M t(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $a(\eta)$ to $\wt{a}(\eta) = a(\eta) - a(0)$ results in an equivalent family. 
+\end{alphabate}
+\label{rk:alternate_constructions_for_the_exponential_family}
+\end{remark}
+
+
+\begin{definition}
+The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $H:=\set{\eta : Z(\eta) < \infty}$.
+\end{definition}
+
+\begin{definition}
+An exponential family is said to be \textit{regular} if the natural parameter space is an open set.
+\end{definition}
+
+One can \textit{reparameterize} a regular exponential family with some other coordinates $\theta$.  If one writes the natural parameter as a continuous function $\eta(\theta)$, then the density \eqref{eqn:exponential_family_natural} becomes
+\begin{align}
+\label{eqn:exponential_family}
+ p_\theta(x) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\eta(\theta))\} 
+ \end{align}
+ The reparameterized family is regular as well, since $\Theta := \eta^{-1}(H)$ is open. 
+
+
+\begin{remark}
+Exponential family members can have intractable normalization constants.  Consider, for example,  the Ising model.  See pp. 3 of \cite{taylor2013multiparameter}.
+\end{remark}
+
+
+\begin{definition}
+An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
+\end{definition}
+
+  An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify, and state how to rectify. Also demonstrate the importance of this.} 
+
 
 \subsection{Examples}
 
@@ -241,7 +280,7 @@ Some non-examples include
 
 \subsubsection{Relationship between moments and the normalizer function}
 \begin{proposition}
-Let $X$ have an exponential family distribution with sufficient statistics function $t$ and log normalizer function $a$.   Then  
+Let $X$ have an exponential family distribution with natural parameter $\eta$, sufficient statistics function $t$, and log normalizer function $a$.   Then  
 \begin{align*}
 \nabla a(\eta) = \E[t(X)] 
 \labelit \label{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}	
@@ -282,7 +321,7 @@ In fact, all moments of an exponential family are finite (recall from Definition
 
 
 
-For more information on Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, see \cite{jordan_ef}, \cite{nielsen2010entropies}, or \cite{nielsen2009statistical}.   
+For more information on Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, see \cite{jordan2010ef}, \cite{nielsen2010entropies}, or \cite{nielsen2009statistical}.   
 
 \subsubsection{Entropy, cross-entropy, and KL divergence}
 
@@ -472,7 +511,7 @@ In other words,  a family of prior distributions for a parameter is called condi
  Why are conjugate and conditionally conjugate models of interest?  The posterior distributions for conditionally conjugate models are easily approximated with Gibbs sampling or Mean Field Variational Inference -- the former samples from the complete conditional,  whereas the latter takes variational expectations with respect to the natural parameter of the complete conditional.   
  
  \begin{remark}
- Although most distributions with conjugate priors are exponential families, EF membership is not a \textit{necessary} condition for admitting a conjugate prior.  For instance, the uniform distribution on $[0,a]$ is not an exponential family (the distributions don't all have the same support), but the Pareto distribution is a conjugate prior for the parameter $a$ \cite{minkaXXXXbayesian}.  
+ Although most distributions with conjugate priors are exponential families, EF membership is not a \textit{necessary} condition for admitting a conjugate prior.  For instance, the uniform distribution on $[0,a]$ is not an exponential family (the distributions don't all have the same support), but the Pareto distribution is a conjugate prior for the parameter $a$ \cite{minka2001bayesian}.  
  \end{remark}
  	
 
@@ -726,7 +765,7 @@ which reveals that the posterior is normal (Remark \ref{rk:mvn_from_ef}),  along
 
 
 \begin{remark}
-For a nice conceptual overview of Bayesian linear regression, see \cite{groseeXXXXbayesian} or \cite{bishop2006pattern}.   Among other things, these resources demonstrate how Bayesian regression makes predictions using an infinite collection of regression models (whose contributions are weighted by their posterior probabilities).  They also show how the linear model is less restrictive than it might first seem;  it can be used to model nonlinear functional relationships by using nonlinear basis functions. 
+For a nice conceptual overview of Bayesian linear regression, see \cite{grosee2019bayesian} or \cite{bishop2006pattern}.   Among other things, these resources demonstrate how Bayesian regression makes predictions using an infinite collection of regression models (whose contributions are weighted by their posterior probabilities).  They also show how the linear model is less restrictive than it might first seem;  it can be used to model nonlinear functional relationships by using nonlinear basis functions. 
 \end{remark}
 
 \begin{remark}{\remarktitle{Posterior parameters in terms of maximum likelihood estimates}} Now recall
@@ -813,7 +852,7 @@ p(\sigma^2 \cond \text{rest}) & \propto \explaintermbrace{$\+y \cond \+\beta,  \
 
 
 \end{proof}
-%\red{TODO: Add expression for the marginal likelihood,  which is available in closed form.  See e.g.  \cite{gundersonXXXXbayesian},  although that resource uses a NIG and not independent N and IG priors.}
+%\red{TODO: Add expression for the marginal likelihood,  which is available in closed form.  See e.g.  \cite{gunderson2020bayesian},  although that resource uses a NIG and not independent N and IG priors.}
  
 \subsection{Hierarchical Bayesian linear regression} \label{sec:hierarchial_linear_regression}
 
@@ -876,6 +915,9 @@ The hierarchical linear regression model \eqref{eqn:hierarchical_linear_regressi
 
 \input{general_conjugacy_formalism}
 
+\bibliography{references_exponential_family}
+\bibliographystyle{apalike}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -889,10 +931,10 @@ The hierarchical linear regression model \eqref{eqn:hierarchical_linear_regressi
 
 \subsection{Multivariate completing the square}
 
-A nice overview of multivariate completing the square is given by \cite{gundersenXXXXcompleting}.    
+A nice overview of multivariate completing the square is given by \cite{gundersen2019completing}.   See also \cite[pp.~86]{bishop2006pattern} for application to the Gaussian case.
 
 Let $\+x,  \+b$ be $d$-dimensional vectors, and let $\+M \in \R^{d \times d}$ be a symmetric invertible matrix. Then
-
+%
 \begin{align*}
 \+x^T \+M \+x - 2 \+b^T \+x = (\+x - \+M^{-1} \+b)^T \+M (\+x - \+M^{-1} \+b) - \+b^T \+M^{-1} \+b
  \labelit \label{eqn:multivariate_completing_the_square}
@@ -906,12 +948,12 @@ Let $\+x,  \+b$ be $d$-dimensional vectors, and let $\+M \in \R^{d \times d}$ be
 The trace of a matrix product behaves like a dot product.  
 
 Let $\+A, \+B \in \R^{m \times n}$.  Then 
-
+%
 \begin{align*}
 \tr (\+A^T \+B) = \ds\sum_{i=1}^n (\+A^T \+B)_i = \ds\sum_{i=1}^n \ds\sum_{j=1}^m a_{ij} b_{ij}
 \labelit \label{eqn:trace_of_matrix_product}
 \end{align*}
-
+%
 i.e.,  the trace of the matrix product is obtained by summing up the element-wise products. 
 
 
@@ -972,7 +1014,7 @@ p(x) = \df{1}{Z}\bp{ \ds\prod_{i=1}^n \selfpotential(x_i) \ds\prod_{i,j} \edgepo
 Now note that a multivariate Gaussian has a joint distribution which can be expressed as
 \[ p(x) \propto \exp \bigg\{ -\df{1}{2} x^T A x + b^T x \bigg\} \]
 
-as this is just the exponential family form of a Gaussian (e.g., see  \cite{englehardt_gaussian_models}), where the natural parameters are
+as this is just the exponential family form of a Gaussian (e.g., see  \cite{englehardt2013gaussian}), where the natural parameters are
 given in terms of the \textit{precision} $\Sigma^{-1}$
 \begin{align*}
 A &= \Sigma^{-1} \\
@@ -1016,7 +1058,7 @@ Note that the parameters of the Inverse Wishart can be interpreted (as per conju
  
 \end{remark}
 
-Remark \ref{rk:inverse_wishart_parameter_interpretation} also provides inuition on the expected value.      For a visualization of how samples are affected by the parameters,  see \cite{hughesXXXXinverse}. 
+Remark \ref{rk:inverse_wishart_parameter_interpretation} also provides inuition on the expected value.      For a visualization of how samples are affected by the parameters,  see \cite{hughes2012inverse}. 
 
 \begin{remark}{\remarktitle{Peter Hoff's notation for the Inverse Wishart: A warning}}
 \label{rk:peter_hoffs_notation_for_inverse_wishart}
@@ -1093,7 +1135,7 @@ Some problems with the Inverse Wishart as a model for covariance matrices is sum
 \item The prior imposes a dependency between the correlations and the variances. In particular,  larger variances are associated with absolute values of the correlations near 1 while small variances
 are associated with correlations near zero.    
 \end{enumerate}
-For additional discussion on the problems with Inverse Wishart,  especially when used in hierarchical models,  and for a remedy using a half-t distribution that also has a conditionally conjugate construction,  see \cite{wojnowiczXXXXcategorical}.
+For additional discussion on the problems with Inverse Wishart,  especially when used in hierarchical models,  and for a remedy using a half-t distribution that also has a conditionally conjugate construction,  see \cite{wojnowicz2022categorical}.
 
 
 \section{General Conjugacy Formalism: Alternate Approaches}
@@ -1109,7 +1151,7 @@ Note that this argument yields the same parameter updating scheme of \eqref{eqn:
 
 \subsection{Alternate approach 2} \label{sec:ef_general_formalism_jordan}
 
-Following \cite{jordan_ef}, here we provide a general formalism for conjugate priors for exponential family data models. 
+Following \cite{jordan2010ef}, here we provide a general formalism for conjugate priors for exponential family data models. 
 
 Writing the exponential family density in canonical form, we have
 \[ p(x \cond \eta) = h(x) \exp \{ \eta^T T(x) - A(\eta) \} \]
@@ -1128,7 +1170,7 @@ p (\eta \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^T \eta - n_0 A(\eta)\}
 \label{eqn:conjugate_prior_exptl_family}
 \end{equation}
 
-where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan_ef}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
+where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan2010ef}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
 
 To verify conjugacy, we compute the posterior density
 \[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^T \eta - (n_0 + N) A(\eta) \bigg\} \]
@@ -1263,12 +1305,8 @@ The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
 \+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^T \+X + \+V^{-1}  \bigg)^{-1} \\
 \end{align*}
 
-Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$
+Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$.
 \end{proof}
-
-
-\bibliography{references_exponential_family}{}
-\bibliographystyle{apalike}
 
 
 \end{document}
