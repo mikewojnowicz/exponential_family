@@ -3,7 +3,7 @@
 
 %STANDARD PREAMBLE
 %https://tex.stackexchange.com/questions/68821/is-it-possible-to-create-a-latex-preamble-header
-\usepackage{/Users/mwojno01/Repos/latex_preamble/preamble}
+\usepackage{/Users/miw267/Repos/latex_preamble/preamble}
 
 
 %%% CONTROL SIZE OF BLOCK MATRICES
@@ -31,6 +31,10 @@
 
 \begin{document}
 
+%%% UNTOGGLE FOR PUBLIC RELEASE
+\renewcommand{\redfootnote}[1]{}
+\renewcommand{\red}[1]{} 
+\renewcommand{\blue}[1]{} 
 
 
 \title{Exponential Families} 
@@ -961,7 +965,7 @@ i.e.,  the trace of the matrix product is obtained by summing up the element-wis
 
 \subsection{Entropy facts about Multivariate Gaussian}
 
-\input{/Users/mwojno01/Repos/exponential_family/entropy_facts_about_mvn}
+\input{/Users/miw267/Repos/exponential_family/entropy_facts_about_mvn}
 
 \subsection{The simplest linear Gaussian model}
 
