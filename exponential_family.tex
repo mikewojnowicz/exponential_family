@@ -371,8 +371,8 @@ Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members
 
 \begin{subequations}
 \begin{align}
-\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} \label{eqn:entropy_of_an_exponential_family_with_base_measure_unity}\\
-\H[\eta, \wt{\eta}] &=  a(\wt{\eta}) - \bigip{\wt{\eta}, \nabla a(\eta)}  \label{eqn:cross_entropy_between_two_exponential_family_members_with_base_measure_unity}
+\H[\eta]&= a(\eta) - \bigip{\eta}{\nabla a(\eta)} \label{eqn:entropy_of_an_exponential_family_with_base_measure_unity}\\
+\H[\eta, \wt{\eta}] &=  a(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla a(\eta)}  \label{eqn:cross_entropy_between_two_exponential_family_members_with_base_measure_unity}
 \end{align}
 \label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members_with_base_measure_unit}
 \end{subequations}
@@ -399,7 +399,7 @@ and $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family
 
 Using this, we can easily compute 
 \begin{align*}
-\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} \\
+\H[\eta]&= a(\eta) - \bigip{\eta}{\nabla a(\eta)} \\
 &=  \cancel{\frac{-\eta_1^2}{4 \eta_2}} + \half \log (-\frac{\pi}{\eta_2}) - \Big[ \cancel{\frac{-\eta_1^2}{2 \eta_2}} -\half + \cancel{\frac{\eta_1^2}{4 \eta_2}} \Big] \\ 
 \implies \H[\sigma] & = \half \log (2 \pi \sigma^2) + \half
 \end{align*}
@@ -1201,13 +1201,13 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}, n_0 + N)}{H(\tau_{\text{po
 
 \subsection{Overview}
 
-\input{/Users/mwojno01/Repos/minis/pgms/bayesian_network}
+\input{/Users/miw267/Repos/minis/pgms/bayesian_network}
 
 
 
 \subsection{Markov blankets} \label{sec:markov_blankets}
 
-\input{/Users/mwojno01/Repos/minis/pgms/markov_blankets_and_complete_conditionals}
+\input{/Users/miw267/Repos/minis/pgms/markov_blankets_and_complete_conditionals}
 
 
 

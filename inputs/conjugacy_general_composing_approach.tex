@@ -2,15 +2,15 @@ Let $p(y \cond \theta)$ be an exponential family likelihood, and let $p(\theta)$
 
 We can write the prior as 
 \begin{align*}
-p(\theta ) &= \exp \biggset{\biggip{\eta_\theta^o, t_\theta (\theta)} - \log Z_\theta(\eta_\theta^o)} 
+p(\theta ) &= \exp \biggset{\biggip{\eta_\theta^o}{t_\theta (\theta)} - \log Z_\theta(\eta_\theta^o)} 
 %&\propto \exp \biggset{\biggip{\eta_\theta^o, t_\theta (\theta)}}
 \end{align*}
 
 And the likelihood for a single observation $y_i$ as 
 \begin{align*}
-p(y_i \cond \theta)  & \stackrel{1}{=} \exp \biggset{ \biggip{\eta_y(\theta), \;  t_y(y_i)} - \log Z_y (\eta_y(\theta)) } \\
-& \stackrel{2}{=} \exp \biggset{ \biggip{ \bigparenth{\eta_y(\theta), \; - \log Z_y (\eta_y(\theta))}, \; \bigparenth{t_y(y_i), \; 1}}  } \\
-& \stackrel{3}{=} \exp \biggset{ \biggip{t_\theta(\theta), \; \bigparenth{t_y(y_i),1}}}   
+p(y_i \cond \theta)  & \stackrel{1}{=} \exp \biggset{ \biggip{\eta_y(\theta)}{t_y(y_i)} - \log Z_y (\eta_y(\theta)) } \\
+& \stackrel{2}{=} \exp \biggset{ \biggip{ \bigparenth{\eta_y(\theta), \; - \log Z_y (\eta_y(\theta))}}{\bigparenth{t_y(y_i), \; 1}}  } \\
+& \stackrel{3}{=} \exp \biggset{ \biggip{t_\theta(\theta)}{\bigparenth{t_y(y_i),1}}}   
 \end{align*}
 where (1) is true by the exponential family assumption, (2) regroups terms to make conjugacy clearer and (3) must be true given conjugacy. 
 
