@@ -335,7 +335,7 @@ We can provide a closed-form expression for the KL divergence between two member
 Consider two probability distributions from the same exponential family with density $p$, and and let their natural  parameters denoted $\eta$ and $\wt{\eta}$, respectively.  Then the KL-divergence (i.e. relative entropy) is given by
 
 \begin{align*}
-\texttt{KL}(\eta || \wt{\eta}) = \bigip{\nabla a(\eta), \eta - \wt{\eta}} + a(\eta) - a(\eta) 
+\texttt{KL}(\eta || \wt{\eta}) = \bigip{\nabla a(\eta)}{\eta - \wt{\eta}} + a(\eta) - a(\eta) 
 \labelit \label{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}
 \end{align*}
  
@@ -346,9 +346,9 @@ We assume for simplicity of notation (but without loss of generality) that $\mu$
 
 \begin{align*}
 \texttt{KL}(\eta || \wt{\eta}) &= \ds\int p(x \cond \eta) \log \bigg( \df{p(x \cond \eta)}{p(x \cond \wt{\eta})}\bigg) \;dx \\ 
-& = \ds\int p(x \cond \eta) \; \bigg[ \bigip{t(x), \eta - \wt{\eta}}  + a(\wt{\eta}) - a(\eta) \bigg] \; dx \\
-&= \bigip{\E_{\eta}[t(X)],  \eta - \wt{\eta} } + a(\wt{\eta}) - a(\eta) \\
-& \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla a(\eta), \eta - \wt{\eta} } + a(\wt{\eta}) - a(\eta)
+& = \ds\int p(x \cond \eta) \; \bigg[ \bigip{t(x)}{\eta - \wt{\eta}}  + a(\wt{\eta}) - a(\eta) \bigg] \; dx \\
+&= \bigip{\E_{\eta}[t(X)]}{\eta - \wt{\eta} } + a(\wt{\eta}) - a(\eta) \\
+& \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla a(\eta)}{\eta - \wt{\eta} } + a(\wt{\eta}) - a(\eta)
 \end{align*}
 	
 \end{proof}
@@ -359,8 +359,8 @@ By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergenc
 
 \begin{subequations}
 \begin{align}
-\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} - \E_{\eta} [\log h(X)]	\label{eqn:entropy_of_an_exponential_family}\\
-\H[\eta, \wt{\eta}] &=  a(\wt{\eta}) - \bigip{\wt{\eta}, \nabla a(\eta)} - \E_{\eta}  [\log h(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
+\H[\eta]&= a(\eta) - \bigip{\eta}{\nabla a(\eta)} - \E_{\eta} [\log h(X)]	\label{eqn:entropy_of_an_exponential_family}\\
+\H[\eta, \wt{\eta}] &=  a(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla a(\eta)} - \E_{\eta}  [\log h(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
 \end{align}
 \label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members}
 \end{subequations}
@@ -386,7 +386,7 @@ Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy
 The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $a(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla a(\eta) = -\frac{1}{\eta}$), and the carrier density is $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
 Using this, we can easily compute 
 \begin{align*}
-\H[\eta]&= a(\eta) - \bigip{\eta, \nabla a(\eta)} = \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta, - \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
+\H[\eta]&= a(\eta) - \bigip{\eta}{\nabla a(\eta)} = \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta}{- \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
 \implies \H[\sigma] & = \log 2\sigma + 1
 \end{align*}
 \end{example}
@@ -421,8 +421,8 @@ Then the cross entropy from $\wt{p}$ to $p$ is given by
 \begin{align*}
 \H(p, \wt{p}) &= -\E_p [\log \wt{p}(x)]	\\
 &= -\ds\int p(x \cond \eta) \; \log \wt{p} (x \cond \wt{\eta}) \; dx \\
-&= -\ds\int p(x \cond \eta) \bigg[ \bigip{\wt{t}(x), \wt{\eta}} - \wt{a} (\wt{\eta}) + \log \wt{h}(x)  \bigg] dx \\
-&= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{t}(x)], \wt{\eta}} - \E_p[\log \wt{h}(x)]
+&= -\ds\int p(x \cond \eta) \bigg[ \bigip{\wt{t}(x)}{\wt{\eta}} - \wt{a} (\wt{\eta}) + \log \wt{h}(x)  \bigg] dx \\
+&= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{t}(x)]}{\wt{\eta}} - \E_p[\log \wt{h}(x)]
 \end{align*}
 
 So there are now two potentially problematic terms, although in the case where $\wt{h}(x) \equiv 1$, only one potentially problematic term remains.
