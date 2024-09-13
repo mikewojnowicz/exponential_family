@@ -18,19 +18,19 @@ where (1) is true by the exponential family assumption, (2) regroups terms to ma
 By Bayes law, the posterior after a single observation $y_i$ is given by
 \begin{align*}
 p(\theta \cond y_i)  &\propto p(\theta, y_i) \\
-	&=\exp \biggset{ \biggip{ \eta_\theta(y_i), \;   t_\theta(\theta) }- \log Z_\theta(\eta_\theta^o)} 
+	&=\exp \biggset{ \biggip{ \eta_\theta(y_i)}{t_\theta(\theta) } - \log Z_\theta(\eta_\theta^o)} 
 \end{align*}
 where $\eta_\theta(y_i) = \eta_\theta^o + \bigparenth{t_y(y_i),1}$, i.e. the posterior natural parameter is the sum of the prior natural parameter and the sufficient statistics concatenated with the number of samples. 
 
 And so after re-normalizing
 \begin{align*}
-p(\theta \cond y_i)  = \exp \biggset{ \biggip{ \eta_\theta(y_i), \;   t_\theta(\theta) } - \log Z_\theta \big(\eta_\theta(y_i)\big)}
+p(\theta \cond y_i)  = \exp \biggset{ \biggip{ \eta_\theta(y_i)}{t_\theta(\theta) } - \log Z_\theta \big(\eta_\theta(y_i)\big)}
 \labelit \label{eqn:posterior_for_exponential_family_after_one_obs} 
 \end{align*}
   
 After seeing multiple i.i.d observations $y=(y_1,...,y_n)$ from the likelihood, the posterior is given by
 \begin{align*}
-p(\theta \cond y)  = \exp \biggset{ \biggip{ \eta_\theta(y), \;   t_\theta(\theta) } - \log Z_\theta \big(\eta_\theta(y)\big)} 
+p(\theta \cond y)  = \exp \biggset{ \biggip{\eta_\theta(y)}{t_\theta(\theta) } - \log Z_\theta \big(\eta_\theta(y)\big)} 
 \labelit \label{eqn:posterior_for_exponential_family_after_many_obs} 
 \end{align*}
 where $\eta_\theta(y) = \eta_\theta^o + \bigparenth{ \sum_{i=1}^n t_y(y_i),n}$.

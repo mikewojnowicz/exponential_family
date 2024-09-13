@@ -711,6 +711,7 @@ As mentioned by \cite{imai2005bayesian} (pp. 315) a prior distribution on $\+\Si
 \end{remark}
 
 
+
 \subsection{Bayesian linear regression}
 
 \subsubsection{Example:  Bayesian linear regression with normal prior on regression weights and known observation noise} \label{sec:Bayesian_linear_regression_with_normal_prior}
@@ -918,6 +919,123 @@ The hierarchical linear regression model \eqref{eqn:hierarchical_linear_regressi
 \subsection{General formalism} \label{sec:ef_general_formalism}
 
 \input{general_conjugacy_formalism}
+
+\subsection{Compound distributions}
+
+\subsubsection{The negative binomial distribution}
+
+In Prop.~\ref{prop:negative_binomial_is_a_compound_poisson_gamma_distribution}, we show that the negative binomial distribution can be represented as a compound Poisson-Gamma distribution.  This fact is useful, e.g. for easily computing its mean and variance.  This representation fits into the conjugate Bayes section since the Gamma is the conjugate prior for the Poisson. 
+
+\begin{proposition}
+
+Let
+\[X \sim \NegativeBinomial\big(r, p) \]
+
+We can write this as the marginal distribution of a Poisson observation model with a Gamma prior
+%
+\begin{align*}
+X &\sim \Poisson(\lambda) \\
+\lambda &\sim \GammaDist \bigg(r, \frac{p}{1-p}\bigg). 
+\end{align*}
+\label{prop:negative_binomial_is_a_compound_poisson_gamma_distribution}
+\end{proposition}
+
+\begin{proof}
+Let $f_{(r,p)}$ be the density of a Negative Binomial random variable, $g_\lambda$ be the density of a Poisson random variable and $h_{(\alpha, \beta)}$ be the density of a Gamma random variable.   Then we must show that 
+\[ f_{(r,p)}(k) = \int_0^\infty g_\lambda(k) \; h_{(r, p/1-p)}(\lambda) \wrt{\lambda} \]
+for any non-negative integer $k=0,1,2,\hdots$.
+
+We have
+\begin{align*}
+f_{(r,p)}(k) &\stackrel{?}{=} \int_0^\infty g_\lambda(k) h_{(r, p/1-p)}(\lambda) \wrt{\lambda}	&& \\
+&=\int_0^\infty  \bigg( \explaintermbrace{Poisson}{\frac{\lambda^k e^{-\lambda}}{k!}} \bigg)   \explaintermbrace{Gamma}{\frac{\beta^\alpha}{\Gamma(\alpha)} \lambda^{\alpha-1} e^{-\beta \lambda}} \wrt{\lambda}	&& \scripttext{Substitute pdfs}\\
+&= \frac{\beta^\alpha}{k! \Gamma(\alpha)} \explaintermbrace{Unnormalized $Gamma(\alpha+k, \beta+1)$}{\int_0^\infty \lambda^{\alpha+k-1} e^{-(\beta+1) \lambda} \wrt{\lambda}} && \scripttext{Combine like terms, pull out constant} \\
+&= \frac{\beta^\alpha}{k! \Gamma(\alpha)}  \;  \frac{\Gamma(\alpha+k)}{(\beta+1)^{\alpha+k}} && \scripttext{Normalizing constant of Gamma dist'n} \\
+&\stackrel{(1)}{=} \binom{k+\alpha-1}{k} \frac{\beta^\alpha}{(\beta+1)^{\alpha+k}} && \scripttext{See below} \\
+&\stackrel{(2)}{=} \binom{k+r-1}{k} \bigg(\frac{p}{1-p} \bigg)^r (1-p)^{r+k} && \scripttext{See below} 
+\end{align*}
+%
+which is indeed the density of $\NegativeBinomial\big(r, p)$. 
+
+Equation (1) follows from the definition of binomial coefficients with real numbers.  In detail, the definition of binomial coefficients 
+\[\binom{x}{y} \defeq \frac{x!}{(x-y)!y!}\]
+ when $x,y$ are non-negative numbers such that $y \leq x$ is well-known. The definition can be generalized to real-numbers $x,y$ by 
+ \[\binom{x}{y} \defeq \frac{\Gamma(x+1)}{\Gamma(x-y+1) \Gamma(y+1)}\]
+ since $\Gamma(x+1)=x!$.
+ 
+ Equation (2) follows by substituting the choices shape $\alpha=r$ and  rate $\beta=\frac{p}{1-p}$ for the parameters of the Gamma distribution.  Note that $ \beta=\frac{p}{1-p} \implies \beta+1 = \frac{1}{1-p}$.   
+\end{proof}
+%
+In Prop.~\ref{prop:mean_and_variance_of_negative_binomial} below, we use the compound representation of the Negative Binomial (Prop.~\ref{prop:negative_binomial_is_a_compound_poisson_gamma_distribution}) to easily obtain its mean and variance. These expressions may be hard to prove directly \red{TODO: Confirm/justify.}
+ 
+\begin{proposition}
+Let 
+\[X \sim \NegativeBinomial\big(r, p). \]
+%
+Then
+%
+\begin{align*}
+\E[X] &= \frac{r (1-p)}{p} \\	
+\Var[X] &= \frac{r (1-p)}{p^2} \\
+\end{align*}
+\label{prop:mean_and_variance_of_negative_binomial}
+\end{proposition}
+ 
+\begin{proof}
+Representing the $\NegativeBinomial (r,p)$ distribution as the marginal of a $Poisson(\lambda)$ with $\GammaDist(\alpha = r, \beta = \frac{p}{1-p})$ prior (Prop.~\ref{prop:negative_binomial_is_a_compound_poisson_gamma_distribution}), we obtain
+%
+\begin{align*}
+\E[X] &= \E 	\E[X \cond \lambda]  && \scripttext{Law of iterated expectation} \\
+&= \E \lambda && \scripttext{Poisson mean} \\
+&= \frac{\alpha}{\beta} &&\scripttext{Gamma mean} \\
+&= \frac{r (1-p)}{p} && \scripttext{Reparametrize}
+\end{align*}
+%
+Similarly, 
+%
+\begin{align*}
+\Var[X] &= \E 	\Var[X \cond \lambda] +  \Var 	\E[X \cond \lambda] && \scripttext{Law of total variance} \\
+&= \E \lambda + \Var \lambda && \scripttext{Poisson mean, var} \\
+&= \frac{\alpha}{\beta} + \frac{\alpha}{\beta^2} && \scripttext{Gamma mean, var} \\
+&= \frac{\alpha (\beta+1)}{\beta^2} && \scripttext{algebra} \\
+&= \frac{r (1-p)}{p^2} && \scripttext{Reparametrize, algebra}
+\end{align*}
+	
+\end{proof}
+
+
+\begin{remark}\remarktitle{Negative binomial as an overdispersed count model.}
+
+Note from Prop.~\ref{prop:mean_and_variance_of_negative_binomial} that if $X \sim \NegativeBinomial\big(r, p)$, we have 
+\[\Var[X] = \frac{\E[X]}{p}, \]
+where $p \in [0,1]$.  Hence, a Negative Binomial random variable has greater variance than a Poisson, since  if $Y \sim \Poisson(\lambda)$, we have 
+\[\Var[Y] = \E[Y].\]
+\end{remark}
+\red{TODO: Expand the above remark to show that a negative binomial is specifically an overdispersed \textit{Poisson}.}
+
+
+\begin{proposition}\propositiontitle{Poisson as the limiting distribution of Negative Binomials.}
+Consider a sequence $X_n \sim \NegativeBinomial(r_n, p_n)$ such that $r_n \to \infty$ and $p_n \to 1$ but where we hold the mean constant $\E[X_n] = \frac{r_n (1-p_n)}{p_n} = \lambda$.  Then the limiting distribution of $X_n$ is $\Poisson(\lambda)$.
+\end{proposition}
+
+
+\red{TODO: Give some intuition on what these limit conditions mean, in terms of the "successes" and "failures" of a negative binomial. Note that this will require giving some intuition up front about the construction of the negative binomial density.}
+
+\begin{proof}
+The density of the random variables in the sequence is given by
+%
+\begin{align*}
+f(k; r_n,p_n) &= \frac{\Gamma(k+r_n)}{k! \Gamma(r_n)} (1-p_n)^k p_n^{r_n} && \scripttext{Substitute pmf} \\
+&= \frac{\Gamma(k+r_n)}{k! \Gamma(r_n)} \bigg(\frac{\lambda}{\lambda+r_n}\bigg)^k \bigg(\frac{r_n}{\lambda+r_n}\bigg)^{r_n}&& \scripttext{Substitute constant mean} \\
+&= \frac{\lambda^k}{k!} \;\explaintermbrace{$\to 1$}{\frac{\Gamma(k+r_n)}{\Gamma(r_n) (r_n +\lambda)^k}} \;  \explaintermbrace{$\to e^{-\lambda}$}{\bigg(\frac{1}{1+\frac{\lambda}{r_n}}\bigg)^{r_n}} && \scripttext{Algebra} \\
+& \to \frac{\lambda^k}{k!} e^{-\lambda}
+\end{align*}
+%
+which is the density of a $\Poisson(\lambda)$ random variable.
+\end{proof}
+
+
+
 
 \bibliography{references_exponential_family}
 \bibliographystyle{apalike}
