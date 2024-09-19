@@ -28,6 +28,10 @@
 \newcommand{\new}{\text{new}}
 \newcommand{\betaML}{\wh{\+\beta}_{\text{ML}}}
 
+%%% EMISSIONS PARAMETER
+% (Used in posterior predictives section, since this was copied from the changepoint_notes repo)
+\newcommand{\emissionsParam}{\+\theta}
+
 
 \begin{document}
 
@@ -1312,7 +1316,13 @@ p(x_{\text{new}} \cond x) = \df{H(\tau_{\text{post}}, n_0 + N)}{H(\tau_{\text{po
 \label{eqn:predictive_posterior_exptl_family}
 \end{equation}
 
+For a proof of this, see Sec.~\ref{sec:posterior_predictives}.
+
 \red{TODO:  Redo some of the examples using the exponential family conjugate prior formalism.    A possibly useful resource in the giant table at \url{https://en.wikipedia.org/wiki/Exponential_family}.}
+
+\section{Posterior Predictives} \label{sec:posterior_predictives}
+
+\input{/Users/miw267/Repos/changepoints_notes/inputs/posterior_predictives}
 
 \section{Bayesian networks} \label{sec:bayesian_networks}
 
