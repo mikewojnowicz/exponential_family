@@ -17,6 +17,7 @@
 \newcommand{\sufficientStatsFunction}{t}
 \newcommand{\carrierDensity}{h}
 \newcommand{\naturalParamSpace}{H}
+\newcommand{\meanParameter}{\mu}
 
 
 %%% CONTROL SIZE OF BLOCK MATRICES
@@ -105,11 +106,13 @@ Exponential family members can have intractable normalization constants.  Consid
 
 
 \begin{definition}
-An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $\sufficientStatsFunction(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^\top \sufficientStatsFunction(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
+An exponential family is said to be \textbf{minimal} if the components of the sufficient statistics $\sufficientStatsFunction(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^\top \sufficientStatsFunction(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
+\label{def:minimal_exponential_families}
 \end{definition}
 
   An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify, and state how to rectify. Also demonstrate the importance of this.} 
 
+\red{TODO: I believe a non-minimal EF can always be reparametrized into a minimal EF. This makes sense based on the definition, based on the categorical distribution, and based on an implication from \citet[Sec.~8.4]{jordan2010exponential}.  Justify this.}
 
 \subsection{Examples}
 
@@ -309,13 +312,16 @@ Some non-examples include
 
 \subsection{Properties}
 
-\subsubsection{Relationship between moments and the normalizer function}
-\begin{proposition}
+\subsubsection{Relationship between moments and the normalizer function} \label{sec:relationship_between_moments_and_normalizer}
+
+\begin{proposition}\propositiontitle{The gradient of the log normalizer equals the expected sufficient statistics.}
 Let $X$ have an exponential family distribution with natural parameter $\eta$, sufficient statistics function $t$, and log normalizer function $\logNormalizerFunction$.   Then  
 \begin{align*}
 \nabla \logNormalizerFunction(\eta) = \E[\sufficientStatsFunction(X)] 
 \labelit \label{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}	
 \end{align*}
+\label{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}
+\end{proposition}
 
 \begin{proof}
 
@@ -335,8 +341,7 @@ Thus
 where in  Equation (1) we take the derivative of a logarithm (interchanging the gradient and the integral), and in Equation (2) we recognize the denominator as $\exp \logNormalizerFunction(\eta)$.	
 \end{proof}
 
-\label{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}
-\end{proposition}
+
 
 \begin{task}
 Justify formally the interchange of gradient and integral in Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}.	
@@ -352,7 +357,7 @@ In fact, all moments of an exponential family are finite (recall from Definition
 
 
 
-For more information on Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, see \cite{jordan2010ef}, \cite{nielsen2010entropies}, or \cite{nielsen2009statistical}.   
+For more information on Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, see \citet{jordan2010exponential}, \citet{jordan2010conjugate}, \citet{nielsen2010entropies}, or \citet{nielsen2009statistical}.   
 
 \subsubsection{Entropy, cross-entropy, and KL divergence}
 
@@ -478,9 +483,21 @@ If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential fam
  \end{align}
 
 
+\subsection{Mean parametrization} \label{sec:mean_parametrization}
+
+In Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer} (see Sec.~\ref{sec:relationship_between_moments_and_normalizer}), we showed that the expected sufficient statistics $\meanParameter \defeq \E[\sufficientStatsFunction(X)]$ can be obtained as a function of the natural parameter $\eta$; namely
+%
+\[ \nabla \logNormalizerFunction(\eta) = \E[\sufficientStatsFunction(X)] \]
+%
+For minimal families (Def.~\ref{def:minimal_exponential_families}), it turns out that this relationship is invertible \cite[Sec.~8.4]{jordan2010exponential}. \red{TODO: Prove this.}  This implies that a distribution in the exponential family can be parameterized not only by $\eta$ -- the canonical parametrization -- but also by $\meanParameter$ -- the \textit{mean parametrization}. \red{TODO: Prove that we can always reparametrize a non-minimal EF into a minimal EF.}  
+
+
 
 \section{Frequentist Inference}
-\subsection{Maximum Likelihood Estimation} \label{sec:ml_with_ef}
+
+\subsection{Maximum Likelihood Estimation}
+\label{sec:ml_with_ef}
+
 
 The goal for maximum likelihood is to determine the parameter
 \begin{equation}
@@ -497,13 +514,29 @@ Setting the gradient to zero, we obtain
 \[ \nabla_\eta \logNormalizerFunction(\eta) = \df{1}{n}  \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) \]
 
 But $\nabla_\eta \logNormalizerFunction(\eta) = \E [\sufficientStatsFunction(X)]$  (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}).  Thus, we should set $\theta_{ML}$ such that
+%
 
-\[ \mu(\theta_{ML}) = \df{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) \]
-where $\mu := \E[\sufficientStatsFunction(X)]$ refers to the mean parametrization of the likelihood. \redfootnote{TODO: This switching of parameterization should be handled much more explicitly.}
+\begin{align}
+\meanParameter(\theta_{ML}) = \df{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) 	
+ \label{eqn:maximum_likelihood_solution_for_exponential_families}
+\end{align}
+%
+where $\meanParameter:= \E[\sufficientStatsFunction(X)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the likelihood.  \redfootnote{TODO: This switching of parameterization should be handled more explicitly.}
 
-\subsection{Expectation Maximization} \label{sec:em_with_ef}
+\subsection{Latent variable models}
 
-Some models have latent variables associated with each observation, and so maximum likelihood is not possible.  Let us see how expectation maximization looks when the complete data likelihood is an exponential family.
+Some models have latent variables associated with each observation.   Let us  assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are n independent samples from an  exponential family, where $\+x$ is observed data and $\+z$ is unobserved data.
+%
+\begin{align}
+ p(\+x, \+z \cond \theta) = \ds\prod_{i=1}^n \carrierDensity(x_i, z_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i, z_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
+\label{eqn:exponential_family_complete_data_likelihood}
+ \end{align}
+%
+In this case, we say that the \textit{complete data likelihood} is an exponential family.
+
+\subsection{Expectation Maximization}
+
+When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood}, we can perform frequentist inference via Expectation Maximization (EM).  
 
 The expectation maximization algorithm is 
 \begin{equation}
@@ -511,20 +544,13 @@ The expectation maximization algorithm is
  \+\theta^{(t+1)} =  \text{argmax}_{\+\theta} \; \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
  \end{equation}
 
-We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}.   Let us assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are n independent samples from the same exponential family, where $\+x$ is observed data and $\+z$ is unobserved data.
-Moreover, let us assume that the complete data likelihood is an exponential family
-
-\begin{align}
-\label{eqn:exponential_family_complete_data_likelihood}
- p(\+x, \+z \cond \theta) = \ds\prod_{i=1}^n \carrierDensity(x_i, z_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i, z_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
- \end{align}
-
-Here we want to find $\+\theta$ to optimize 
-\[ f(\+\theta) =  \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \]
-
+We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}.   Here we want to find $\+\theta$ to optimize
+% 
+\[ Q(\+\theta \cond \+\theta^^t) =  \E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \]
+%
 Following the logic of Section \ref{sec:ml_with_ef}, we determine that we should select $\theta^{(t+1)}$ such that
-\[ \mu(\theta^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \+\theta^{(t)})} \sufficientStatsFunction(x_i, z_i) \]
-where $\mu := \E[\sufficientStatsFunction(x_1,z_1)]$ refers to the mean parametrization of the likelihood.
+\[ \meanParameter(\theta^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \+\theta^{(t)})} \sufficientStatsFunction(x_i, z_i) \]
+where $\meanParameter := \E[\sufficientStatsFunction(x_1,z_1)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the likelihood.
 
 This is why an EM iteration is often described and/or implemented as performing maximum likelihood with the expected sufficient statistics.
 
@@ -532,7 +558,7 @@ This is why an EM iteration is often described and/or implemented as performing 
 
 \red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \theta, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
  
- \section{Conjugate and semi-conjugate models} \label{sec:conjugate_exponential_family_models}
+ \section{Bayesian inference for conjugate and semi-conjugate models} \label{sec:conjugate_exponential_family_models}
 
 \input{conjugacy_and_semi_conjugacy}
 
@@ -1302,7 +1328,7 @@ Note that this argument yields the same parameter updating scheme of \eqref{eqn:
 
 \subsection{Alternate approach 2} \label{sec:ef_general_formalism_jordan}
 
-Following \cite{jordan2010ef}, here we provide a general formalism for conjugate priors for exponential family data models. 
+Following \cite{jordan2010conjugate}, here we provide a general formalism for conjugate priors for exponential family data models. 
 
 Writing the exponential family density in canonical form, we have
 \[ p(x \cond \eta) = \carrierDensity(x) \exp \{ \eta^\top T(x) - A(\eta) \} \]
@@ -1321,7 +1347,7 @@ p (\eta \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^\top \eta - n_0 A(\eta)\}
 \label{eqn:conjugate_prior_exptl_family}
 \end{equation}
 
-where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan2010ef}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
+where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan2010conjugate}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
 
 To verify conjugacy, we compute the posterior density
 \[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^\top \eta - (n_0 + N) A(\eta) \bigg\} \]
