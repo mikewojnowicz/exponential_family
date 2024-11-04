@@ -1,10 +1,20 @@
 \documentclass{article} % For LaTeX2e
 
 
-%STANDARD PREAMBLE
-%https://tex.stackexchange.com/questions/68821/is-it-possible-to-create-a-latex-preamble-header
+%%%
+% STANDARD PREAMBLE
+%%%
+% https://tex.stackexchange.com/questions/68821/is-it-possible-to-create-a-latex-preamble-header
 \usepackage{/Users/miw267/Repos/latex_preamble/preamble}
 
+
+%%%
+% PREAMBLE SPECIFIC TO THIS DOC
+%%%
+
+%%% EXPONENTIAL FAMILY QUANTITIES
+\newcommand{\logNormalizerFunction}{a}
+\newcommand{\sufficientStatsFunction}{t}
 
 %%% CONTROL SIZE OF BLOCK MATRICES
 % Reference: https://tex.stackexchange.com/questions/14071/how-can-i-increase-the-line-spacing-in-a-matrix
@@ -33,6 +43,10 @@
 \newcommand{\emissionsParam}{\+\theta}
 
 
+
+
+
+
 \begin{document}
 
 %%%% UNTOGGLE FOR PUBLIC RELEASE
@@ -58,9 +72,9 @@ We are interested in  exponential families primarily because they makes inferenc
 \begin{remark}
 Observe \cite{chua2019stats} that without loss of generality, we can 
 \begin{alphabate} 
-\item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^T t(x) - a(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^T t(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A h d\mu$ for any measurable set $A$. }
-\item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{t} = M t(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $t(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
-\item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $a(\eta)$ to $\wt{a}(\eta) = a(\eta) - a(0)$ results in an equivalent family. 
+\item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^\top \sufficientStatsFunction(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A h d\mu$ for any measurable set $A$. }
+\item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $\logNormalizerFunction(\eta)$ to $\wt{\logNormalizerFunction}(\eta) = \logNormalizerFunction(\eta) - \logNormalizerFunction(0)$ results in an equivalent family. 
 \end{alphabate}
 \label{rk:alternate_constructions_for_the_exponential_family}
 \end{remark}
@@ -77,7 +91,7 @@ An exponential family is said to be \textit{regular} if the natural parameter sp
 One can \textit{reparameterize} a regular exponential family with some other coordinates $\theta$.  If one writes the natural parameter as a continuous function $\eta(\theta)$, then the density \eqref{eqn:exponential_family_natural} becomes
 \begin{align}
 \label{eqn:exponential_family}
- p_\theta(x) = h(x) \exp \{ \eta(\theta)^T t(x) - a(\eta(\theta))\} 
+ p_\theta(x) = h(x) \exp \{ \eta(\theta)^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta(\theta))\} 
  \end{align}
  The reparameterized family is regular as well, since $\Theta := \eta^{-1}(H)$ is open. 
 
@@ -88,7 +102,7 @@ Exponential family members can have intractable normalization constants.  Consid
 
 
 \begin{definition}
-An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $t(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^T t(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
+An exponential family is said to be \textit{minimal} if the components of the sufficient statistics $\sufficientStatsFunction(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^\top \sufficientStatsFunction(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
 \end{definition}
 
   An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify, and state how to rectify. Also demonstrate the importance of this.} 
@@ -104,7 +118,7 @@ Here we give examples of exponential families, showing how to derive the exponen
 \begin{example}{(Categorical Distribution)}
 \label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $x \in \set{0,1}^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
 \[p(x \cond \pi) = \prod_{k=1}^K \pi_k^{x_k} = \exp \{ \sum_{k=1}^K x_k \log \pi_k\} \]
- with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $t(x) = x$, carrier density $h(x)=1$ and log normalizer $0$.
+ with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $\sufficientStatsFunction(x) = x$, carrier density $h(x)=1$ and log normalizer $0$.
 \end{example}
 
 \subsubsection{Dirichlet distribution}
@@ -114,7 +128,7 @@ Here we give examples of exponential families, showing how to derive the exponen
 p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
 &= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^T$, sufficient statistics $t(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^T$, carrier density $h(\pi)=1$, and log normalizer $a(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
+with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^\top$, sufficient statistics $\sufficientStatsFunction(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^\top$, carrier density $h(\pi)=1$, and log normalizer $\logNormalizerFunction(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
   
 \end{example} 
 
@@ -150,12 +164,12 @@ If we write
 f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\half \df{(x-\mu)^2}{\sigma^2}}  \indicate{a \leq x \leq b} \\
 & = K \df{1}{\sqrt{2 \pi}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
 \end{align*} 
-where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (\frac{1}{\sigma^2},  \frac{\mu}{\sigma^2})^T$,  sufficient statistics function $t(x) = (-\half x^2,  x)^T$,  carrier density $h(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
+where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (\frac{1}{\sigma^2},  \frac{\mu}{\sigma^2})\top$,  sufficient statistics function $\sufficientStatsFunction(x) = (-\half x^2,  x)^\top$,  carrier density $h(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
  
 \end{example}
 
 \begin{remark}
-The truncated normal distribution differs from the normal distribution only in its carrier density $h(x)$ and therefore log normalizer $a(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $t(x)$ are identical.   Thus,  knowing $\eta$ and $t(x)$ is not sufficient to determine the form of the probability distribution.
+The truncated normal distribution differs from the normal distribution only in its carrier density $h(x)$ and therefore log normalizer $\logNormalizerFunction(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $\sufficientStatsFunction(x)$ are identical.   Thus,  knowing $\eta$ and $\sufficientStatsFunction(x)$ is not sufficient to determine the form of the probability distribution.
 \label{rk:truncated_normal_differs_from_normal_only_in_terms_of_carrier_density}
 \end{remark}
 
@@ -168,7 +182,7 @@ The truncated normal distribution differs from the normal distribution only in i
 p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1} \exp \bigg(- \df{\beta}{x} \bigg) \\
 &= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient statistics $t(x) = [\log x ,  \frac{1}{x}]^T$, carrier density $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
+with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]\top$, sufficient statistics $\sufficientStatsFunction(x) = [\log x ,  \frac{1}{x}]^\top$, carrier density $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
   
 \end{example} 
 
@@ -178,11 +192,11 @@ with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]^T$, sufficient stati
 \label{ex:mvn_as_ef}
 We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribution in exponential form
 \begin{align*}
-	p(\+x \cond \+\mu, \+\Sigma) &= (2\pi)^{-d/2} |\+\Sigma |^{-1/2} \exp \bigg\{ -\half (\+x - \+\mu)^T \+\Sigma^{-1} (\+x - \+\mu) \bigg\}  \\
-& \stackrel{1}{=} (2\pi)^{-d/2} \exp \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T) $}{\+x^T \+\Sigma^{-1} \+x} + \+x^T \+\Sigma^{-1} \+\mu -\half \+\mu^T \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
+	p(\+x \cond \+\mu, \+\Sigma) &= (2\pi)^{-d/2} |\+\Sigma |^{-1/2} \exp \bigg\{ -\half (\+x - \+\mu)^\top \+\Sigma^{-1} (\+x - \+\mu) \bigg\}  \\
+& \stackrel{1}{=} (2\pi)^{-d/2} \exp \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^\top \vectorize (\+x\+x^\top) $}{\+x^\top \+\Sigma^{-1} \+x} + \+x^\top \+\Sigma^{-1} \+\mu -\half \+\mu^\top \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
 	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
-with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $t(\+x) = \big(\vectorize (\+x \+x^T), \+x \big)$, carrier density $h(x) = (2\pi)^{-d/2}$ and log normalizing $a(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
+with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $\sufficientStatsFunction(\+x) = \big(\vectorize (\+x \+x^\top), \+x \big)$, carrier density $h(x) = (2\pi)^{-d/2}$ and log normalizing $\logNormalizerFunction(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
 \end{example}
 
 \begin{remark}
@@ -190,7 +204,7 @@ From Example \ref{ex:mvn_as_ef}, we see that the natural parameters of the MVN a
 \end{remark}
 
 \begin{remark}
- The underbrace representation in Equation (1) is given by $\+x^T \+\Sigma^{-1} \+x = \tr (\+x^T \+\Sigma^{-1} \+x) = \tr (\+\Sigma^{-1} \+x \+x^T) =\vectorize (\+\Sigma^{-1})^T \vectorize (\+x\+x^T)$.\footnote{Recall $\tr(\+A\+B) = \vectorize (\+A)^T \vectorize (\+B)$.}  
+ The underbrace representation in Equation (1) is given by $\+x^\top \+\Sigma^{-1} \+x = \tr (\+x^\top \+\Sigma^{-1} \+x) = \tr (\+\Sigma^{-1} \+x \+x^\top) =\vectorize (\+\Sigma^{-1})^\top \vectorize (\+x\+x^\top)$.\footnote{Recall $\tr(\+A\+B) = \vectorize (\+A)^\top \vectorize (\+B)$.}  
 \end{remark}
 
 \begin{remark}
@@ -199,7 +213,7 @@ In Section \ref{sec:normal_data_with_non_conjugate_prior}, we use the exponentia
 
 \begin{remark}
 \label{rk:mvn_from_ef}
-Equation \eqref{eqn:mvn_as_ef} also says that if a random vector $\+x$ has a density on $\R^d$ that is proportional to $\exp \{ -\half \+x^T \+A \+x + \+x^T \+b\}$ for some matrix $\+A$ and vector $\+b$, then $\+x$ must be multivariate normal with covariance $\+A^{-1}$ and mean $\+A^{-1}\+b$. 
+Equation \eqref{eqn:mvn_as_ef} also says that if a random vector $\+x$ has a density on $\R^d$ that is proportional to $\exp \{ -\half \+x^\top \+A \+x + \+x^\top \+b\}$ for some matrix $\+A$ and vector $\+b$, then $\+x$ must be multivariate normal with covariance $\+A^{-1}$ and mean $\+A^{-1}\+b$. 
 \end{remark}
 	
 
@@ -215,11 +229,17 @@ p (\+X  \cond \+\Psi,  \nu) & \stackrel{1}{=} C(\+\Psi,  \nu) \; | \+X | ^{-(\nu
 Equation (1) gives the standard representation of the $\InverseWishart(\+\Psi,  \nu)$ density,  where   $C(\+\Psi,  \nu)$ is the normalizing constant,  $| \cdot |$ refers to the determinant,  $\+X,  \+\Psi \in \R^{p \times p}$ are positive definite matrices,  and $\nu > p-1$.    Equation (2) uses the fact that the trace of a matrix product behaves like a dot product \eqref{eqn:trace_of_matrix_product}.      
 
 
-As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^T$, sufficient statistics $t(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^T$, carrier density $h(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
+As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^\top$, sufficient statistics $\sufficientStatsFunction(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^\top$, carrier density $h(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
   
 \end{example} 
 
 %{eqn:trace_of_matrix_product}
+
+\subsubsection{Gaussian Mixture Models}
+
+
+For a detailed explanation of how to represent Gaussian mixture models in the exponential family, see \url{https://www.youtube.com/playlist?list=PLD0F06AA0D2E8FFBA}, videos 16.6-16.8. More generally, it can be shown that mixtures of any exponential family distributions are still in the exponential family. 
+
 
 \subsubsection{Hidden Markov Models} 
 
@@ -288,28 +308,28 @@ Some non-examples include
 
 \subsubsection{Relationship between moments and the normalizer function}
 \begin{proposition}
-Let $X$ have an exponential family distribution with natural parameter $\eta$, sufficient statistics function $t$, and log normalizer function $a$.   Then  
+Let $X$ have an exponential family distribution with natural parameter $\eta$, sufficient statistics function $t$, and log normalizer function $\logNormalizerFunction$.   Then  
 \begin{align*}
-\nabla a(\eta) = \E[t(X)] 
+\nabla \logNormalizerFunction(\eta) = \E[\sufficientStatsFunction(X)] 
 \labelit \label{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}	
 \end{align*}
 
 \begin{proof}
 
 Since $X$ is in the exponential family, its density can be written in the form
- \[ p(x \cond \eta) =  \exp \{ \eta^T t(x) - a(\eta) + \log h(x)\} \] 
+ \[ p(x \cond \eta) =  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log h(x)\} \] 
 where 
-\[a(\eta) = \log \int_{\mathcal{X}} \exp \{ <t(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} \] 
+\[\logNormalizerFunction(\eta) = \log \int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} \] 
 
 Thus
 \begin{align*}
-\nabla a (\eta) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} t(x)  \exp \{ <t(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <t(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} } \\
-& \stackrel{2}{=} \int_{\mathcal{X}} t(x)  \exp \{ <t(x), \eta> - a(\eta) + \log h(x) \} \; d\nu_{\mathcal{X}}  \\
-& = \int_{\mathcal{X}} t(x)  \; p(x \cond \eta) \; d\nu_{\mathcal{X}}  \\
-&= \E[t(X)]
+\nabla \logNormalizerFunction (\eta) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} } \\
+& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \eta> - \logNormalizerFunction(\eta) + \log h(x) \} \; d\nu_{\mathcal{X}}  \\
+& = \int_{\mathcal{X}} \sufficientStatsFunction(x)  \; p(x \cond \eta) \; d\nu_{\mathcal{X}}  \\
+&= \E[\sufficientStatsFunction(X)]
 \end{align*}
 
-where in  Equation (1) we take the derivative of a logarithm (interchanging the gradient and the integral), and in Equation (2) we recognize the denominator as $\exp a(\eta)$.	
+where in  Equation (1) we take the derivative of a logarithm (interchanging the gradient and the integral), and in Equation (2) we recognize the denominator as $\exp \logNormalizerFunction(\eta)$.	
 \end{proof}
 
 \label{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}
@@ -321,7 +341,7 @@ Justify formally the interchange of gradient and integral in Proposition \ref{pr
 
 \begin{remark}
 In a manner similar to that of Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, we can show that the covariance matrix of the sufficient statistics is the Hessian of the log-normalizer calculated at its natural parameter:
-\[ \Cov[t(X)] = \nabla^2 a(\eta) \]	
+\[ \Cov[\sufficientStatsFunction(X)] = \nabla^2 \logNormalizerFunction(\eta) \]	
 
 In fact, all moments of an exponential family are finite (recall from Definition \ref{def:exponential_family} that exponential family membership requires $a$ to be a $C^\infty$ function).  This explains why the Cauchy distribution (of undefined mean) is not an exponential family.
 \label{rk:any_exponential_family_has_finite_moments}
@@ -339,7 +359,7 @@ We can provide a closed-form expression for the KL divergence between two member
 Consider two probability distributions from the same exponential family with density $p$, and and let their natural  parameters denoted $\eta$ and $\wt{\eta}$, respectively.  Then the KL-divergence (i.e. relative entropy) is given by
 
 \begin{align*}
-\texttt{KL}(\eta || \wt{\eta}) = \bigip{\nabla a(\eta)}{\eta - \wt{\eta}} + a(\eta) - a(\eta) 
+\texttt{KL}(\eta || \wt{\eta}) = \bigip{\nabla \logNormalizerFunction(\eta)}{\eta - \wt{\eta}} + \logNormalizerFunction(\eta) - \logNormalizerFunction(\eta) 
 \labelit \label{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}
 \end{align*}
  
@@ -350,9 +370,9 @@ We assume for simplicity of notation (but without loss of generality) that $\mu$
 
 \begin{align*}
 \texttt{KL}(\eta || \wt{\eta}) &= \ds\int p(x \cond \eta) \log \bigg( \df{p(x \cond \eta)}{p(x \cond \wt{\eta})}\bigg) \;dx \\ 
-& = \ds\int p(x \cond \eta) \; \bigg[ \bigip{t(x)}{\eta - \wt{\eta}}  + a(\wt{\eta}) - a(\eta) \bigg] \; dx \\
-&= \bigip{\E_{\eta}[t(X)]}{\eta - \wt{\eta} } + a(\wt{\eta}) - a(\eta) \\
-& \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla a(\eta)}{\eta - \wt{\eta} } + a(\wt{\eta}) - a(\eta)
+& = \ds\int p(x \cond \eta) \; \bigg[ \bigip{\sufficientStatsFunction(x)}{\eta - \wt{\eta}}  + \logNormalizerFunction(\wt{\eta}) - \logNormalizerFunction(\eta) \bigg] \; dx \\
+&= \bigip{\E_{\eta}[\sufficientStatsFunction(X)]}{\eta - \wt{\eta} } + \logNormalizerFunction(\wt{\eta}) - \logNormalizerFunction(\eta) \\
+& \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla \logNormalizerFunction(\eta)}{\eta - \wt{\eta} } + \logNormalizerFunction(\wt{\eta}) - \logNormalizerFunction(\eta)
 \end{align*}
 	
 \end{proof}
@@ -363,20 +383,20 @@ By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergenc
 
 \begin{subequations}
 \begin{align}
-\H[\eta]&= a(\eta) - \bigip{\eta}{\nabla a(\eta)} - \E_{\eta} [\log h(X)]	\label{eqn:entropy_of_an_exponential_family}\\
-\H[\eta, \wt{\eta}] &=  a(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla a(\eta)} - \E_{\eta}  [\log h(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
+\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} - \E_{\eta} [\log h(X)]	\label{eqn:entropy_of_an_exponential_family}\\
+\H[\eta, \wt{\eta}] &=  \logNormalizerFunction(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla \logNormalizerFunction(\eta)} - \E_{\eta}  [\log h(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
 \end{align}
 \label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members}
 \end{subequations}
 
 
 
-Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the carrier density satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $h(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $a(\eta)$.}. In that case, we have 
+Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the carrier density satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $h(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $\logNormalizerFunction(\eta)$.}. In that case, we have 
 
 \begin{subequations}
 \begin{align}
-\H[\eta]&= a(\eta) - \bigip{\eta}{\nabla a(\eta)} \label{eqn:entropy_of_an_exponential_family_with_base_measure_unity}\\
-\H[\eta, \wt{\eta}] &=  a(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla a(\eta)}  \label{eqn:cross_entropy_between_two_exponential_family_members_with_base_measure_unity}
+\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} \label{eqn:entropy_of_an_exponential_family_with_base_measure_unity}\\
+\H[\eta, \wt{\eta}] &=  \logNormalizerFunction(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla \logNormalizerFunction(\eta)}  \label{eqn:cross_entropy_between_two_exponential_family_members_with_base_measure_unity}
 \end{align}
 \label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members_with_base_measure_unit}
 \end{subequations}
@@ -387,10 +407,10 @@ Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members
 \begin{example}
 Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a centered Laplace distribution, which has pdf
 \[ f(x \cond \sigma) = -\frac{1}{2 \sigma} \exp \bigg\{ - \frac{|x|}{\sigma}\bigg\}  \]	
-The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $a(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla a(\eta) = -\frac{1}{\eta}$), and the carrier density is $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
+The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $\logNormalizerFunction(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla \logNormalizerFunction(\eta) = -\frac{1}{\eta}$), and the carrier density is $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
 Using this, we can easily compute 
 \begin{align*}
-\H[\eta]&= a(\eta) - \bigip{\eta}{\nabla a(\eta)} = \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta}{- \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
+\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} = \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta}{- \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
 \implies \H[\sigma] & = \log 2\sigma + 1
 \end{align*}
 \end{example}
@@ -398,12 +418,14 @@ Using this, we can easily compute
 
 \begin{example}
 Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a univariate Gaussian.  The necessary exponential family quantities can be found in many tables (e.g. see \cite{nielsen2009statistical}); they are:
-\[ \eta=\bigg(\frac{\mu}{\sigma^2}, \; -\frac{1}{2\sigma^2}\bigg)^T, \quad a(\eta) = \frac{-\eta_1^2}{4 \eta_2} + \half \log (-\frac{\pi}{\eta_2}), \quad  \nabla a(\eta) = \bigg( -\frac{\eta_1}{2\eta_2}, \; -\frac{1}{2\eta_2} + \frac{\eta_1^2}{4\eta_2^2}\bigg)^T\] 
+%
+\[ \eta=\bigg(\frac{\mu}{\sigma^2}, \; -\frac{1}{2\sigma^2}\bigg)^\top, \quad \logNormalizerFunction(\eta) = \frac{-\eta_1^2}{4 \eta_2} + \half \log (-\frac{\pi}{\eta_2}), \quad  \nabla \logNormalizerFunction(\eta) = \bigg( -\frac{\eta_1}{2\eta_2}, \; -\frac{1}{2\eta_2} + \frac{\eta_1^2}{4\eta_2^2}\bigg)^\top\] 
+%
 and $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).
 
 Using this, we can easily compute 
 \begin{align*}
-\H[\eta]&= a(\eta) - \bigip{\eta}{\nabla a(\eta)} \\
+\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} \\
 &=  \cancel{\frac{-\eta_1^2}{4 \eta_2}} + \half \log (-\frac{\pi}{\eta_2}) - \Big[ \cancel{\frac{-\eta_1^2}{2 \eta_2}} -\half + \cancel{\frac{\eta_1^2}{4 \eta_2}} \Big] \\ 
 \implies \H[\sigma] & = \half \log (2 \pi \sigma^2) + \half
 \end{align*}
@@ -417,16 +439,16 @@ What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look 
 
 Let 
 \begin{align*}
-p(x \cond \eta) &=  \exp \{ \eta^T t(x) - a(\eta) + \log h(x)\}  \\
-\wt{p}(x \cond \wt{\eta}) &=  \exp \{ \wt{\eta}^T \wt{t}(x) - \wt{a}(\wt{\eta}) + \log \wt{h}(x)\}  \\	
+p(x \cond \eta) &=  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log h(x)\}  \\
+\wt{p}(x \cond \wt{\eta}) &=  \exp \{ \wt{\eta}^\top \wt{\sufficientStatsFunction}(x) - \wt{\logNormalizerFunction}(\wt{\eta}) + \log \wt{h}(x)\}  \\	
 \end{align*}
  
 Then the cross entropy from $\wt{p}$ to $p$ is given by
 \begin{align*}
 \H(p, \wt{p}) &= -\E_p [\log \wt{p}(x)]	\\
 &= -\ds\int p(x \cond \eta) \; \log \wt{p} (x \cond \wt{\eta}) \; dx \\
-&= -\ds\int p(x \cond \eta) \bigg[ \bigip{\wt{t}(x)}{\wt{\eta}} - \wt{a} (\wt{\eta}) + \log \wt{h}(x)  \bigg] dx \\
-&= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{t}(x)]}{\wt{\eta}} - \E_p[\log \wt{h}(x)]
+&= -\ds\int p(x \cond \eta) \bigg[ \bigip{\wt{\sufficientStatsFunction}(x)}{\wt{\eta}} - \wt{a} (\wt{\eta}) + \log \wt{h}(x)  \bigg] dx \\
+&= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{\sufficientStatsFunction}(x)]}{\wt{\eta}} - \E_p[\log \wt{h}(x)]
 \end{align*}
 
 So there are now two potentially problematic terms, although in the case where $\wt{h}(x) \equiv 1$, only one potentially problematic term remains.
@@ -449,7 +471,7 @@ For more information on identifiability in exponential families, see \cite{cole2
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
 \begin{align}
 \label{eqn:exponential_family_iid}
- p(\+x \cond \theta) = \ds\prod_{i=1}^n h(x_i) \exp \big\{ \eta(\theta)^T \sum_{i=1}^n t(x_i) - n \,a(\eta(\theta))\big\} 
+ p(\+x \cond \theta) = \ds\prod_{i=1}^n h(x_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
  \end{align}
 
 
@@ -465,16 +487,16 @@ The goal for maximum likelihood is to determine the parameter
 
 Let us assume that $\+x=(x_1, ..., x_n)$ are i.i.d observations  from a fixed exponential family, so that the likelihood has form \eqref{eqn:exponential_family_iid}.  Let us compute the gradient with respect to the natural parameter $\eta$ of $\ell(\eta) := \log p(\+x \cond \eta)$
 
-\[ \nabla_\eta \ell(\eta) = \ds\sum_{i=1}^n t(x_i) - n \; \nabla_\eta a(\eta) \]
+\[ \nabla_\eta \ell(\eta) = \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) - n \; \nabla_\eta \logNormalizerFunction(\eta) \]
 
 Setting the gradient to zero, we obtain
 
-\[ \nabla_\eta a(\eta) = \df{1}{n}  \ds\sum_{i=1}^n t(x_i) \]
+\[ \nabla_\eta \logNormalizerFunction(\eta) = \df{1}{n}  \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) \]
 
-But $\nabla_\eta a(\eta) = \E [t(X)]$  (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}).  Thus, we should set $\theta_{ML}$ such that
+But $\nabla_\eta \logNormalizerFunction(\eta) = \E [\sufficientStatsFunction(X)]$  (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}).  Thus, we should set $\theta_{ML}$ such that
 
-\[ \mu(\theta_{ML}) = \df{1}{n} \ds\sum_{i=1}^n t(x_i) \]
-where $\mu := \E[t(X)]$ refers to the mean parametrization of the likelihood. \redfootnote{TODO: This switching of parameterization should be handled much more explicitly.}
+\[ \mu(\theta_{ML}) = \df{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) \]
+where $\mu := \E[\sufficientStatsFunction(X)]$ refers to the mean parametrization of the likelihood. \redfootnote{TODO: This switching of parameterization should be handled much more explicitly.}
 
 \subsection{Expectation Maximization} \label{sec:em_with_ef}
 
@@ -491,15 +513,15 @@ Moreover, let us assume that the complete data likelihood is an exponential fami
 
 \begin{align}
 \label{eqn:exponential_family_complete_data_likelihood}
- p(\+x, \+z \cond \theta) = \ds\prod_{i=1}^n h(x_i, z_i) \exp \big\{ \eta(\theta)^T \sum_{i=1}^n t(x_i, z_i) - n \,a(\eta(\theta))\big\} 
+ p(\+x, \+z \cond \theta) = \ds\prod_{i=1}^n h(x_i, z_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i, z_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
  \end{align}
 
 Here we want to find $\+\theta$ to optimize 
 \[ f(\+\theta) =  \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \]
 
 Following the logic of Section \ref{sec:ml_with_ef}, we determine that we should select $\theta^{(t+1)}$ such that
-\[ \mu(\theta^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \+\theta^{(t)})} t(x_i, z_i) \]
-where $\mu := \E[t(x_1,z_1)]$ refers to the mean parametrization of the likelihood.
+\[ \mu(\theta^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \+\theta^{(t)})} \sufficientStatsFunction(x_i, z_i) \]
+where $\mu := \E[\sufficientStatsFunction(x_1,z_1)]$ refers to the mean parametrization of the likelihood.
 
 This is why an EM iteration is often described and/or implemented as performing maximum likelihood with the expected sufficient statistics.
 
@@ -591,14 +613,14 @@ Given data $\+y :=(\+y_1, ....,\+y_n)$, consider the model
 
 We use the exponential family representation of the MVN (Example \ref{ex:mvn_as_ef}) to represent the prior in terms of its natural parameters
 \begin{align*}
-	p(\+\mu) &\propto \exp \bigg\{ -\half \+\mu^T \+\Sigma_0^{-1} \+\mu + \+\mu^T \+\Sigma_0^{-1} \+\mu_0 \bigg\} 
+	p(\+\mu) &\propto \exp \bigg\{ -\half \+\mu^\top \+\Sigma_0^{-1} \+\mu + \+\mu^\top \+\Sigma_0^{-1} \+\mu_0 \bigg\} 
 \labelit \label{eqn:prior_for_mvn_fixed_cov}
 \end{align*}
 
 And similarly, we write the likelihood $	L(\+\mu) = p(\+y \cond \+\mu) = \prod_{i=1}^n p(\+y_i \cond \+\mu)$  as
 \begin{align*}
-	L(\+\mu) &\propto \exp \bigg\{ -\half \ds\sum_{i=1}^n (\+y_i - \+\mu)^T \+\Sigma^{-1} (\+y_i - \+\mu)\bigg\}  \\
-	&= \exp \bigg\{ - \half \+\mu^T n \+\Sigma^{-1} \+\mu + \+\mu^T \+\Sigma^{-1} n \bar{\+y} \bigg\} 
+	L(\+\mu) &\propto \exp \bigg\{ -\half \ds\sum_{i=1}^n (\+y_i - \+\mu)^\top \+\Sigma^{-1} (\+y_i - \+\mu)\bigg\}  \\
+	&= \exp \bigg\{ - \half \+\mu^\top n \+\Sigma^{-1} \+\mu + \+\mu^\top \+\Sigma^{-1} n \bar{\+y} \bigg\} 
 \labelit \label{eqn:likelihood_for_mvn_fixed_cov}
 \end{align*}
 
@@ -607,7 +629,7 @@ And similarly, we write the likelihood $	L(\+\mu) = p(\+y \cond \+\mu) = \prod_{
 So by Bayes' law, combining the like terms in $\+\mu$ of \eqref{eqn:prior_for_mvn_fixed_cov} and \eqref{eqn:likelihood_for_mvn_fixed_cov}, we find
 \begin{align*}
  p(\+\mu \cond \+y) &\propto \explaintermbrace{prior}{p(\+\mu)}\explaintermbrace{likelihood}{p(\+y \cond \+\mu)} \\
- &= \exp \bigg\{ - \half \+\mu^T \bigg( \+\Sigma_0^{-1} + n  \+\Sigma^{-1}\bigg)  \+\mu + \+\mu^T \bigg( \+\Sigma_0^{-1} \+\mu_0 + n \+\Sigma^{-1} \bar{\+y} \bigg) \bigg\} 
+ &= \exp \bigg\{ - \half \+\mu^\top \bigg( \+\Sigma_0^{-1} + n  \+\Sigma^{-1}\bigg)  \+\mu + \+\mu^\top \bigg( \+\Sigma_0^{-1} \+\mu_0 + n \+\Sigma^{-1} \bar{\+y} \bigg) \bigg\} 
 \end{align*}
 which reveals that the posterior is normal (Remark \ref{rk:mvn_from_ef}), along with the particular forms for its natural parameters (precision and precision-weighted mean).  In particular, we have, $\+\mu \cond \+y \sim \N(\+\mu_n, \+\Sigma_n)$, where
 \begin{align*}
@@ -629,10 +651,10 @@ This situation comes up
 
 Consider the sampling model for $\+y :=(\+y_1, ....,\+y_n) \iid \N_d(\+\mu,  \+\Sigma)$
 \begin{align}
-p(\+y \cond \+\mu, \+\Sigma) & \propto | \+\Sigma |^{-n/2} \exp \bb{ -\df{1}{2} \ds\sum_{i=1}^n (\+y_i - \+\mu)^T  \Sigma^{-1} (\+y_i- \+\mu) } \nonumber \\
+p(\+y \cond \+\mu, \+\Sigma) & \propto | \+\Sigma |^{-n/2} \exp \bb{ -\df{1}{2} \ds\sum_{i=1}^n (\+y_i - \+\mu)^\top  \Sigma^{-1} (\+y_i- \+\mu) } \nonumber \\
 & = | \+\Sigma |^{-n/2} \exp \bb{ -\df{1}{2} \tr(\+\Sigma^{-1} \+S_\mu)  }\label{eqn:mvn_in_nice_form_for_inverse_wishart_prior}
 \end{align}
-where $\+S_\mu := \sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^T$ is the sum of pairwise deviation products,  and where the equality in \eqref{eqn:mvn_in_nice_form_for_inverse_wishart_prior}  is justified in Remark \ref{rk:reexpressing_mvn_in_nice_form_for_inverse_wishart_prior}.
+where $\+S_\mu := \sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^\top$ is the sum of pairwise deviation products,  and where the equality in \eqref{eqn:mvn_in_nice_form_for_inverse_wishart_prior}  is justified in Remark \ref{rk:reexpressing_mvn_in_nice_form_for_inverse_wishart_prior}.
 
 Let us take the mean $\+\mu$ to be known,  and let us take the prior on the covariance $\+\Sigma \in \R^{d \times d}$ to be given by $\+\Sigma \sim \InvWish(\+\Psi, \nu)$, i.e.
 
@@ -649,11 +671,11 @@ p(\+\Sigma \cond \+\mu,  \+y) \propto | \+\Sigma|^{-(\nu+ n + d +1) /2}  \exp \b
 \label{eqn:inverse_wishart_posterior}
 \end{align}
 where $S_\mu$ was defined above.  Thus,  we have 
-\[ \+\Sigma \cond \+\mu,  \+y \sim \InvWish \bigg( \+\Psi +  \ds\sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^T,  \nu + n \bigg) \]
+\[ \+\Sigma \cond \+\mu,  \+y \sim \InvWish \bigg( \+\Psi +  \ds\sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^\top,  \nu + n \bigg) \]
 And so the conjugate updates are given by
 \begin{align}
 \nu^\prime &\leftarrow  \nu + n \\
-\+\Psi^\prime &\leftarrow \+\Psi + \ds\sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^T
+\+\Psi^\prime &\leftarrow \+\Psi + \ds\sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^\top
 \end{align}
 \end{example}
 
@@ -664,16 +686,16 @@ For interpretation of the parameters of the Inverse Wishart,  see Remark \ref{rk
 
 Here we justify the equality of \eqref{eqn:mvn_in_nice_form_for_inverse_wishart_prior}.
 
-We will show that $\ds\sum_{i=1}^n \+x_i^T \+A \+x_i = \tr(\+A \ds\sum \+x_i \+x_i^T)$ for $\+x \in \R^d$,  and $\+A \in \R^{d \times d}$ symmetric.
+We will show that $\ds\sum_{i=1}^n \+x_i^\top \+A \+x_i = \tr(\+A \ds\sum \+x_i \+x_i^\top)$ for $\+x \in \R^d$,  and $\+A \in \R^{d \times d}$ symmetric.
 
 \begin{align*}
-\ds\sum_{i=1}^n \+x_i^T \+A \+x_i  &= \ds\sum_{i=1}^n \ds\sum_{j,k=1}^n a_{jk} x_{ij} x_{ik} \\
-& = \ds\sum_{j,k=1}^n \bigg( \+A \circ \ds\sum_{i=1}^n \+x_i \+x_i^T \bigg)_{jk} \\
-& \stackrel{(*)}{=} \tr (\+A \ds\sum_{i=1}^n \+x_i \+x_i^T) 
+\ds\sum_{i=1}^n \+x_i^\top \+A \+x_i  &= \ds\sum_{i=1}^n \ds\sum_{j,k=1}^n a_{jk} x_{ij} x_{ik} \\
+& = \ds\sum_{j,k=1}^n \bigg( \+A \circ \ds\sum_{i=1}^n \+x_i \+x_i^\top \bigg)_{jk} \\
+& \stackrel{(*)}{=} \tr (\+A \ds\sum_{i=1}^n \+x_i \+x_i^\top) 
 \end{align*}
 where $\circ$ is the Hadamard,  also called the elementwise,  operator,  and where (*) holds by properties of the $\tr$ operator
 
-\[ \tr(\+A\+B) = \ds\sum_{i,j} (\+A^T \circ \+B)_{ij}  \stackrel{\text{$\+A$ symmetric}}{=}  \ds\sum_{i,j} (\+A \circ \+B)_{ij}\]
+\[ \tr(\+A\+B) = \ds\sum_{i,j} (\+A^\top \circ \+B)_{ij}  \stackrel{\text{$\+A$ symmetric}}{=}  \ds\sum_{i,j} (\+A \circ \+B)_{ij}\]
 
 \end{remark}
 
@@ -698,7 +720,7 @@ The complete conditionals are well-known,  and have in fact already been provide
 \labelit \label{eqn:normal_model_complete_conditional_on_Sigma} \\
 \intertext{where}
 \nu &=  \nu_0 + N \\
-\+\Psi &= \Psi_0 + \ds\sum_{i=1}^N  (\+x_i - \+\mu) (\+x_i - \+\mu)^T 
+\+\Psi &= \Psi_0 + \ds\sum_{i=1}^N  (\+x_i - \+\mu) (\+x_i - \+\mu)^\top 
 \labelit \label{eqn:Sigma_cc_normal_model_cond_conj_prior}\\ 
 \end{align*}
 
@@ -721,14 +743,14 @@ As mentioned by \cite{imai2005bayesian} (pp. 315) a prior distribution on $\+\Si
 \subsubsection{Example:  Bayesian linear regression with normal prior on regression weights and known observation noise} \label{sec:Bayesian_linear_regression_with_normal_prior}
 
 
-In this section,  we will show that the normal prior on $\+\beta$ is a conjugate prior for the regression weights $\+\beta$ of a Bayesian multiple regression model with known observation noise $\sigma^2$.  That is,  the posterior on $\+\beta$ given $\+y = (y_1,...,y_n)^T$ for such a model is also Gaussian.  
+In this section,  we will show that the normal prior on $\+\beta$ is a conjugate prior for the regression weights $\+\beta$ of a Bayesian multiple regression model with known observation noise $\sigma^2$.  That is,  the posterior on $\+\beta$ given $\+y = (y_1,...,y_n)^\top$ for such a model is also Gaussian.  
 
 
 \begin{proposition} \label{prop:bayes_linear_regression_with_known_ssq}
 Consider the Bayesian linear multiple regression model with known observation noise $\sigma^2$
 \begin{align*}
 \+\beta &\sim \N (\+\mu_0, \+\Sigma_0) \\
-y_i \cond \+\beta,  \sigma^2  &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n \\
+y_i \cond \+\beta,  \sigma^2  &\indsim \N (\+x_i^\top \+\beta, \sigma^2),  \quad i=1,...,n \\
 \labelit \label{eqn:bayesian_multiple_linear_regression_with_known_observation_noise}
 \end{align*}
 where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
@@ -737,8 +759,8 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 \begin{align*}
 \+\beta \cond \+y,  \sigma^2 & \sim \N(\+\mu,  \+\Sigma )
 \intertext{where}
-\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^T \+X }^{-1}  \\
-\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}  \\
+\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^\top \+X }^{-1}  \\
+\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^\top  \+y}  \\
 \labelit \label{eqn:posterior_bayesian_lin_regression_with_known_obs_var}
 \end{align*}
 
@@ -750,21 +772,21 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 First,  we consider the likelihood $L(\+\beta) := p(\+y \cond \+\beta,  \sigma^2$),  dropping terms proportional to  $\+\beta$.
 \begin{subequations}
 \begin{align}
-p(\+y \cond \+\beta,  \sigma^2) & \propto  \exp \bigg\{  -\df{1}{2 \sigma^2}  (\+y - \+X \+\beta)^T (\+y - \+X \+\beta) \bigg\} \label{eqn:bayesian_lin_regression_likelihood_direct_expression}\\ 
-&=   \exp \bigg\{  -\df{1}{2 \sigma^2}  (- 2 \+\beta^T \+X^T \+y + \+\beta^T \+X^T \+X \+\beta) \bigg\} 
+p(\+y \cond \+\beta,  \sigma^2) & \propto  \exp \bigg\{  -\df{1}{2 \sigma^2}  (\+y - \+X \+\beta)^\top (\+y - \+X \+\beta) \bigg\} \label{eqn:bayesian_lin_regression_likelihood_direct_expression}\\ 
+&=   \exp \bigg\{  -\df{1}{2 \sigma^2}  (- 2 \+\beta^\top \+X^\top \+y + \+\beta^\top \+X^\top \+X \+\beta) \bigg\} 
 \end{align}
 \label{eqn:bayesian_lin_regression_likelihood}
 \end{subequations}
 Doing the same for the prior $p(\+\beta)$,  we have 
 \begin{align}
-p(\+\beta) & \propto  \exp \bigg\{  -\df{1}{2}  (- 2 \+\beta^T \+\Sigma_0 \+\mu_0 + \+\beta^T \+\Sigma_0^{-1} \+\beta) \bigg\}
+p(\+\beta) & \propto  \exp \bigg\{  -\df{1}{2}  (- 2 \+\beta^\top \+\Sigma_0 \+\mu_0 + \+\beta^\top \+\Sigma_0^{-1} \+\beta) \bigg\}
 \label{eqn:bayesian_lin_regression_prior}
 \end{align}
 
 Thus,  by Bayes rule
 \begin{align*}
 p(\+\beta \cond  \+y ,  \sigma^2 ) & \propto  p(\+y \cond \+\beta,  \sigma^2) \times p(\+\beta)  \\
-& \propto  \exp \bigg\{   \+\beta^T \explaintermbrace{$:=\+b$}{\bigg(\+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2}\+X^T \+y \bigg)} - \half \+\beta^T   \explaintermbrace{$:=\+A$}{\bigg(\+\Sigma_0^{-1}  +  \frac{1}{\sigma^2} \+X^T \+X \bigg)}  \+\beta \bigg\}
+& \propto  \exp \bigg\{   \+\beta^\top \explaintermbrace{$:=\+b$}{\bigg(\+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2}\+X^\top \+y \bigg)} - \half \+\beta^\top   \explaintermbrace{$:=\+A$}{\bigg(\+\Sigma_0^{-1}  +  \frac{1}{\sigma^2} \+X^\top \+X \bigg)}  \+\beta \bigg\}
 \end{align*}
 
 which reveals that the posterior is normal (Remark \ref{rk:mvn_from_ef}),  along with the particular form of its parameter  (covariance $\+A^{-1}$ and mean $\+A^{-1} \+b$). 
@@ -779,14 +801,14 @@ For a nice conceptual overview of Bayesian linear regression, see \cite{grosee20
 
 \begin{remark}{\remarktitle{Posterior parameters in terms of maximum likelihood estimates}} Now recall
 \begin{align*}
-\betaML &= (\+X^T \+X)^{-1} \+X^T \+y \\
-\Var(\betaML) &= \sigma^2 (\+X^T \+X)^{-1}  
+\betaML &= (\+X^\top \+X)^{-1} \+X^\top \+y \\
+\Var(\betaML) &= \sigma^2 (\+X^\top \+X)^{-1}  
 \end{align*}
 
 So the posterior parameters in \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var} have the interpretation 
 \begin{align*}
-\explaintermbrace{posterior precision}{\wt{\+\Sigma}^{-1}} &= \explaintermbrace{prior precision}{\+\Sigma_0^{-1}} +  \explaintermbrace{``data" precision,  \; $\Var(\betaML)^{-1}$}{\frac{1}{\sigma^2} \+X^T \+X}   \\
-\explaintermbrace{posterior precision-weighted mean}{\wt{\+\Sigma}^{-1} \wt{\+\mu}} &= \explaintermbrace{prior precision-weighted mean}{\+\Sigma_0^{-1} \+\mu_0} +  \explaintermbrace{``data" pwm\; $\Var(\betaML)^{-1} \betaML$}{\frac{1}{\sigma^2} \+X^T  \+y}
+\explaintermbrace{posterior precision}{\wt{\+\Sigma}^{-1}} &= \explaintermbrace{prior precision}{\+\Sigma_0^{-1}} +  \explaintermbrace{``data" precision,  \; $\Var(\betaML)^{-1}$}{\frac{1}{\sigma^2} \+X^\top \+X}   \\
+\explaintermbrace{posterior precision-weighted mean}{\wt{\+\Sigma}^{-1} \wt{\+\mu}} &= \explaintermbrace{prior precision-weighted mean}{\+\Sigma_0^{-1} \+\mu_0} +  \explaintermbrace{``data" pwm\; $\Var(\betaML)^{-1} \betaML$}{\frac{1}{\sigma^2} \+X^\top  \+y}
 \end{align*}
 \label{rk:relation_of_bayesian_posterior_parameters_to_maximum_likelihood_estimate}
 \end{remark}
@@ -797,16 +819,16 @@ So the posterior parameters in \eqref{eqn:posterior_bayesian_lin_regression_with
 %By the form of the exponential family density \eqref{eqn:exponential_family_natural}, we immediately see that the product of two exponential family densities with identical sufficient statistics but different natural parameters is obtained by simply summing the natural parameters.  So if we see the likelihood \eqref{eqn:bayesian_lin_regression_likelihood} and the prior \eqref{eqn:bayesian_lin_regression_prior} both as functions of $\+\beta$, we notice that the posterior parameters in \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var} have the interpretation 
 %%
 %\begin{align*}
-%\explaintermbrace{posterior precision}{\+\Sigma^{-1}} &= \explaintermbrace{prior precision}{\+\Sigma_0^{-1}} +  \explaintermbrace{data precision}{\frac{1}{\sigma^2} \+X^T \+X}   \\
-% \explaintermbrace{posterior precision-weighted mean}{\+\Sigma^{-1} \+\mu} &=   \explaintermbrace{prior precision-weighted mean}{\+\Sigma_0^{-1} \+\mu_0} +   \explaintermbrace{data precision-weighted mean}{\frac{1}{\sigma^2} \+X^T  \+y}  
+%\explaintermbrace{posterior precision}{\+\Sigma^{-1}} &= \explaintermbrace{prior precision}{\+\Sigma_0^{-1}} +  \explaintermbrace{data precision}{\frac{1}{\sigma^2} \+X^\top \+X}   \\
+% \explaintermbrace{posterior precision-weighted mean}{\+\Sigma^{-1} \+\mu} &=   \explaintermbrace{prior precision-weighted mean}{\+\Sigma_0^{-1} \+\mu_0} +   \explaintermbrace{data precision-weighted mean}{\frac{1}{\sigma^2} \+X^\top  \+y}  
 %\end{align*}
-%where the data precision can be obtained by refactoring the likelihood \eqref{eqn:bayesian_lin_regression_likelihood_direct_expression} so that $\frac{1}{\sigma^2} \+X^T \+X$ is the matrix in the quadratic form  and where the ``data mean" is the maximum likelihood estimator $(\+X^T\+X)^{-1} \+X^T \+y$. 
+%where the data precision can be obtained by refactoring the likelihood \eqref{eqn:bayesian_lin_regression_likelihood_direct_expression} so that $\frac{1}{\sigma^2} \+X^\top \+X$ is the matrix in the quadratic form  and where the ``data mean" is the maximum likelihood estimator $(\+X^\top\+X)^{-1} \+X^\top \+y$. 
 %\end{remark}
 
 \begin{remark}{\remarktitle{Bayesian  linear regression as a compromise between the prior and maximum likelihood value.}}
 Equation \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var}
 gives the posterior for Bayesian linear multiple regression in the case where the observation noise is known.    As pointed out by \cite{hoff2009first} (pp. 155),  intuition can be obtained by considering the limiting cases.  When the prior on the regression coefficients $\+\beta$ is diffuse,  the elements of the prior precision matrix $\+\Sigma_0^{-1}$ will be small,  and so the posterior mean satisfies
-$\+\mu \approx ( \+X^T \+X)^{-1} \+X^T \+y$,  i.e.  it approximately equals the standard least squares estimate.   On the other hand,   when the observation variance $\sigma^2$ is large,  then the measurement precision is small, and the posterior mean satisfies $\+\mu \approx \+\mu_0$,  i.e.  it approximately equals the prior mean.
+$\+\mu \approx ( \+X^\top \+X)^{-1} \+X^\top \+y$,  i.e.  it approximately equals the standard least squares estimate.   On the other hand,   when the observation variance $\sigma^2$ is large,  then the measurement precision is small, and the posterior mean satisfies $\+\mu \approx \+\mu_0$,  i.e.  it approximately equals the prior mean.
 \end{remark}
 
 \paragraph{Posterior predictive}
@@ -814,8 +836,8 @@ $\+\mu \approx ( \+X^T \+X)^{-1} \+X^T \+y$,  i.e.  it approximately equals the 
 The posterior predictive distribution for Bayesian linear regression with known observation noise \eqref{eqn:bayesian_multiple_linear_regression_with_known_observation_noise},   after observing n observations $\+y =(y_1, ..., y_n)$,   has density
 \begin{align*}
 p(y_\new \cond \+y) &= \ds\int  p(y_\new \cond \+\beta) \, p(\+\beta \cond \+y) \, d\+\beta \\
-&= \ds\int f_\N(\+x_\new^T \+\beta,  \sigma^2) \,  f_\N(\+\mu_n,  \+\Sigma_n)  \,  d\+\beta \\
-& \stackrel{1}{=} f_\N \bigg( \+x_\new^T \+\mu_n,  \;  \sigma^2 + \+x_\new^T \+\Sigma_n  \+x_\new \bigg) 
+&= \ds\int f_\N(\+x_\new^\top \+\beta,  \sigma^2) \,  f_\N(\+\mu_n,  \+\Sigma_n)  \,  d\+\beta \\
+& \stackrel{1}{=} f_\N \bigg( \+x_\new^\top \+\mu_n,  \;  \sigma^2 + \+x_\new^\top \+\Sigma_n  \+x_\new \bigg) 
 \end{align*}
 
 where $f_\N(m,v)$ refers to the density of a univariate Gaussian with mean $m$ and variance $v$, and where $(\+\mu_n, \+\Sigma_n)$ are the posterior parameters given by \eqref{eqn:posterior_bayesian_lin_regression_with_known_obs_var},  and where Equality (1) holds by Proposition \ref{prop:simplest_linear_gaussian_model}.
@@ -824,7 +846,7 @@ where $f_\N(m,v)$ refers to the density of a univariate Gaussian with mean $m$ a
 \subsubsection{Example:  Bayesian linear regression with inverse gamma prior on observation noise and known regression weights} \label{sec:Bayesian_linear_regression_with_IG_prior}
 
 
-In this section,  we will show that the Inverse Gamma prior on $\sigma^2$ is a conjugate prior for the observation noise of a Bayesian multiple regression model with known regression weights  $\+\beta$.  That is,  the posterior on $\sigma^2$ given $\+y = (y_1,...,y_n)^T$ for such a model is also Inverse Gamma. 
+In this section,  we will show that the Inverse Gamma prior on $\sigma^2$ is a conjugate prior for the observation noise of a Bayesian multiple regression model with known regression weights  $\+\beta$.  That is,  the posterior on $\sigma^2$ given $\+y = (y_1,...,y_n)^\top$ for such a model is also Inverse Gamma. 
 
 
 \begin{proposition} \label{prop:bayes_linear_regression_with_known_weights}
@@ -845,7 +867,7 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 \begin{align}
 \sigma^2 \cond \+y,    \+\beta  & \sim \InverseGamma \bigg(\frac{\nu_0 + n }{2},  \frac{\nu_0 \sigma^2_0  + \text{SSR}(\+\beta)}{2} \bigg)  
 \intertext{where the sum of squared residuals is}
-\text{SSR}(\+\beta)  &= (\+y - \+X \+\beta)^T  (\+y - \+X \+\beta)
+\text{SSR}(\+\beta)  &= (\+y - \+X \+\beta)^\top  (\+y - \+X \+\beta)
 \end{align}
 \label{eqn:posterior_bayesian_lin_regression_with_known_weights}
 \end{subequations}
@@ -855,7 +877,7 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 \begin{proof}\footnote{For corroboration, see \cite[pp.~155]{hoff2009first}, who obtains the same result.}
 
 \begin{align*}
-p(\sigma^2 \cond \text{rest}) & \propto \explaintermbrace{$\+y \cond \+\beta,  \sigma^2  \sim \N (\+X \+\beta, \sigma^2 \+I_n) $}{\bigg(\frac{1}{\sigma}\bigg)^n	 \exp \bigg( -\half \frac{1}{\sigma^2} (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)}\bigg) \; \explaintermbrace{$\sigma^2 \sim \InverseGamma \big(\frac{\nu_0}{2},  \frac{\nu_0 \sigma^2_0}{2}\big)$}{\bigg( \sigma^2 \bigg )^{-\frac{\nu_0}{2} -1}  \exp \bigg( -\frac{\half \nu_0 \sigma_0^2}{\sigma^2} \bigg)} \\
+p(\sigma^2 \cond \text{rest}) & \propto \explaintermbrace{$\+y \cond \+\beta,  \sigma^2  \sim \N (\+X \+\beta, \sigma^2 \+I_n) $}{\bigg(\frac{1}{\sigma}\bigg)^n	 \exp \bigg( -\half \frac{1}{\sigma^2} (\+y - \+X \+\beta)^\top (\+y - \+X \+\beta)}\bigg) \; \explaintermbrace{$\sigma^2 \sim \InverseGamma \big(\frac{\nu_0}{2},  \frac{\nu_0 \sigma^2_0}{2}\big)$}{\bigg( \sigma^2 \bigg )^{-\frac{\nu_0}{2} -1}  \exp \bigg( -\frac{\half \nu_0 \sigma_0^2}{\sigma^2} \bigg)} \\
 & = (\sigma^2)^{-\frac{n}{2} - \frac{\nu_0}{2} - 1} \exp \bigg( -\frac{\half (\text{SSR}(\+\beta) + \nu_0 \sigma_0^2)}{\sigma^2}\bigg)
 \end{align*}
 
@@ -874,7 +896,7 @@ A simple version of this model is\footnote{The version is simple because,  for e
 \+\beta_j &\iid \N(\+\mu,  \+\Sigma) \\
 \sigma^2 &\sim \InverseGamma (\frac{\nu_0}{2}, \frac{\nu_0}{2} \sigma_0^2) \\
 \epsilon_{ij} &\iid \N(0, \sigma^2) \\
-y_{ij} &= \+\beta_j^T \+x_{ij} + \epsilon_{ij} \\
+y_{ij} &= \+\beta_j^\top \+x_{ij} + \epsilon_{ij} \\
 \labelit \label{eqn:hierarchical_linear_regression}
 \end{align*}
 This model can be seen as a Bayesian linear regression to model within-group data,  put beneath a Bayesian normal sampling model to handle between-group heterogeneity in the regression weights. 
@@ -883,14 +905,14 @@ The complete conditionals (e.g.  see Section 11.2 of \cite{hoff2009first}) are g
 
 \begin{align*}
 \+\beta_j \cond \+\Sigma,  \+\mu, \sigma^2,  \+y & \sim  \N(\+\mu_j^\prime,  \+\Sigma_j^\prime) \\
-\+\Sigma_j^\prime &= \bigg( \+\Sigma^{-1} + \frac{1}{\sigma^2} \+X_j^T \+X_j \bigg)^{-1} \\
-\+\mu_j^\prime &= \+\Sigma_j^\prime \bigg( \+\Sigma^{-1} \+\mu + \frac{1}{\sigma^2} \+X_j^T \+y_j \bigg) \\
+\+\Sigma_j^\prime &= \bigg( \+\Sigma^{-1} + \frac{1}{\sigma^2} \+X_j^\top \+X_j \bigg)^{-1} \\
+\+\mu_j^\prime &= \+\Sigma_j^\prime \bigg( \+\Sigma^{-1} \+\mu + \frac{1}{\sigma^2} \+X_j^\top \+y_j \bigg) \\
 & \\ 
 \sigma^2 \cond \+\beta_1, ...,\+\beta_J,  \+y & \sim \InverseGamma
 \bigg( \half (\nu_0 + N),  \half (\nu_0 \sigma_0^2 + \text{SSR(\+\beta)})\bigg) \\
 \intertext{where}
 N &:= \sum_{j=1}^J n_j \\
-\text{SSR(\+\beta)} &:= \ds\sum_{j=1}^J \ds\sum_{i=1}^{n_j}  (y_{ij} - \+\beta_j^T \+x_{ij})^2 \\
+\text{SSR(\+\beta)} &:= \ds\sum_{j=1}^J \ds\sum_{i=1}^{n_j}  (y_{ij} - \+\beta_j^\top \+x_{ij})^2 \\
 & \\ 
 \+\mu \cond  \+\beta_1, ...,\+\beta_J,  \+\Sigma &\sim \N(\+m^\prime,  \+V^\prime) \\
 \+m^\prime &= \+V^\prime \bigg( \+V_0^{-1} \+m_0 + J \+\Sigma^{-1} \overline{\+\beta} \bigg),  \quad \quad \overline{\+\beta} := \frac{1}{J} \sum_{j=1}^J \+\beta_j \\ 
@@ -898,7 +920,7 @@ N &:= \sum_{j=1}^J n_j \\
 & \\ 
 \+\Sigma \cond \+\beta_1, ...,\+\beta_J,  \+\mu &\sim \InverseWishart (\eta^\prime,  \+\Psi^\prime) \\
 \eta^\prime &= \eta_0 + J \\
-\+\Psi^\prime &= \+\Psi_0 + \ds\sum_{j=1}^J (\+\beta_j - \+\mu) (\+\beta_j -\+\mu)^T \\
+\+\Psi^\prime &= \+\Psi_0 + \ds\sum_{j=1}^J (\+\beta_j - \+\mu) (\+\beta_j -\+\mu)^\top \\
 \labelit \label{eqn:hierarchical_linear_regression_ccs}
 \end{align*}
 
@@ -1062,11 +1084,11 @@ A nice overview of multivariate completing the square is given by \cite{gunderse
 Let $\+x,  \+b$ be $d$-dimensional vectors, and let $\+M \in \R^{d \times d}$ be a symmetric invertible matrix. Then
 %
 \begin{align*}
-\+x^T \+M \+x - 2 \+b^T \+x = (\+x - \+M^{-1} \+b)^T \+M (\+x - \+M^{-1} \+b) - \+b^T \+M^{-1} \+b
+\+x^\top \+M \+x - 2 \+b^\top \+x = (\+x - \+M^{-1} \+b)^\top \+M (\+x - \+M^{-1} \+b) - \+b^\top \+M^{-1} \+b
  \labelit \label{eqn:multivariate_completing_the_square}
 \end{align*}
 
-%  \+x^⊤ \+M \+x − 2\+b^⊤ \+x = (\+x−\+M^{−1} \+b)^T \+M (\+x−^\+M^{−1} \+b)− \+b^T \+M^{−1} \+b
+%  \+x^⊤ \+M \+x − 2\+b^⊤ \+x = (\+x−\+M^{−1} \+b)^\top \+M (\+x−^\+M^{−1} \+b)− \+b^\top \+M^{−1} \+b
 % 
 
 \subsection{The trace of a matrix product}
@@ -1076,7 +1098,7 @@ The trace of a matrix product behaves like a dot product.
 Let $\+A, \+B \in \R^{m \times n}$.  Then 
 %
 \begin{align*}
-\tr (\+A^T \+B) = \ds\sum_{i=1}^n (\+A^T \+B)_i = \ds\sum_{i=1}^n \ds\sum_{j=1}^m a_{ij} b_{ij}
+\tr (\+A^\top \+B) = \ds\sum_{i=1}^n (\+A^\top \+B)_i = \ds\sum_{i=1}^n \ds\sum_{j=1}^m a_{ij} b_{ij}
 \labelit \label{eqn:trace_of_matrix_product}
 \end{align*}
 %
@@ -1101,7 +1123,7 @@ Y \cond X &\sim \N(\+AX+\+b,  \+V) \\
 
 Then
 \begin{align*}
-Y &\sim \N(\+A \+\mu + \+b,  \+V + \+A \+\Sigma \+A^T)
+Y &\sim \N(\+A \+\mu + \+b,  \+V + \+A \+\Sigma \+A^\top)
 \end{align*}
 \end{proposition}
 
@@ -1138,7 +1160,7 @@ p(x) = \df{1}{Z}\bp{ \ds\prod_{i=1}^n \selfpotential(x_i) \ds\prod_{i,j} \edgepo
 \end{equation}
 
 Now note that a multivariate Gaussian has a joint distribution which can be expressed as
-\[ p(x) \propto \exp \bigg\{ -\df{1}{2} x^T A x + b^T x \bigg\} \]
+\[ p(x) \propto \exp \bigg\{ -\df{1}{2} x^\top A x + b^\top x \bigg\} \]
 
 as this is just the exponential family form of a Gaussian (e.g., see  \cite{englehardt2013gaussian}), where the natural parameters are
 given in terms of the \textit{precision} $\Sigma^{-1}$
@@ -1246,8 +1268,8 @@ A sample $\+\Sigma$ from the $\InverseWishart(\nu, \+\Psi)$ distribution (using 
 
 \begin{enumerate}
 \item Sample $\+z_1, ..., \+z_{\nu} \iid \N (\+0,  \+\Psi^{-1})$
-\item Calculate $\+Z^T \+Z = \sum_{i=1}^\nu \+z_i \+z_i^T$.
-\item Set $\+\Sigma = ( \+Z^T \+Z )^{-1}$.
+\item Calculate $\+Z^\top \+Z = \sum_{i=1}^\nu \+z_i \+z_i^\top$.
+\item Set $\+\Sigma = ( \+Z^\top \+Z )^{-1}$.
 \end{enumerate}
 The intuition is that the Inverse Wishart models covariance matrices as an inverse sum of squares (again, see Remark \ref{rk:inverse_wishart_parameter_interpretation}).  
 
@@ -1280,26 +1302,26 @@ Note that this argument yields the same parameter updating scheme of \eqref{eqn:
 Following \cite{jordan2010ef}, here we provide a general formalism for conjugate priors for exponential family data models. 
 
 Writing the exponential family density in canonical form, we have
-\[ p(x \cond \eta) = h(x) \exp \{ \eta^T T(x) - A(\eta) \} \]
+\[ p(x \cond \eta) = h(x) \exp \{ \eta^\top T(x) - A(\eta) \} \]
 where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $h(x)$ is the carrier density, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
 
 The natural parameter space is 
-\[  \bigg\{\eta : \ds\int h(x) \exp \{ \eta^T T(x) - A(\eta) \} < \infty \bigg \}\]
+\[  \bigg\{\eta : \ds\int h(x) \exp \{ \eta^\top T(x) - A(\eta) \} < \infty \bigg \}\]
 
 Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we obtain:
-\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N h(x_i)  \bigg) \exp \bigg\{ \eta^T  \ds\sum_{i=1}^N T(x_i) - N A(\eta) \bigg\} \]
+\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N h(x_i)  \bigg) \exp \bigg\{ \eta^\top  \ds\sum_{i=1}^N T(x_i) - N A(\eta) \bigg\} \]
 as the likelihood function.
 
 A conjugate prior can be obtained by mimicking the likelihood
 \begin{equation}
-p (\eta \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^T \eta - n_0 A(\eta)\}
+p (\eta \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^\top \eta - n_0 A(\eta)\}
 \label{eqn:conjugate_prior_exptl_family}
 \end{equation}
 
 where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan2010ef}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
 
 To verify conjugacy, we compute the posterior density
-\[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^T \eta - (n_0 + N) A(\eta) \bigg\} \]
+\[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^\top \eta - (n_0 + N) A(\eta) \bigg\} \]
 which retains the form of \eqref{eqn:conjugate_prior_exptl_family}.  For an argument that is perhaps more intuitive, see Section \ref{sec:general_conjugacy_alternate_argument} 
 
 Thus, the prior-to-posterior conversion can be summarized with the following update rules
@@ -1351,7 +1373,7 @@ We begin by restating the proposition here,  then we provide the alternate proof
 Consider the Bayesian linear multiple regression model with known observation noise $\sigma^2$
 \begin{align*}
 \+\beta &\sim \N (\+\mu_0, \+\Sigma_0) \\
-y_i \cond \+\beta &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n \\
+y_i \cond \+\beta &\indsim \N (\+x_i^\top \+\beta, \sigma^2),  \quad i=1,...,n \\
 \labelit \label{eqn:bayesian_multiple_linear_regression_with_known_observation_noise_APPENDIX}
 \end{align*}
 where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
@@ -1360,8 +1382,8 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 \begin{align*}
 \+\beta \cond \+y & \sim \N(\+\mu,  \+\Sigma )
 \intertext{where}
-\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^T \+X }^{-1}  \\
-\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^T  \+y}  \\
+\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \frac{1}{\sigma^2} \+X^\top \+X }^{-1}  \\
+\+\mu &= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 +  \frac{1}{\sigma^2} \+X^\top  \+y}  \\
 \labelit \label{eqn:posterior_bayesian_lin_regression_with_known_obs_var_APPENDIX}
 \end{align*}
 
@@ -1371,26 +1393,26 @@ The posterior distribution for \eqref{eqn:bayesian_multiple_linear_regression_wi
 \begin{proof}
 By Bayes rule,
 \begin{align*} 
-p(\+\beta \cond \+y) &\propto   p(\+\beta)  \exp \bigg\{  \ds\sum_{i=1}^N  -\frac{1}{2 \sigma^2} \bigg( y_i -  \+x_i^T \+\beta \bigg)^2  \bigg\} \\
+p(\+\beta \cond \+y) &\propto   p(\+\beta)  \exp \bigg\{  \ds\sum_{i=1}^N  -\frac{1}{2 \sigma^2} \bigg( y_i -  \+x_i^\top \+\beta \bigg)^2  \bigg\} \\
 \intertext{and defining $\+\Omega  \in \R^{n \times n}: \+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \frac{1}{\sigma^2})$,  we have} 
-&\stackrel{1}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+y - \+X \+\beta)^T \+\Omega   (\+y - \+X \+\beta) \bigg\} \\ 
-&\stackrel{2}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+X^+ \+y - \+\beta)^T  \+X^T \+\Omega \+X   (\+X^+ \+y - \+\beta) \bigg\} 
+&\stackrel{1}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+y - \+X \+\beta)^\top \+\Omega   (\+y - \+X \+\beta) \bigg\} \\ 
+&\stackrel{2}{\propto}  p(\+\beta)   \exp \bigg\{  -\half  (\+X^+ \+y - \+\beta)^\top  \+X^\top \+\Omega \+X   (\+X^+ \+y - \+\beta) \bigg\} 
 \end{align*}
 where (1) writes the weighted sum of squares in matrix notation, and (2) isolates $\+\beta$,  using $\+X^{+}$,  the Moore-Penrose psuedo-inverse of $\+X$. \footnote{Specifically,  since $\+X\+X^+ = \+I$,  we use 
 \begin{align*}
-(\+y - \+X \+\beta)^T \+\Omega   (\+y - \+X \+\beta) &= (\+X\+\beta - \+y)^T \+\Omega (\+X\+\beta - \+y)\\ &= \bigg( \+X (\+\beta - \+X^+ \+y ) \bigg)^T \+\Omega  \bigg(  \+X (\+\beta - \+X^+ \+y ) \bigg) \\
-&= (\+\beta - \+X^+ \+y)^T \+X^T \+\Omega \+X   (\+\beta - \+X^+ \+y) 
+(\+y - \+X \+\beta)^\top \+\Omega   (\+y - \+X \+\beta) &= (\+X\+\beta - \+y)^\top \+\Omega (\+X\+\beta - \+y)\\ &= \bigg( \+X (\+\beta - \+X^+ \+y ) \bigg)^\top \+\Omega  \bigg(  \+X (\+\beta - \+X^+ \+y ) \bigg) \\
+&= (\+\beta - \+X^+ \+y)^\top \+X^\top \+\Omega \+X   (\+\beta - \+X^+ \+y) 
 \end{align*}
 .}  
 
-Thus,  we see that $p(\+\beta \cond  \+y)$ is proportional to the product of two multivariate Gaussians:  $p(\+\beta)$,  which has mean $\+\mu_0$ and covariance $\+\Sigma_0$,  and another Gaussian,  which has mean $\+X^+ \+y$ and covariance $(\+X^T \+\Omega \+X)^{-1}$.   We know from the exponential family representation of the Gaussian that the resulting distribution can be obtained by summing at the scale of natural parameters -- which for the Gaussian are the precision and precision-weighted mean. \footnote{See,  for reference,  Section \ref{sec:mvn_in_message_passing}.}   Using this,  we obtain
+Thus,  we see that $p(\+\beta \cond  \+y)$ is proportional to the product of two multivariate Gaussians:  $p(\+\beta)$,  which has mean $\+\mu_0$ and covariance $\+\Sigma_0$,  and another Gaussian,  which has mean $\+X^+ \+y$ and covariance $(\+X^\top \+\Omega \+X)^{-1}$.   We know from the exponential family representation of the Gaussian that the resulting distribution can be obtained by summing at the scale of natural parameters -- which for the Gaussian are the precision and precision-weighted mean. \footnote{See,  for reference,  Section \ref{sec:mvn_in_message_passing}.}   Using this,  we obtain
 
 \begin{align*}
 p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
 \intertext{where}
-\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \+X^T \+\Omega \+X }^{-1}  \\
-\+\mu &= \+\Sigma  \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^T \+\Omega \cancel{\+X} \cancel{\+X^+}  \+y }  \\
-&= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^T \+\Omega \+y}  
+\+\Sigma &= \bp{\+\Sigma_0^{-1} +  \+X^\top \+\Omega \+X }^{-1}  \\
+\+\mu &= \+\Sigma  \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^\top \+\Omega \cancel{\+X} \cancel{\+X^+}  \+y }  \\
+&= \+\Sigma \bp{   \+\Sigma_0^{-1} \+\mu_0 + \+X^\top \+\Omega \+y}  
 \end{align*}
 
 recalling that we defined $\+\Omega = \text{diag} (\frac{1}{\sigma^2}, ..., \frac{1}{\sigma^2})$ completes the proof. 
@@ -1409,7 +1431,7 @@ Proposition \ref{prop:bayes_linear_regression_with_known_ssq} exactly,  and the 
 Consider the Bayesian linear multiple regression model
 \begin{align*}
 \+\beta &\sim \N (\+0, \+V) \\
-y_i \cond \+\beta &\indsim \N (\+x_i^T \+\beta, \sigma^2),  \quad i=1,...,n
+y_i \cond \+\beta &\indsim \N (\+x_i^\top \+\beta, \sigma^2),  \quad i=1,...,n
 \end{align*}
 
 where  $\+x_i$ designates the $i$-th row of the design matrix $\+X \in \R^{n \times p}$.
@@ -1418,26 +1440,26 @@ The posterior distribution for this model is given by
 \begin{align*}
 p(\+\beta \cond \+y) & \sim \N(\+\mu,  \+\Sigma )
 \intertext{where}
-\+\mu &= \df{1}{\sigma^2} \+\Sigma \+X^T \+y \\
-\+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^T \+X + \+V^{-1}  \bigg)^{-1} \\
+\+\mu &= \df{1}{\sigma^2} \+\Sigma \+X^\top \+y \\
+\+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^\top \+X + \+V^{-1}  \bigg)^{-1} \\
 \end{align*}
 \end{proposition} 
 
 
 \begin{proof}
-The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^T$ is Gaussian,  since
+The posterior on $\+\beta$ given $\+y = (y_1,...,y_N)^\top$ is Gaussian,  since
 
 \begin{align*}
 \ln p(\+\beta \cond \+y) &= \ds\sum_{i=1}^n \ln p(y_i \cond \+\beta)  + \ln p(\+\beta) \\
-&= -\df{1}{2 \sigma^2} \ds\sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  - \half \+\beta^T \+V^{-1} \+\beta + \text{constant} \\
-&\stackrel{1}{=} -\df{1}{2 \sigma^2} \bigg(  \+y^T \+y - 2 \+y^T \+X^T \+\beta + \+\beta^T \+X^T \+X \+\beta \bigg)  - \half \+\beta^T \+V^{-1} \+\beta + \text{constant} \\
-&\stackrel{2}{=} -\half (\+\beta - \+\mu)^T \+\Sigma^{-1} (\+\beta - \+\mu) +  \text{constant} \\
+&= -\df{1}{2 \sigma^2} \ds\sum_{i=1}^n (y_i - \+x_i^\top \+\beta)^2  - \half \+\beta^\top \+V^{-1} \+\beta + \text{constant} \\
+&\stackrel{1}{=} -\df{1}{2 \sigma^2} \bigg(  \+y^\top \+y - 2 \+y^\top \+X^\top \+\beta + \+\beta^\top \+X^\top \+X \+\beta \bigg)  - \half \+\beta^\top \+V^{-1} \+\beta + \text{constant} \\
+&\stackrel{2}{=} -\half (\+\beta - \+\mu)^\top \+\Sigma^{-1} (\+\beta - \+\mu) +  \text{constant} \\
 \intertext{where}  \\
-\+\mu &= \df{1}{\sigma^2} \+\Sigma \+X^T \+y \\
-\+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^T \+X + \+V^{-1}  \bigg)^{-1} \\
+\+\mu &= \df{1}{\sigma^2} \+\Sigma \+X^\top \+y \\
+\+\Sigma &= \bigg( \df{1}{\sigma^2}  \+X^\top \+X + \+V^{-1}  \bigg)^{-1} \\
 \end{align*}
 
-Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^T \+\beta)^2  = (\+y - \+X \+\beta)^T (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^T \+X + \+V^{-1}$ and $\+b^T = \frac{1}{\sigma^2} \+y^T \+X^T$.
+Equality (1) is obtained by noting $ \sum_{i=1}^n (y_i - \+x_i^\top \+\beta)^2  = (\+y - \+X \+\beta)^\top (\+y - \+X \+\beta)$, FOIL-ing, and observing that the cross-products are scalars.   Equality (2) is obtained by completing the square,  where $\+\beta$ plays the role of $\+x$  in \eqref{eqn:multivariate_completing_the_square},  and where in that notation we have $\+M = \frac{1}{\sigma^2} \+X^\top \+X + \+V^{-1}$ and $\+b^\top = \frac{1}{\sigma^2} \+y^\top \+X^\top$.
 \end{proof}
 
 
