@@ -15,6 +15,9 @@
 %%% EXPONENTIAL FAMILY QUANTITIES
 \newcommand{\logNormalizerFunction}{a}
 \newcommand{\sufficientStatsFunction}{t}
+\newcommand{\carrierDensity}{h}
+\newcommand{\naturalParamSpace}{H}
+
 
 %%% CONTROL SIZE OF BLOCK MATRICES
 % Reference: https://tex.stackexchange.com/questions/14071/how-can-i-increase-the-line-spacing-in-a-matrix
@@ -72,16 +75,16 @@ We are interested in  exponential families primarily because they makes inferenc
 \begin{remark}
 Observe \cite{chua2019stats} that without loss of generality, we can 
 \begin{alphabate} 
-\item Set $h(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $h$.\footnote{That is, we can always absorb $h$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^\top \sufficientStatsFunction(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A h d\mu$ for any measurable set $A$. }
+\item Set $\carrierDensity(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$.\footnote{That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^\top \sufficientStatsFunction(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$. }
 \item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
-\item Change $h$ to $\wt{h}(x) = p_0(x)$, assuming that $0 \in H$.  Then, changing $\logNormalizerFunction(\eta)$ to $\wt{\logNormalizerFunction}(\eta) = \logNormalizerFunction(\eta) - \logNormalizerFunction(0)$ results in an equivalent family. 
+\item Change $\carrierDensity$ to $\wt{\carrierDensity}(x) = p_0(x)$, assuming that $0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\eta)$ to $\wt{\logNormalizerFunction}(\eta) = \logNormalizerFunction(\eta) - \logNormalizerFunction(0)$ results in an equivalent family. 
 \end{alphabate}
 \label{rk:alternate_constructions_for_the_exponential_family}
 \end{remark}
 
 
 \begin{definition}
-The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $H:=\set{\eta : Z(\eta) < \infty}$.
+The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $\naturalParamSpace:=\set{\eta : Z(\eta) < \infty}$.
 \end{definition}
 
 \begin{definition}
@@ -91,9 +94,9 @@ An exponential family is said to be \textit{regular} if the natural parameter sp
 One can \textit{reparameterize} a regular exponential family with some other coordinates $\theta$.  If one writes the natural parameter as a continuous function $\eta(\theta)$, then the density \eqref{eqn:exponential_family_natural} becomes
 \begin{align}
 \label{eqn:exponential_family}
- p_\theta(x) = h(x) \exp \{ \eta(\theta)^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta(\theta))\} 
+ p_\theta(x) = \carrierDensity(x) \exp \{ \eta(\theta)^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta(\theta))\} 
  \end{align}
- The reparameterized family is regular as well, since $\Theta := \eta^{-1}(H)$ is open. 
+ The reparameterized family is regular as well, since $\Theta := \eta^{-1}(\naturalParamSpace)$ is open. 
 
 
 \begin{remark}
@@ -118,7 +121,7 @@ Here we give examples of exponential families, showing how to derive the exponen
 \begin{example}{(Categorical Distribution)}
 \label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $x \in \set{0,1}^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
 \[p(x \cond \pi) = \prod_{k=1}^K \pi_k^{x_k} = \exp \{ \sum_{k=1}^K x_k \log \pi_k\} \]
- with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $\sufficientStatsFunction(x) = x$, carrier density $h(x)=1$ and log normalizer $0$.
+ with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $\sufficientStatsFunction(x) = x$, carrier density $\carrierDensity(x)=1$ and log normalizer $0$.
 \end{example}
 
 \subsubsection{Dirichlet distribution}
@@ -128,7 +131,7 @@ Here we give examples of exponential families, showing how to derive the exponen
 p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
 &= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^\top$, sufficient statistics $\sufficientStatsFunction(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^\top$, carrier density $h(\pi)=1$, and log normalizer $\logNormalizerFunction(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
+with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^\top$, sufficient statistics $\sufficientStatsFunction(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^\top$, carrier density $\carrierDensity(\pi)=1$, and log normalizer $\logNormalizerFunction(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
   
 \end{example} 
 
@@ -164,12 +167,12 @@ If we write
 f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\half \df{(x-\mu)^2}{\sigma^2}}  \indicate{a \leq x \leq b} \\
 & = K \df{1}{\sqrt{2 \pi}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
 \end{align*} 
-where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (\frac{1}{\sigma^2},  \frac{\mu}{\sigma^2})\top$,  sufficient statistics function $\sufficientStatsFunction(x) = (-\half x^2,  x)^\top$,  carrier density $h(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
+where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (\frac{1}{\sigma^2},  \frac{\mu}{\sigma^2})\top$,  sufficient statistics function $\sufficientStatsFunction(x) = (-\half x^2,  x)^\top$,  carrier density $\carrierDensity(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
  
 \end{example}
 
 \begin{remark}
-The truncated normal distribution differs from the normal distribution only in its carrier density $h(x)$ and therefore log normalizer $\logNormalizerFunction(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $\sufficientStatsFunction(x)$ are identical.   Thus,  knowing $\eta$ and $\sufficientStatsFunction(x)$ is not sufficient to determine the form of the probability distribution.
+The truncated normal distribution differs from the normal distribution only in its carrier density $\carrierDensity(x)$ and therefore log normalizer $\logNormalizerFunction(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $\sufficientStatsFunction(x)$ are identical.   Thus,  knowing $\eta$ and $\sufficientStatsFunction(x)$ is not sufficient to determine the form of the probability distribution.
 \label{rk:truncated_normal_differs_from_normal_only_in_terms_of_carrier_density}
 \end{remark}
 
@@ -182,7 +185,7 @@ The truncated normal distribution differs from the normal distribution only in i
 p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1} \exp \bigg(- \df{\beta}{x} \bigg) \\
 &= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]\top$, sufficient statistics $\sufficientStatsFunction(x) = [\log x ,  \frac{1}{x}]^\top$, carrier density $h(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
+with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]\top$, sufficient statistics $\sufficientStatsFunction(x) = [\log x ,  \frac{1}{x}]^\top$, carrier density $\carrierDensity(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
   
 \end{example} 
 
@@ -196,7 +199,7 @@ We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribu
 & \stackrel{1}{=} (2\pi)^{-d/2} \exp \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^\top \vectorize (\+x\+x^\top) $}{\+x^\top \+\Sigma^{-1} \+x} + \+x^\top \+\Sigma^{-1} \+\mu -\half \+\mu^\top \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
 	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
-with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $\sufficientStatsFunction(\+x) = \big(\vectorize (\+x \+x^\top), \+x \big)$, carrier density $h(x) = (2\pi)^{-d/2}$ and log normalizing $\logNormalizerFunction(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
+with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $\sufficientStatsFunction(\+x) = \big(\vectorize (\+x \+x^\top), \+x \big)$, carrier density $\carrierDensity(x) = (2\pi)^{-d/2}$ and log normalizing $\logNormalizerFunction(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
 \end{example}
 
 \begin{remark}
@@ -229,7 +232,7 @@ p (\+X  \cond \+\Psi,  \nu) & \stackrel{1}{=} C(\+\Psi,  \nu) \; | \+X | ^{-(\nu
 Equation (1) gives the standard representation of the $\InverseWishart(\+\Psi,  \nu)$ density,  where   $C(\+\Psi,  \nu)$ is the normalizing constant,  $| \cdot |$ refers to the determinant,  $\+X,  \+\Psi \in \R^{p \times p}$ are positive definite matrices,  and $\nu > p-1$.    Equation (2) uses the fact that the trace of a matrix product behaves like a dot product \eqref{eqn:trace_of_matrix_product}.      
 
 
-As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^\top$, sufficient statistics $\sufficientStatsFunction(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^\top$, carrier density $h(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
+As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^\top$, sufficient statistics $\sufficientStatsFunction(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^\top$, carrier density $\carrierDensity(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
   
 \end{example} 
 
@@ -317,14 +320,14 @@ Let $X$ have an exponential family distribution with natural parameter $\eta$, s
 \begin{proof}
 
 Since $X$ is in the exponential family, its density can be written in the form
- \[ p(x \cond \eta) =  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log h(x)\} \] 
+ \[ p(x \cond \eta) =  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log \carrierDensity(x)\} \] 
 where 
-\[\logNormalizerFunction(\eta) = \log \int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} \] 
+\[\logNormalizerFunction(\eta) = \log \int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \eta> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} \] 
 
 Thus
 \begin{align*}
-\nabla \logNormalizerFunction (\eta) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \eta> + \log h(x) \} \; d\nu_{\mathcal{X}} } \\
-& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \eta> - \logNormalizerFunction(\eta) + \log h(x) \} \; d\nu_{\mathcal{X}}  \\
+\nabla \logNormalizerFunction (\eta) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \eta> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \eta> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} } \\
+& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \eta> - \logNormalizerFunction(\eta) + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}}  \\
 & = \int_{\mathcal{X}} \sufficientStatsFunction(x)  \; p(x \cond \eta) \; d\nu_{\mathcal{X}}  \\
 &= \E[\sufficientStatsFunction(X)]
 \end{align*}
@@ -383,15 +386,15 @@ By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergenc
 
 \begin{subequations}
 \begin{align}
-\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} - \E_{\eta} [\log h(X)]	\label{eqn:entropy_of_an_exponential_family}\\
-\H[\eta, \wt{\eta}] &=  \logNormalizerFunction(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla \logNormalizerFunction(\eta)} - \E_{\eta}  [\log h(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
+\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} - \E_{\eta} [\log \carrierDensity(X)]	\label{eqn:entropy_of_an_exponential_family}\\
+\H[\eta, \wt{\eta}] &=  \logNormalizerFunction(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla \logNormalizerFunction(\eta)} - \E_{\eta}  [\log \carrierDensity(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
 \end{align}
 \label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members}
 \end{subequations}
 
 
 
-Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the carrier density satisfies $h(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $h(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $\logNormalizerFunction(\eta)$.}. In that case, we have 
+Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the carrier density satisfies $\carrierDensity(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $\carrierDensity(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $\logNormalizerFunction(\eta)$.}. In that case, we have 
 
 \begin{subequations}
 \begin{align}
@@ -407,7 +410,7 @@ Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members
 \begin{example}
 Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a centered Laplace distribution, which has pdf
 \[ f(x \cond \sigma) = -\frac{1}{2 \sigma} \exp \bigg\{ - \frac{|x|}{\sigma}\bigg\}  \]	
-The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $\logNormalizerFunction(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla \logNormalizerFunction(\eta) = -\frac{1}{\eta}$), and the carrier density is $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
+The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $\logNormalizerFunction(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla \logNormalizerFunction(\eta) = -\frac{1}{\eta}$), and the carrier density is $\carrierDensity(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
 Using this, we can easily compute 
 \begin{align*}
 \H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} = \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta}{- \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
@@ -421,7 +424,7 @@ Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy
 %
 \[ \eta=\bigg(\frac{\mu}{\sigma^2}, \; -\frac{1}{2\sigma^2}\bigg)^\top, \quad \logNormalizerFunction(\eta) = \frac{-\eta_1^2}{4 \eta_2} + \half \log (-\frac{\pi}{\eta_2}), \quad  \nabla \logNormalizerFunction(\eta) = \bigg( -\frac{\eta_1}{2\eta_2}, \; -\frac{1}{2\eta_2} + \frac{\eta_1^2}{4\eta_2^2}\bigg)^\top\] 
 %
-and $h(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).
+and $\carrierDensity(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).
 
 Using this, we can easily compute 
 \begin{align*}
@@ -439,7 +442,7 @@ What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look 
 
 Let 
 \begin{align*}
-p(x \cond \eta) &=  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log h(x)\}  \\
+p(x \cond \eta) &=  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log \carrierDensity(x)\}  \\
 \wt{p}(x \cond \wt{\eta}) &=  \exp \{ \wt{\eta}^\top \wt{\sufficientStatsFunction}(x) - \wt{\logNormalizerFunction}(\wt{\eta}) + \log \wt{h}(x)\}  \\	
 \end{align*}
  
@@ -471,7 +474,7 @@ For more information on identifiability in exponential families, see \cite{cole2
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
 \begin{align}
 \label{eqn:exponential_family_iid}
- p(\+x \cond \theta) = \ds\prod_{i=1}^n h(x_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
+ p(\+x \cond \theta) = \ds\prod_{i=1}^n \carrierDensity(x_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
  \end{align}
 
 
@@ -513,7 +516,7 @@ Moreover, let us assume that the complete data likelihood is an exponential fami
 
 \begin{align}
 \label{eqn:exponential_family_complete_data_likelihood}
- p(\+x, \+z \cond \theta) = \ds\prod_{i=1}^n h(x_i, z_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i, z_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
+ p(\+x, \+z \cond \theta) = \ds\prod_{i=1}^n \carrierDensity(x_i, z_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i, z_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
  \end{align}
 
 Here we want to find $\+\theta$ to optimize 
@@ -967,7 +970,7 @@ X &\sim \Poisson(\lambda) \\
 \end{proposition}
 
 \begin{proof}
-Let $f_{(r,p)}$ be the density of a Negative Binomial random variable, $g_\lambda$ be the density of a Poisson random variable and $h_{(\alpha, \beta)}$ be the density of a Gamma random variable.   Then we must show that 
+Let $f_{(r,p)}$ be the density of a Negative Binomial random variable, $g_\lambda$ be the density of a Poisson random variable and $\carrierDensity_{(\alpha, \beta)}$ be the density of a Gamma random variable.   Then we must show that 
 \[ f_{(r,p)}(k) = \int_0^\infty g_\lambda(k) \; h_{(r, p/1-p)}(\lambda) \wrt{\lambda} \]
 for any non-negative integer $k=0,1,2,\hdots$.
 
@@ -1302,14 +1305,14 @@ Note that this argument yields the same parameter updating scheme of \eqref{eqn:
 Following \cite{jordan2010ef}, here we provide a general formalism for conjugate priors for exponential family data models. 
 
 Writing the exponential family density in canonical form, we have
-\[ p(x \cond \eta) = h(x) \exp \{ \eta^\top T(x) - A(\eta) \} \]
-where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $h(x)$ is the carrier density, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
+\[ p(x \cond \eta) = \carrierDensity(x) \exp \{ \eta^\top T(x) - A(\eta) \} \]
+where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $\carrierDensity(x)$ is the carrier density, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
 
 The natural parameter space is 
-\[  \bigg\{\eta : \ds\int h(x) \exp \{ \eta^\top T(x) - A(\eta) \} < \infty \bigg \}\]
+\[  \bigg\{\eta : \ds\int \carrierDensity(x) \exp \{ \eta^\top T(x) - A(\eta) \} < \infty \bigg \}\]
 
 Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we obtain:
-\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N h(x_i)  \bigg) \exp \bigg\{ \eta^\top  \ds\sum_{i=1}^N T(x_i) - N A(\eta) \bigg\} \]
+\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N \carrierDensity(x_i)  \bigg) \exp \bigg\{ \eta^\top  \ds\sum_{i=1}^N T(x_i) - N A(\eta) \bigg\} \]
 as the likelihood function.
 
 A conjugate prior can be obtained by mimicking the likelihood
