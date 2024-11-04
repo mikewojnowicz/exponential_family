@@ -12,12 +12,26 @@
 % PREAMBLE SPECIFIC TO THIS DOC
 %%%
 
-%%% EXPONENTIAL FAMILY QUANTITIES
+%%% 
+% EXPONENTIAL FAMILY QUANTITIES
+%%%
+
+% General exponential family
 \newcommand{\logNormalizerFunction}{a}
 \newcommand{\sufficientStatsFunction}{t}
 \newcommand{\carrierDensity}{h}
 \newcommand{\naturalParamSpace}{H}
 \newcommand{\meanParameter}{\mu}
+
+% EF for a single observation, from which we take iid draws.
+\newcommand{\logNormalizerFunctionForSingleSample}{\wt{a}}
+\newcommand{\sufficientStatsFunctionForSingleSample}{\wt{t}}
+\newcommand{\carrierDensityForSingleSample}{\wt{h}}
+
+
+%%% 
+% OTHER QUANTITIES
+%%%
 
 
 %%% CONTROL SIZE OF BLOCK MATRICES
@@ -525,38 +539,140 @@ where $\meanParameter:= \E[\sufficientStatsFunction(X)]$ refers to the mean para
 
 \subsection{Latent variable models}
 
-Some models have latent variables associated with each observation.   Let us  assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are n independent samples from an  exponential family, where $\+x$ is observed data and $\+z$ is unobserved data.
+Some models have latent variables associated with each observation.   Let us  assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ where $\+x$ is observed data and $\+z$ is unobserved data.   Then we say that the \textit{complete data likelihood} is an exponential family if we can write
 %
 \begin{align}
- p(\+x, \+z \cond \theta) = \ds\prod_{i=1}^n \carrierDensity(x_i, z_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i, z_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
+ p(\+x, \+z \cond \+\theta) = \carrierDensity(\+x, \+z) \exp \big\{ \eta(\+\theta)^\top \sufficientStatsFunction(\+x, \+z) - \logNormalizerFunction(\eta(\+\theta))\big\}. 
 \label{eqn:exponential_family_complete_data_likelihood}
  \end{align}
 %
-In this case, we say that the \textit{complete data likelihood} is an exponential family.
+for some functions $\carrierDensity, \eta, \sufficientStatsFunction, \logNormalizerFunction$. 
+
+ In the special case where $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are $n$ i.i.d samples from some exponential family, we can write
+%
+\begin{align}
+ p(\+x, \+z \cond \+\theta) = \bigg( \ds\prod_{i=1}^n \carrierDensityForSingleSample(x_i, z_i) \bigg) \exp \big\{ \eta(\+\theta)^\top \sum_{i=1}^n \sufficientStatsFunctionForSingleSample(x_i, z_i) - n \,\logNormalizerFunctionForSingleSample(\eta(\+\theta))\big\} 
+\label{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}
+ \end{align}
+%
+for some functions $\carrierDensityForSingleSample, \eta, \sufficientStatsFunctionForSingleSample, \logNormalizerFunctionForSingleSample$ describing the exponential family for a single observation. 
 
 \subsection{Expectation Maximization}
 
-When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood}, we can perform frequentist inference via Expectation Maximization (EM).  
+When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} as useful references. 
 
-The expectation maximization algorithm is 
-\begin{equation}
-\label{eqn:em_algorithm_appendix}
- \+\theta^{(t+1)} =  \text{argmax}_{\+\theta} \; \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
- \end{equation}
-
-We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}.   Here we want to find $\+\theta$ to optimize
-% 
-\[ Q(\+\theta \cond \+\theta^^t) =  \E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \]
+The expectation maximization objective is to update parameters $\+\theta$ by iteratively solving
 %
-Following the logic of Section \ref{sec:ml_with_ef}, we determine that we should select $\theta^{(t+1)}$ such that
-\[ \meanParameter(\theta^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \+\theta^{(t)})} \sufficientStatsFunction(x_i, z_i) \]
-where $\meanParameter := \E[\sufficientStatsFunction(x_1,z_1)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the likelihood.
+\begin{equation}
+ \+\theta^{(t+1)} =  \text{argmax}_{\+\theta} \; \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
+\label{eqn:em_objective_on_parameters}
+ \end{equation}
+ %
+ Note in particular that we seek to find $\+\theta$ which optimizes the so-called \textit{Q-function}
+% 
+\begin{align}
+ Q(\+\theta \cond \+\theta^^t) &\defeq  \E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
+ \label{eqn:Q_function_for_EM}
+\end{align}
+%
+In the above, our notation means
+$\E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \defeq \int \ln p(\+x, \+z \cond \+\theta) \, p(\+z \cond \+x , \+\theta^^t) \, \mu(d\+z)$.
+%
+\red{TODO: Justify why we are optimizing THIS particular function; one justification comes from a special case of CAVI, but it would be interesting to see the justification that does not use that.}  
 
-This is why an EM iteration is often described and/or implemented as performing maximum likelihood with the expected sufficient statistics.
+\begin{remark}
+The $Q$ function in \Eqref{eqn:Q_function_for_EM} is perhaps more clearly denoted by \citet{miller2011why} as 
+\[ \E_{\+\theta^^t} \bigg[ \ln p_{\+\theta}(\+X, \+Z) \cond \+X=\+x \bigg].\]
+\label{rk:jeff_millers_notation_for_Q_function}
+\end{remark}
+
+We will provide a solution to the parameter updates of \Eqref{eqn:em_objective_on_parameters} in Prop.~\ref{prop:EM_update}. First, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_fucntion}.
+
+\begin{proposition}\propositiontitle{\cite{salakhutdinov2002relationship}.}
+ The gradient of the Q-function of \Eqref{eqn:Q_function_for_EM} is given by 
+ %
+ \begin{align}
+ \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta)}[\sufficientStatsFunction(\+x,\+z)]
+ \label{eqn:gradient_of_Q_function_for_EM}
+ \end{align}
+ %
+ which can be interpreted as the difference in the expected sufficient statistic vector when the observed data is clamped and unclamped.
+%
+\label{prop:gradient_of_the_Q_fucntion}
+ \end{proposition}
+
+\begin{remark}
+Using the notation of \citet{miller2011why} that we mentioned in Remark~\ref{rk:jeff_millers_notation_for_Q_function}, we could also write \Eqref{eqn:gradient_of_Q_function_for_EM} as 
+ %
+ \begin{align}
+ \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta}[\sufficientStatsFunction(\+X,\+Z)]
+ \label{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}
+ \end{align}
+ %
+\end{remark}
+
+ 
+\begin{proof} No proof was provided in \citet{salakhutdinov2002relationship}. We provide a proof here.
+
+We have 
+\begin{align*}
+\frac{\partial}{\partial \+\theta}  p(\+x, \+z \cond \+\theta) & \stackrel{1}{=} p(\+x, \+z \cond \+\theta) \bigg( \sufficientStatsFunction(\+x, \+z) - \E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] \bigg) \\
+\implies \frac{\partial}{\partial \+\theta}  \log p(\+x, \+z \cond \+\theta) & \stackrel{2}{=} \frac{\frac{\partial p(\+x, \+z \cond \+\theta)}{\partial \+\theta}}{p(\+x, \+z \cond \+\theta)} \stackrel{3}{=}  \sufficientStatsFunction(\+x, \+z) - \E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] \\
+\implies \frac{\partial}{\partial \+\theta}  Q(\+\theta \cond \+\theta^^t) & \stackrel{4}{=} \int \frac{\partial}{\partial \+\theta} \ln p(
+\+x ,\+z \cond \+\theta) p(\+z \cond \+x, \+\theta^^t) \, \mu(d\+z) \\
+& \stackrel{5}{=} \bigg( \int \sufficientStatsFunction(\+x, \+z) p(\+z \cond \+x, \+\theta^^t) \, \mu(d\+z)\bigg) - \E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)]  \\
+& \stackrel{6}{=} \E
+_{p(\+z \cond \+x, \+\theta^^t)} [\sufficientStatsFunction(\+x, \+z)]   - \E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] 
+\end{align*}
+%
+Here, in (1), we used the definition in \Eqref{eqn:exponential_family_complete_data_likelihood} of exponential family for latent variable models, as well as the chain rule for derivatives.   Note that here $\E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \+\theta) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:Q_function_for_EM} of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \+\theta^^t)$, which integrates to 1.  In (6), we simply applied notation.  
+\end{proof}
+
+\begin{proposition}\propositiontitle{EM update to parameters.}
+The solution to the EM objective in \Eqref{eqn:em_objective_on_parameters} for obtaining the next parameter value $\+\theta^^{t+1}$ given the previous parameter value $\+\theta^^{t}$ is given by finding the $\+\theta^^{t+1}$ that solves
+%
+\begin{align}
+\E_{\+\theta^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
+\label{eqn:EM_update_to_parameters}	
+\end{align}
+%
+That is, we must find the parameter value which makes the expected sufficient statistic vector with  unclamped data equal to that with clamped data.
+\label{prop:EM_update}
+\end{proposition}
+
+\begin{proof}
+We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  How do we know that the optimum is a maximum and not a minimum?}   We apply the representation of $\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, set $\+\theta=\+\theta^^{t+1}$, and add the same term to both sides to obtain the result.
+\end{proof}
+
+
+\subsubsection{...for i.i.d data}
+
+Following the logic of Section \ref{sec:ml_with_ef}, we expect that in the i.i.d case, we should select $\+\theta^{(t+1)}$ such that
+%
+\begin{align}
+\meanParameter(\+\theta^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \+\theta^{(t)})} \sufficientStatsFunction(x_i, z_i) 
+\label{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics}	
+\end{align}
+%
+where $\meanParameter := \E[\sufficientStatsFunction(x_i,z_i)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the \textit{unit complete data likelihood}.  This is true.  \red{TODO: Justify.} \red{TODO: I believe that I read \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} in some paper -- perhaps notes by Jordan.  Find the source so that I can cite it and perhaps provide additional context.} 
+
+\Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics}	 reveals why an EM iteration is often described and/or implemented as performing maximum likelihood with the expected sufficient statistics.
 
 \red{TODO: But is EM \textit{always} equivalent to performing ML with ESS's? Or is this ONLY true if I'm working within the exponential family?  I need to read up some more on EM theory.}
 
+
+Note that the update in \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} also corroborates with the more general update (not assuming i.i.d models) given in \Eqref{eqn:EM_update_to_parameters}. \red{TODO: Prove directly that the latter implies the former in the i.i.d case.}
+
 \red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \theta, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
+ 
+ 
+ \red{TODO (Notation): Fix notation here and throughout. For instance: (1) As usual, the boldfacing is giving me headaches.  For instance, if we use boldface $\+\theta$ to represent arbitrary params, then we should presumably  use boldface for the natural and mean parameterizations. (2) Be more careful about when we're referring to random variables, and when to realizations.}
+
  
  \section{Bayesian inference for conjugate and semi-conjugate models} \label{sec:conjugate_exponential_family_models}
 
