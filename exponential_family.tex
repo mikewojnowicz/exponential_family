@@ -311,7 +311,7 @@ where we have defined
 \end{cases} \]
 
 and \eqref{eqn:hmm_ef_form} shows that the HMM is an exponential family, so long as the emissions distributions are. 
-The sufficient statistics for $\log \pi_k$ are $\state_1^k$, and the sufficient statistics for $\log A_{kk'}$ are $\sum_{t=2}^T \state_{t-1}^k \state_t^{k'}$. 
+The sufficient statistics for $\log \pi_k$ are $\state_1^k$, the sufficient statistics for $\log A_{kk'}$ are $\sum_{t=2}^T \state_{t-1}^k \state_t^{k'}$, and the sufficient statistics for the natural parameters of the emissions distributions $p(y_t \cond \phi_k)$ are  $\sum_{t=1}^T \state_{t}^k \cdot \set{\texttt{sufficient statistics of emissions}}$.
 
 \end{example}
 
@@ -678,13 +678,16 @@ Setting the solution $\+\theta^*$ as the next parameter value $\+\theta^^{t+1} =
 \begin{proposition}\propositiontitle{The Q-function and log marginal likelihood have equal gradients \cite{salakhutdinov2002relationship}.}
 Consider a latent variable model whose complete data likelihood  $p(\+x, \+z \cond \+\theta)$ is in the exponential family.  Define its log marginal likelihood as
 % 
-\[ \ell(\+\theta) \defeq \log p(\+x \cond \+\theta) = \log \int p(\+x,\+z \cond \+\theta) \mu(d\+z).\]
+\begin{align}
+\ell(\+\theta) \defeq \log p(\+x \cond \+\theta) = \log \int p(\+x,\+z \cond \+\theta) \mu(d\+z).	
+\label{eqn:log_marginal_likelihood_definition}
+\end{align}
 %
 Then 
 %
-\begin{align*}
+\begin{align}
 \frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \frac{\partial }{\partial \+\theta} Q(\+\theta \cond \+\theta^^t) \Bigr|_{\+\theta = \+\theta^^t}.
-\end{align*}
+\end{align}
 %
 \label{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}
 \end{proposition}
@@ -725,6 +728,7 @@ We have
 %
 \begin{align}
 \frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z)]
+\label{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}
 \end{align}
 %
 \end{corollary}
@@ -732,6 +736,89 @@ We have
 \begin{proof}
 This follows immediately from the gradient of the Q-function (see \Eqref{eqn:the_gradient_of_the_Q_function_evaluated_at_the_current_parameter_and_using_jeffs_notation}) along with the fact that the Q-function and the log marginal likelihood have equal gradients when evaluated at the current parameter value (Prop.~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}).	
 \end{proof}
+
+
+\begin{proposition}\propositiontitle{Relating the EM step to the ordinary gradient \cite{salakhutdinov2002relationship}.}
+There exists a symmetric positive define matrix $\+P(\+\theta^^t)$ such that the EM step $\+\theta^^{t-1} - \+\theta^^t$ can be expressed as
+%
+\begin{align}
+\+\theta^^{t+1} - \+\theta^^t = \+P(\+\theta^^t) \frac{\partial}{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta=\+\theta^^t}
+\label{eqn:relating_the_EM_step_to_the_ordinary_gradient}
+\end{align}
+%
+where $\ell$ the the log marginal likelihood as in \Eqref{eqn:log_marginal_likelihood_definition}.
+\end{proposition}
+
+
+\begin{proof}
+Define
+%
+\begin{align}
+\overline{T}(\+\theta) & \defeq \int p(\+z, \+x \cond \+\theta) \sufficientStatsFunction(\+x, \+z) \mu_{\+x,\+z}(d\+x, d\+z) \\
+\overline{T}_z(\+\theta) & \defeq \int p(\+z \cond \+x, \+\theta) \sufficientStatsFunction(\+x, \+z) \mu_\+z(d\+z) 
+\end{align}
+%
+Using these definitions, we can write the gradient of the log marginal likelihood from  \Eqref{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model} as
+%
+%MTW: [Commenting this out because I think we aren't explicitly referring to these ambient measures again] Using these definitions, along with a slight abuse of notation where we distinguish the ambient measures $\mu_{\+x,\+z}(d\+x, d\+z)$ and $\mu_{\+z}(d\+z)$ by their arguments, 
+%
+\begin{align}
+\frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t)
+\label{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model__in_compact_notation}
+\end{align}
+%
+Using these same definitions, the EM update of \Eqref{eqn:EM_update_to_parameters} is given by $\+\theta^^{t+1}$ which solves
+%
+\[  \overline{T}(\+\theta^^{t+1}) = \overline{T}_z(\+\theta^^t)  \]
+%
+Since $ \overline{T}$ is an  invertible function (see Sec.~\ref{sec:mean_parametrization}), the EM update is given by
+%
+\begin{align}
+\+\theta^^{t+1} = \overline{T}^{-1} \overline{T}_z(\+\theta^^t)
+\label{eqn:EM_update__in_compact_notation} 
+\end{align}
+%
+Substituting \Eqref{eqn:EM_update__in_compact_notation}  and \Eqref{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model__in_compact_notation} into the claim of \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient} to be justified, we obtain the question of whether 
+%
+\begin{align}
+\bigg[\overline{T}^{-1} \overline{T}_z(\+\theta^^t) - \+\theta^^t \bigg] \stackrel{?}{=} \+P(\+\theta^^t)  \bigg[ \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t) \bigg]
+\label{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}
+\end{align}
+%
+for some symmetric positive definite matrix $\+P$.
+
+By defining notation for the LHS and RHS of \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}
+%
+\begin{align}
+\+v(\+\theta^^t)& \defeq \overline{T}^{-1} \overline{T}_z(\+\theta^^t) - \+\theta^^t && \scripttext{LHS} \\
+\+u(\+\theta^^t)& \defeq \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t) && \scripttext{RHS} ,
+\end{align}
+%
+we can further simplify \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}.  In particular, we must show that there exists symmetric positive definite matrix $\+P$ such that
+%
+\begin{align}
+\+v(\+\theta^^t) \stackrel{?}{=} \+P(\+\theta^^t)  \+u(\+\theta^^t)
+\label{eqn:relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation}
+\end{align}
+%
+\Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} clearly holds by defining
+%
+\begin{align}
+\+P(\+\theta^^t) \defeq  \frac{\+v(\+\theta^^t) \+v(\+\theta^^t)^\top}{\+v(\+\theta^^t)^\top \+u(\+\theta^^t)}.
+\label{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} 
+\end{align}
+%
+In particular, by substituting \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation}  into \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation}, we find 
+%
+\begin{align}
+\+P \+u =  \frac{\+v \cancel{\+v^\top}}{\cancel{\+v^\top \+u}} \cancel{\+u} = \+v,
+\end{align}
+%
+as desired.  
+
+Now all that remains is to show that $\+P$ is symmetric positive definite.  It is clear from \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} that $\+P$ is symmetric.  We also see from \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} that $\+P$ is positive definite if $\+v^\top \+u >0$, and that is shown in \citet[Eqn.~26]{salakhutdinov2002relationship}.
+\end{proof}
+
 
 \subsubsection{The EM algorithm for i.i.d data}
 
