@@ -548,20 +548,13 @@ Some models have latent variables associated with each observation.   Let us  as
 %
 for some functions $\carrierDensity, \eta, \sufficientStatsFunction, \logNormalizerFunction$. 
 
- In the special case where $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are $n$ i.i.d samples from some exponential family, we can write
-%
-\begin{align}
- p(\+x, \+z \cond \+\theta) = \bigg( \ds\prod_{i=1}^n \carrierDensityForSingleSample(x_i, z_i) \bigg) \exp \big\{ \eta(\+\theta)^\top \sum_{i=1}^n \sufficientStatsFunctionForSingleSample(x_i, z_i) - n \,\logNormalizerFunctionForSingleSample(\eta(\+\theta))\big\} 
-\label{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}
- \end{align}
-%
-for some functions $\carrierDensityForSingleSample, \eta, \sufficientStatsFunctionForSingleSample, \logNormalizerFunctionForSingleSample$ describing the exponential family for a single observation. 
-
 \subsection{Expectation Maximization}
 
 When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references. 
 
-The expectation maximization objective is to update parameters $\+\theta$ by iteratively solving
+\subsubsection{The EM step}
+
+The expectation maximization procedure is to update parameters $\+\theta$ by iteratively solving
 %
 \begin{equation}
  \+\theta^{(t+1)} =  \text{argmax}_{\+\theta} \; \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
@@ -576,7 +569,7 @@ In particular, at the $(t+1)$-st iterate we seek to find $\+\theta$ which optimi
 \end{align}
 %
 
-\red{TODO: Justify why we are optimizing THIS particular function; one justification comes from a special case of CAVI, but it would be interesting to see the justification that does not use that.}   \blue{DISCUSS: Does Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients} give a/the justification?} 
+\red{TODO: Justify why we are optimizing THIS particular function; one justification comes from a special case of CAVI, but it would be interesting to see the justification that does not use that.}   \blue{DISCUSS: Does Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value} give a/the justification?} 
 
 \begin{notation}\remarktitle{Notation for expected values.}
 In the Q-function of \Eqref{eqn:Q_function_for_EM} above, our notation means
@@ -589,7 +582,97 @@ This $Q$ function is perhaps more clearly denoted by \citet{miller2011why} as
 \end{notation}
 
 
-We will provide a solution to the EM objective of \Eqref{eqn:em_objective_on_parameters} in Prop.~\ref{prop:EM_update}. First, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. Before that, we provide some justification for optimizing the Q-function in Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients}.
+We will provide a solution to the EM objective of \Eqref{eqn:em_objective_on_parameters} in Prop.~\ref{prop:EM_update}. First, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. %Before that, we provide some justification for optimizing the Q-function in Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}.
+
+
+\begin{proposition}\propositiontitle{The gradient of the Q-function \cite{salakhutdinov2002relationship}.}
+ The gradient of the Q-function of \Eqref{eqn:Q_function_for_EM} is given by 
+ %
+ \begin{align}
+ \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta)}[\sufficientStatsFunction(\+x,\+z)]
+ \label{eqn:gradient_of_Q_function_for_EM}
+ \end{align}
+%
+\label{prop:gradient_of_the_Q_function}
+ \end{proposition}
+
+
+ 
+\begin{proof}[Proof of Prop.~\ref{prop:gradient_of_the_Q_function}] No proof was provided in \citet{salakhutdinov2002relationship}. We provide a proof here.
+
+We have 
+\begin{align*}
+\frac{\partial}{\partial \+\theta}  p(\+x, \+z \cond \+\theta) & \stackrel{1}{=} p(\+x, \+z \cond \+\theta) \bigg( \sufficientStatsFunction(\+x, \+z) - \E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] \bigg) \\
+\implies \frac{\partial}{\partial \+\theta}  \log p(\+x, \+z \cond \+\theta) & \stackrel{2}{=} \frac{\frac{\partial p(\+x, \+z \cond \+\theta)}{\partial \+\theta}}{p(\+x, \+z \cond \+\theta)} \stackrel{3}{=}  \sufficientStatsFunction(\+x, \+z) - \E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] \\
+\implies \frac{\partial}{\partial \+\theta}  Q(\+\theta \cond \+\theta^^t) & \stackrel{4}{=} \int \frac{\partial}{\partial \+\theta} \ln p(
+\+x ,\+z \cond \+\theta) p(\+z \cond \+x, \+\theta^^t) \, \mu(d\+z) \\
+& \stackrel{5}{=} \bigg( \int \sufficientStatsFunction(\+x, \+z) p(\+z \cond \+x, \+\theta^^t) \, \mu(d\+z)\bigg) - \E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)]  \\
+& \stackrel{6}{=} \E
+_{p(\+z \cond \+x, \+\theta^^t)} [\sufficientStatsFunction(\+x, \+z)]   - \E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] 
+\end{align*}
+%
+Here, in (1), we used the definition in \Eqref{eqn:exponential_family_complete_data_likelihood} of exponential family for latent variable models, as well as the chain rule for derivatives.   Note that here $\E
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \+\theta) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:Q_function_for_EM} of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \+\theta^^t)$, which integrates to 1.  In (6), we simply applied notation.  
+\end{proof}
+
+
+\begin{corollary}\propositiontitle{The gradient of the Q function as the difference in expected sufficient statistics with clamped and unclamped data.}
+By Prop.~\ref{prop:gradient_of_the_Q_function}, the gradient of the Q-function evaluated at the current estimate of the parameter
+%
+\begin{align}
+\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} \Bigr|_{\+\theta = \+\theta^^t} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] 
+\label{eqn:gradient_of_Q_function_as_difference_in_expected_sufficient_stats_with_clamped_and_unclamped_data}
+\end{align}
+%
+can be interpreted as the difference in the expected sufficient statistic vector when the observed data is clamped and unclamped.
+\end{corollary}
+
+
+
+\begin{notation}
+The interpretation of the RHS of \Eqref{eqn:gradient_of_Q_function_for_EM} was given in Notation~\ref{notation:Q_function}.     Using the alternative notation of \citet{miller2011why} that we mentioned in Notation~\ref{notation:Q_function}, we could also write the gradient in \Eqref{eqn:gradient_of_Q_function_for_EM} as 
+ %
+ \begin{align}
+ \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta}[\sufficientStatsFunction(\+X,\+Z)]
+ \label{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}
+ \end{align}
+ %
+ Similarly, we could write \Eqref{eqn:gradient_of_Q_function_as_difference_in_expected_sufficient_stats_with_clamped_and_unclamped_data} as
+  %
+ \begin{align}
+ \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} \Bigr|_{\+\theta = \+\theta^^t} =  \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z)]
+ \label{eqn:the_gradient_of_the_Q_function_evaluated_at_the_current_parameter_and_using_jeffs_notation}
+ \end{align}
+ %
+\end{notation}
+
+\begin{proposition}\propositiontitle{EM update to parameters.}
+The solution to the EM objective in \Eqref{eqn:em_objective_on_parameters} for obtaining the next parameter value $\+\theta^^{t+1}$ given the previous parameter value $\+\theta^^{t}$ is given by finding the $\+\theta^^{t+1}$ that solves
+%
+\begin{align}
+\E_{\+\theta^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
+\label{eqn:EM_update_to_parameters}	
+\end{align}
+%
+That is, we must find the parameter value which makes the expected sufficient statistic vector with  unclamped data equal to that with clamped data.
+\label{prop:EM_update}
+\end{proposition}
+
+\begin{proof}
+We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  How do we know that the optimum is a maximum and not a minimum?}   By applying the representation of $\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\+\theta \in \+\Theta$ which solves the equation
+%
+\begin{align*}
+\E_{\+\theta}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 	
+\end{align*}
+%
+Setting the solution $\+\theta^*$ as the next parameter value $\+\theta^^{t+1} = \+\theta^*$ gives the result. \red{TODO: How do we know the solution exists?}
+\end{proof}
+
+\subsubsection{Relating the EM step and the ordinary gradient}
 
 
 \begin{proposition}\propositiontitle{The Q-function and log marginal likelihood have equal gradients \cite{salakhutdinov2002relationship}.}
@@ -603,7 +686,7 @@ Then
 \frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \frac{\partial }{\partial \+\theta} Q(\+\theta \cond \+\theta^^t) \Bigr|_{\+\theta = \+\theta^^t}.
 \end{align*}
 %
-\label{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients}
+\label{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}
 \end{proposition}
 
 \begin{proof} No proof was provided in \citet{salakhutdinov2002relationship}. We provide a proof here.
@@ -636,77 +719,30 @@ as claimed.
 
 \end{proof}
 
-\begin{proposition}\propositiontitle{The gradient of the Q-function \cite{salakhutdinov2002relationship}.}
- The gradient of the Q-function of \Eqref{eqn:Q_function_for_EM} is given by 
- %
- \begin{align}
- \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta)}[\sufficientStatsFunction(\+x,\+z)]
- \label{eqn:gradient_of_Q_function_for_EM}
- \end{align}
-%
-\label{prop:gradient_of_the_Q_function}
- \end{proposition}
-
-
-
-\begin{remark}\remarktitle{The derivative as the difference in expected sufficient statistics with clamped and unclamped data.}
-By Prop.~\ref{prop:gradient_of_the_Q_function},
-%
-\[ \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} \Bigr|_{\+\theta = \+\theta^^t} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] \] 
-%
-can be interpreted as the difference in the expected sufficient statistic vector when the observed data is clamped and unclamped.
-\end{remark}
-
-\begin{notation}
-The interpretation of the RHS of \Eqref{eqn:gradient_of_Q_function_for_EM} was given in Notation~\ref{notation:Q_function}.     Using the alternative notation of \citet{miller2011why} that we mentioned in Notation~\ref{notation:Q_function}, we could also write \Eqref{eqn:gradient_of_Q_function_for_EM} as 
- %
- \begin{align}
- \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta}[\sufficientStatsFunction(\+X,\+Z)]
- \label{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}
- \end{align}
- %
-\end{notation}
-
- 
-\begin{proof}[Proof of Prop.~\ref{prop:gradient_of_the_Q_function}] No proof was provided in \citet{salakhutdinov2002relationship}. We provide a proof here.
+\begin{corollary}\propositiontitle{The ordinary gradient of the log marginal likelihood of an exponential family latent variable model.}
 
 We have 
-\begin{align*}
-\frac{\partial}{\partial \+\theta}  p(\+x, \+z \cond \+\theta) & \stackrel{1}{=} p(\+x, \+z \cond \+\theta) \bigg( \sufficientStatsFunction(\+x, \+z) - \E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] \bigg) \\
-\implies \frac{\partial}{\partial \+\theta}  \log p(\+x, \+z \cond \+\theta) & \stackrel{2}{=} \frac{\frac{\partial p(\+x, \+z \cond \+\theta)}{\partial \+\theta}}{p(\+x, \+z \cond \+\theta)} \stackrel{3}{=}  \sufficientStatsFunction(\+x, \+z) - \E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] \\
-\implies \frac{\partial}{\partial \+\theta}  Q(\+\theta \cond \+\theta^^t) & \stackrel{4}{=} \int \frac{\partial}{\partial \+\theta} \ln p(
-\+x ,\+z \cond \+\theta) p(\+z \cond \+x, \+\theta^^t) \, \mu(d\+z) \\
-& \stackrel{5}{=} \bigg( \int \sufficientStatsFunction(\+x, \+z) p(\+z \cond \+x, \+\theta^^t) \, \mu(d\+z)\bigg) - \E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)]  \\
-& \stackrel{6}{=} \E
-_{p(\+z \cond \+x, \+\theta^^t)} [\sufficientStatsFunction(\+x, \+z)]   - \E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] 
-\end{align*}
-%
-Here, in (1), we used the definition in \Eqref{eqn:exponential_family_complete_data_likelihood} of exponential family for latent variable models, as well as the chain rule for derivatives.   Note that here $\E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \+\theta) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:Q_function_for_EM} of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \+\theta^^t)$, which integrates to 1.  In (6), we simply applied notation.  
-\end{proof}
-
-\begin{proposition}\propositiontitle{EM update to parameters.}
-The solution to the EM objective in \Eqref{eqn:em_objective_on_parameters} for obtaining the next parameter value $\+\theta^^{t+1}$ given the previous parameter value $\+\theta^^{t}$ is given by finding the $\+\theta^^{t+1}$ that solves
 %
 \begin{align}
-\E_{\+\theta^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
-\label{eqn:EM_update_to_parameters}	
+\frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z)]
 \end{align}
 %
-That is, we must find the parameter value which makes the expected sufficient statistic vector with  unclamped data equal to that with clamped data.
-\label{prop:EM_update}
-\end{proposition}
+\end{corollary}
 
 \begin{proof}
-We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  How do we know that the optimum is a maximum and not a minimum?}   We apply the representation of $\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, set $\+\theta=\+\theta^^{t+1}$, and add the same term to both sides to obtain the result.
+This follows immediately from the gradient of the Q-function (see \Eqref{eqn:the_gradient_of_the_Q_function_evaluated_at_the_current_parameter_and_using_jeffs_notation}) along with the fact that the Q-function and the log marginal likelihood have equal gradients when evaluated at the current parameter value (Prop.~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}).	
 \end{proof}
 
+\subsubsection{The EM algorithm for i.i.d data}
 
-\subsubsection{...for i.i.d data}
+In the special case where $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are $n$ i.i.d samples from some exponential family, we can write the complete data likelihood of \Eqref{eqn:exponential_family_complete_data_likelihood} as 
+%
+\begin{align}
+ p(\+x, \+z \cond \+\theta) = \bigg( \ds\prod_{i=1}^n \carrierDensityForSingleSample(x_i, z_i) \bigg) \exp \big\{ \eta(\+\theta)^\top \sum_{i=1}^n \sufficientStatsFunctionForSingleSample(x_i, z_i) - n \,\logNormalizerFunctionForSingleSample(\eta(\+\theta))\big\} 
+\label{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}
+ \end{align}
+%
+for some functions $\carrierDensityForSingleSample, \eta, \sufficientStatsFunctionForSingleSample, \logNormalizerFunctionForSingleSample$ describing the exponential family for a single observation (the so-called \textit{unit complete data likelihood}). 
 
 Following the logic of Section \ref{sec:ml_with_ef}, we expect that in the i.i.d case, we should select $\+\theta^{(t+1)}$ such that
 %
