@@ -18,14 +18,14 @@
 
 % General exponential family
 \newcommand{\logNormalizerFunction}{a}
-\newcommand{\sufficientStatsFunction}{t}
+\newcommand{\sufficientStatsFunction}{s}
 \newcommand{\carrierDensity}{h}
 \newcommand{\naturalParamSpace}{H}
 \newcommand{\meanParameter}{\mu}
 
 % EF for a single observation, from which we take iid draws.
 \newcommand{\logNormalizerFunctionForSingleSample}{\wt{a}}
-\newcommand{\sufficientStatsFunctionForSingleSample}{\wt{t}}
+\newcommand{\sufficientStatsFunctionForSingleSample}{\wt{\sufficientStatsFunction}}
 \newcommand{\carrierDensityForSingleSample}{\wt{h}}
 
 
@@ -158,7 +158,7 @@ For an example of how the natural parametrization can help provide insight into 
 
 In those notes,  we see
 \begin{align} 
-\E [ \log \pi_k] &= \E [t_k(p)] \stackrel{1}{=} \df{\partial}{\partial \eta_k} a(\eta) \nonumber \\
+\E [ \log \pi_k] &= \E [\sufficientStatsFunction_k(p)] \stackrel{1}{=} \df{\partial}{\partial \eta_k} a(\eta) \nonumber \\
 &=\Psi(\alpha_k) -  \Psi(\sum_k  \alpha_k) \label{eqn:expectation_of_log_probability} 
 \end{align}
 where (1) uses a well-known exponential family property (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}) and where $\Psi(\cdot)$ is the first derivative of the $\log \Gamma$ function.   It is known as the \textit{digamma function}.  $ $
@@ -329,7 +329,7 @@ Some non-examples include
 \subsubsection{Relationship between moments and the normalizer function} \label{sec:relationship_between_moments_and_normalizer}
 
 \begin{proposition}\propositiontitle{The gradient of the log normalizer equals the expected sufficient statistics.}
-Let $X$ have an exponential family distribution with natural parameter $\eta$, sufficient statistics function $t$, and log normalizer function $\logNormalizerFunction$.   Then  
+Let $X$ have an exponential family distribution with natural parameter $\eta$, sufficient statistics function $\sufficientStatsFunction$, and log normalizer function $\logNormalizerFunction$.   Then  
 \begin{align*}
 \nabla \logNormalizerFunction(\eta) = \E[\sufficientStatsFunction(X)] 
 \labelit \label{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}	

@@ -2,15 +2,15 @@ Let $p(y \cond \theta)$ be an exponential family likelihood, and let $p(\theta)$
 
 We can write the prior as 
 \begin{align*}
-p(\theta ) &= \exp \biggset{\biggip{\eta_\theta^o}{t_\theta (\theta)} - \log Z_\theta(\eta_\theta^o)} 
-%&\propto \exp \biggset{\biggip{\eta_\theta^o, t_\theta (\theta)}}
+p(\theta ) &= \exp \biggset{\biggip{\eta_\theta^o}{\sufficientStatsFunction_\theta (\theta)} - \log Z_\theta(\eta_\theta^o)} 
+%&\propto \exp \biggset{\biggip{\eta_\theta^o, \sufficientStatsFunction_\theta (\theta)}}
 \end{align*}
 
 And the likelihood for a single observation $y_i$ as 
 \begin{align*}
-p(y_i \cond \theta)  & \stackrel{1}{=} \exp \biggset{ \biggip{\eta_y(\theta)}{t_y(y_i)} - \log Z_y (\eta_y(\theta)) } \\
-& \stackrel{2}{=} \exp \biggset{ \biggip{ \bigparenth{\eta_y(\theta), \; - \log Z_y (\eta_y(\theta))}}{\bigparenth{t_y(y_i), \; 1}}  } \\
-& \stackrel{3}{=} \exp \biggset{ \biggip{t_\theta(\theta)}{\bigparenth{t_y(y_i),1}}}   
+p(y_i \cond \theta)  & \stackrel{1}{=} \exp \biggset{ \biggip{\eta_y(\theta)}{\sufficientStatsFunction_y(y_i)} - \log Z_y (\eta_y(\theta)) } \\
+& \stackrel{2}{=} \exp \biggset{ \biggip{ \bigparenth{\eta_y(\theta), \; - \log Z_y (\eta_y(\theta))}}{\bigparenth{\sufficientStatsFunction_y(y_i), \; 1}}  } \\
+& \stackrel{3}{=} \exp \biggset{ \biggip{\sufficientStatsFunction_\theta(\theta)}{\bigparenth{\sufficientStatsFunction_y(y_i),1}}}   
 \end{align*}
 where (1) is true by the exponential family assumption, (2) regroups terms to make conjugacy clearer and (3) must be true given conjugacy. 
 
@@ -18,21 +18,21 @@ where (1) is true by the exponential family assumption, (2) regroups terms to ma
 By Bayes law, the posterior after a single observation $y_i$ is given by
 \begin{align*}
 p(\theta \cond y_i)  &\propto p(\theta, y_i) \\
-	&=\exp \biggset{ \biggip{ \eta_\theta(y_i)}{t_\theta(\theta) } - \log Z_\theta(\eta_\theta^o)} 
+	&=\exp \biggset{ \biggip{ \eta_\theta(y_i)}{\sufficientStatsFunction_\theta(\theta) } - \log Z_\theta(\eta_\theta^o)} 
 \end{align*}
-where $\eta_\theta(y_i) = \eta_\theta^o + \bigparenth{t_y(y_i),1}$, i.e. the posterior natural parameter is the sum of the prior natural parameter and the sufficient statistics concatenated with the number of samples. 
+where $\eta_\theta(y_i) = \eta_\theta^o + \bigparenth{\sufficientStatsFunction_y(y_i),1}$, i.e. the posterior natural parameter is the sum of the prior natural parameter and the sufficient statistics concatenated with the number of samples. 
 
 And so after re-normalizing
 \begin{align*}
-p(\theta \cond y_i)  = \exp \biggset{ \biggip{ \eta_\theta(y_i)}{t_\theta(\theta) } - \log Z_\theta \big(\eta_\theta(y_i)\big)}
+p(\theta \cond y_i)  = \exp \biggset{ \biggip{ \eta_\theta(y_i)}{\sufficientStatsFunction_\theta(\theta) } - \log Z_\theta \big(\eta_\theta(y_i)\big)}
 \labelit \label{eqn:posterior_for_exponential_family_after_one_obs} 
 \end{align*}
   
 After seeing multiple i.i.d observations $y=(y_1,...,y_n)$ from the likelihood, the posterior is given by
 \begin{align*}
-p(\theta \cond y)  = \exp \biggset{ \biggip{\eta_\theta(y)}{t_\theta(\theta) } - \log Z_\theta \big(\eta_\theta(y)\big)} 
+p(\theta \cond y)  = \exp \biggset{ \biggip{\eta_\theta(y)}{\sufficientStatsFunction_\theta(\theta) } - \log Z_\theta \big(\eta_\theta(y)\big)} 
 \labelit \label{eqn:posterior_for_exponential_family_after_many_obs} 
 \end{align*}
-where $\eta_\theta(y) = \eta_\theta^o + \bigparenth{ \sum_{i=1}^n t_y(y_i),n}$.
+where $\eta_\theta(y) = \eta_\theta^o + \bigparenth{ \sum_{i=1}^n \sufficientStatsFunction_y(y_i),n}$.
 
 This motivates interpreting the prior parameter as $\eta_\theta = (\tau_0, n_0)$, where $\tau_0 \in \R^{\dim(\eta_\theta) - 1}$ is interpreted as sufficient statistics and $n_0 \in \R$ is interpreted as a the sample size of a prior psuedo-dataset. 

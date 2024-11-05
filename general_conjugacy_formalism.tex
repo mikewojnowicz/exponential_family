@@ -4,7 +4,7 @@ Let us write the data model's density $p(x \cond \eta)$ in exponential family fo
 p(x \cond \eta) &= \carrierDensity(x) \exp \{\eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta)   \}	 \\
 p(\eta \cond \phi) &= \wt{h}(\eta) \exp \{\phi^\top \; \wt{\sufficientStatsFunction}(\eta) - \wt{\logNormalizerFunction}(\phi)   \}	
 \end{align*}
-We use the tilde to denote that the carrier density $\carrierDensity$, sufficient statistics function $t$, and log normalizer $\logNormalizerFunction$ can differ for these densities.  
+We use the tilde to denote that the carrier density $\carrierDensity$, sufficient statistics function $\sufficientStatsFunction$, and log normalizer $\logNormalizerFunction$ can differ for these densities.  
 
 Our goal is to find the form of a conjugate prior, given the form of the data model.    To do this, we work with the posterior 
 
@@ -121,7 +121,7 @@ x^2
 \end{align*}
 
 Suppose we want to find a (semi-)conjugate prior for the precision parameter $\beta$.  Considering \eqref{eqn:gaussian_pdf_precision_parametrization} as a function of $\beta$, the basis functions needed are
-\[ \wt{t}(\beta) := 
+\[ \wt{\sufficientStatsFunction}(\beta) := 
 \begin{bmatrix} 
 \beta \\
 \log \beta
@@ -139,7 +139,7 @@ Let $X \sim \GammaDist(\alpha, \beta)$, where $\GammaDist(\alpha, \beta)$ refers
  \labelit \label{eqn:gamma_pdf}
 \end{align*}  
 Suppose we want to find a (semi-)conjugate prior for the shape parameter $\alpha$.  Considering \eqref{eqn:gaussian_pdf_precision_parametrization} as a function of $\alpha$, the basis functions needed are
-\[ \wt{t}(\alpha) := 
+\[ \wt{\sufficientStatsFunction}(\alpha) := 
 \begin{bmatrix} 
 \alpha \\
 \Gamma(\alpha) 
