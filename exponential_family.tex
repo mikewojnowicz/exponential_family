@@ -535,7 +535,7 @@ But $\nabla_\eta \logNormalizerFunction(\eta) = \E [\sufficientStatsFunction(X)]
  \label{eqn:maximum_likelihood_solution_for_exponential_families}
 \end{align}
 %
-where $\meanParameter:= \E[\sufficientStatsFunction(X)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the likelihood.  \redfootnote{TODO: This switching of parameterization should be handled more explicitly.}
+where $\meanParameter:= \E[\sufficientStatsFunction(X)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the likelihood.  \redfootnote{TODO: This switching of parameterization should be handled more constructively.}
 
 \subsection{Latent variable models}
 
@@ -559,7 +559,7 @@ for some functions $\carrierDensityForSingleSample, \eta, \sufficientStatsFuncti
 
 \subsection{Expectation Maximization}
 
-When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} as useful references. 
+When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references. 
 
 The expectation maximization objective is to update parameters $\+\theta$ by iteratively solving
 %
@@ -568,51 +568,107 @@ The expectation maximization objective is to update parameters $\+\theta$ by ite
 \label{eqn:em_objective_on_parameters}
  \end{equation}
  %
- Note in particular that we seek to find $\+\theta$ which optimizes the so-called \textit{Q-function}
+In particular, at the $(t+1)$-st iterate we seek to find $\+\theta$ which optimizes the so-called \textit{Q-function}
 % 
 \begin{align}
  Q(\+\theta \cond \+\theta^^t) &\defeq  \E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
  \label{eqn:Q_function_for_EM}
 \end{align}
 %
-In the above, our notation means
-$\E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \defeq \int \ln p(\+x, \+z \cond \+\theta) \, p(\+z \cond \+x , \+\theta^^t) \, \mu(d\+z)$.
+
+\red{TODO: Justify why we are optimizing THIS particular function; one justification comes from a special case of CAVI, but it would be interesting to see the justification that does not use that.}   \blue{DISCUSS: Does Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients} give a/the justification?} 
+
+\begin{notation}\remarktitle{Notation for expected values.}
+In the Q-function of \Eqref{eqn:Q_function_for_EM} above, our notation means
 %
-\red{TODO: Justify why we are optimizing THIS particular function; one justification comes from a special case of CAVI, but it would be interesting to see the justification that does not use that.}  
-
-\begin{remark}
-The $Q$ function in \Eqref{eqn:Q_function_for_EM} is perhaps more clearly denoted by \citet{miller2011why} as 
+\[\E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \defeq \int \ln p(\+x, \+z \cond \+\theta) \, p(\+z \cond \+x , \+\theta^^t) \, \mu(d\+z).\]
+%
+This $Q$ function is perhaps more clearly denoted by \citet{miller2011why} as 
 \[ \E_{\+\theta^^t} \bigg[ \ln p_{\+\theta}(\+X, \+Z) \cond \+X=\+x \bigg].\]
-\label{rk:jeff_millers_notation_for_Q_function}
-\end{remark}
+\label{notation:Q_function}
+\end{notation}
 
-We will provide a solution to the parameter updates of \Eqref{eqn:em_objective_on_parameters} in Prop.~\ref{prop:EM_update}. First, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_fucntion}.
 
-\begin{proposition}\propositiontitle{\cite{salakhutdinov2002relationship}.}
+We will provide a solution to the EM objective of \Eqref{eqn:em_objective_on_parameters} in Prop.~\ref{prop:EM_update}. First, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. Before that, we provide some justification for optimizing the Q-function in Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients}.
+
+
+\begin{proposition}\propositiontitle{The Q-function and log marginal likelihood have equal gradients \cite{salakhutdinov2002relationship}.}
+Consider a latent variable model whose complete data likelihood  $p(\+x, \+z \cond \+\theta)$ is in the exponential family.  Define its log marginal likelihood as
+% 
+\[ \ell(\+\theta) \defeq \log p(\+x \cond \+\theta) = \log \int p(\+x,\+z \cond \+\theta) \mu(d\+z).\]
+%
+Then 
+%
+\begin{align*}
+\frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \frac{\partial }{\partial \+\theta} Q(\+\theta \cond \+\theta^^t) \Bigr|_{\+\theta = \+\theta^^t}.
+\end{align*}
+%
+\label{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients}
+\end{proposition}
+
+\begin{proof} No proof was provided in \citet{salakhutdinov2002relationship}. We provide a proof here.
+
+On the one hand, we have
+%
+\begin{align*}
+Q(\+\theta \cond \+\theta^^t) &= \int p(\+z \cond \+x, \+\theta^^t) \log p(\+x, \+z \cond \+\theta) \, \mu(d\+z) && \scripttext{Def. Q function} \\
+&= \int \frac{p(\+x, \+z \cond \+\theta^^t)}{p(\+x \cond \+\theta^^t)} \log p(\+x, \+z \cond \+\theta) \, \mu(d\+z) && \scripttext{Bayes rule} \\
+\implies \frac{\partial}{\partial \+\theta} Q(\+\theta \cond \+\theta^^t)  \Bigr|_{\+\theta=\+\theta^^t} &= \int \frac{p(\+x, \+z \cond \+\theta^^t)}{p(\+x \cond \+\theta^^t)} \frac{\partial}{\partial \+\theta} \log p(\+x, \+z \cond \+\theta)\Bigr|_{\+\theta=\+\theta^^t} \, \mu(d\+z) && \scripttext{Assume deriv interchanges with int.} \\
+&= \int \frac{\cancel{p(\+x, \+z \cond \+\theta^^t)}}{p(\+x \cond \+\theta^^t)} \frac{\frac{\partial}{\partial \+\theta} p(\+x, \+z \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t}}{\cancel{p(\+x, \+z \cond \+\theta^^t)}} \, \mu(d\+z) && \scripttext{Deriv. of logarithms} \\
+&= \frac{1}{p(\+x \cond \+\theta^^t)}  \int \frac{\partial}{\partial \+\theta} p(\+x, \+z \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t}\, \mu(d\+z) && \scripttext{Pull out constant} \labelit \label{eqn:intermediate_result_1_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients}
+\end{align*}
+%
+On the other hand, we have
+%
+\begin{align*}
+\frac{\partial}{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta=\+\theta^^t} &= \frac{\partial}{\partial \+\theta} \log p(\+x \cond \+\theta)\Bigr|_{\+\theta=\+\theta^^t}  && \scripttext{Definition of $\ell$} \\
+ &= \frac{\frac{\partial}{\partial \+\theta} p(\+x \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t}}{p(\+x \cond \+\theta^^t)} && \scripttext{Deriv of logarithm} \\
+  &= \frac{1}{p(\+x \cond \+\theta^^t)} \; \frac{\partial}{\partial \+\theta} \bigg[ \int p(\+x, \+z \cond \+\theta) \, \mu(d\+z) \bigg]\Bigr|_{\+\theta=\+\theta^^t} && \scripttext{Law of total probability} \\
+    &= \frac{1}{p(\+x \cond \+\theta^^t)} \;  \int \frac{\partial}{\partial \+\theta}  p(\+x, \+z \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t} \, \mu(d\+z) && \scripttext{Assume deriv. interchanges with int.} \labelit \label{eqn:intermediate_result_2_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients}
+\end{align*}
+%
+Together, \Eqref{eqn:intermediate_result_1_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients} and \Eqref{eqn:intermediate_result_2_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients} imply that
+%
+\begin{align*}
+\frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \frac{\partial }{\partial \+\theta} Q(\+\theta \cond \+\theta^^t) \Bigr|_{\+\theta = \+\theta^^t} \bigg( = \frac{1}{p(\+x \cond \+\theta^^t)} \;  \int \frac{\partial}{\partial \+\theta}  p(\+x, \+z \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t} \, \mu(d\+z) \bigg)
+\end{align*}
+as claimed.
+
+\end{proof}
+
+\begin{proposition}\propositiontitle{The gradient of the Q-function \cite{salakhutdinov2002relationship}.}
  The gradient of the Q-function of \Eqref{eqn:Q_function_for_EM} is given by 
  %
  \begin{align}
  \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta)}[\sufficientStatsFunction(\+x,\+z)]
  \label{eqn:gradient_of_Q_function_for_EM}
  \end{align}
- %
- which can be interpreted as the difference in the expected sufficient statistic vector when the observed data is clamped and unclamped.
 %
-\label{prop:gradient_of_the_Q_fucntion}
+\label{prop:gradient_of_the_Q_function}
  \end{proposition}
 
-\begin{remark}
-Using the notation of \citet{miller2011why} that we mentioned in Remark~\ref{rk:jeff_millers_notation_for_Q_function}, we could also write \Eqref{eqn:gradient_of_Q_function_for_EM} as 
+
+
+\begin{remark}\remarktitle{The derivative as the difference in expected sufficient statistics with clamped and unclamped data.}
+By Prop.~\ref{prop:gradient_of_the_Q_function},
+%
+\[ \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} \Bigr|_{\+\theta = \+\theta^^t} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] \] 
+%
+can be interpreted as the difference in the expected sufficient statistic vector when the observed data is clamped and unclamped.
+\end{remark}
+
+\begin{notation}
+The interpretation of the RHS of \Eqref{eqn:gradient_of_Q_function_for_EM} was given in Notation~\ref{notation:Q_function}.     Using the alternative notation of \citet{miller2011why} that we mentioned in Notation~\ref{notation:Q_function}, we could also write \Eqref{eqn:gradient_of_Q_function_for_EM} as 
  %
  \begin{align}
  \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta}[\sufficientStatsFunction(\+X,\+Z)]
  \label{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}
  \end{align}
  %
-\end{remark}
+\end{notation}
 
  
-\begin{proof} No proof was provided in \citet{salakhutdinov2002relationship}. We provide a proof here.
+\begin{proof}[Proof of Prop.~\ref{prop:gradient_of_the_Q_function}] No proof was provided in \citet{salakhutdinov2002relationship}. We provide a proof here.
 
 We have 
 \begin{align*}
@@ -671,7 +727,7 @@ Note that the update in \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expec
 \red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \theta, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
  
  
- \red{TODO (Notation): Fix notation here and throughout. For instance: (1) As usual, the boldfacing is giving me headaches.  For instance, if we use boldface $\+\theta$ to represent arbitrary params, then we should presumably  use boldface for the natural and mean parameterizations. (2) Be more careful about when we're referring to random variables, and when to realizations.}
+ \red{TODO (Notation): Fix notation here and throughout. For instance: (1) As usual, the boldfacing is giving me headaches.  For instance, if we use boldface $\+\theta$ to represent arbitrary params, then we should presumably  use boldface for the natural and mean parameterizations. (2) Be more consistently careful about when we're referring to random variables, and when to realizations.}
 
  
  \section{Bayesian inference for conjugate and semi-conjugate models} \label{sec:conjugate_exponential_family_models}
