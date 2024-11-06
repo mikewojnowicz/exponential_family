@@ -747,6 +747,7 @@ There exists a symmetric positive define matrix $\+P(\+\theta^^t)$ such that the
 \end{align}
 %
 where $\ell$ the the log marginal likelihood as in \Eqref{eqn:log_marginal_likelihood_definition}.
+\label{prop:relating_the_EM_step_to_the_ordinary_gradient}
 \end{proposition}
 
 
@@ -791,7 +792,7 @@ By defining notation for the LHS and RHS of \Eqref{eqn:relating_the_EM_step_to_t
 %
 \begin{align}
 \+v(\+\theta^^t)& \defeq \overline{T}^{-1} \overline{T}_z(\+\theta^^t) - \+\theta^^t && \scripttext{LHS} \\
-\+u(\+\theta^^t)& \defeq \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t) && \scripttext{RHS} ,
+\+u(\+\theta^^t)& \defeq \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t), && \scripttext{RHS}
 \end{align}
 %
 we can further simplify \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}.  In particular, we must show that there exists symmetric positive definite matrix $\+P$ such that
@@ -819,6 +820,34 @@ as desired.
 Now all that remains is to show that $\+P$ is symmetric positive definite.  It is clear from \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} that $\+P$ is symmetric.  We also see from \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} that $\+P$ is positive definite if $\+v^\top \+u >0$, and that is shown in \citet[Eqn.~26]{salakhutdinov2002relationship}.
 \end{proof}
 
+\begin{corollary}
+The EM step gives an ascent direction for the log marginal likelihood.
+\end{corollary}
+
+\begin{proof}
+The matrix $\+P$ in Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient} is symmetric positive definite, the EM step $\+\theta^^{t+1} - \+\theta^^t$ is an ascent direction by \citet[pp.31, Eqn. (3.2)]{nocedal2006numerical}.  Namely, using shorthand notation $\nabla \ell_t \defeq \frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t}$, we compute the directional derivative as
+%
+\[ \nabla \ell_t^\top (\+\theta^^{t+1} - \+\theta^^t) \stackrel{(Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient})}{=}  \nabla \ell_t^\top  \+P  \nabla \ell_t \stackrel{p.d.}{>} 0,\]
+and hence the EM step $\+\theta^^{t+1} - \+\theta^^t$ is an ascent direction.
+%
+\end{proof}
+
+
+\red{TODO: 
+	
+Consider WHY/HOW gradient chasing could ever be faster than EM. 
+
+\begin{itemize}
+
+\item Both are ascent directions.   How/when is one better than another?
+\item Is there some way to improve EM using ordinary gradient but without bringing in the 2nd order info?  I.e., is there some \textit{other} $\+P$ that would be better? If so, why?
+\item  \citet[abstract]{qin2000direct} mentions that (at least in the context of HMMs), EM is especially slow (relative to direct optimization) in the low STN regime.  Why would this be?
+\item  Discuss with Jeff: Given this analysis, aren't both EM and direct optimization just different first-order methods, in contrast with bike/car/racecar analogy?
+\item \citet{salakhutdinov2002relationship} says the EM step has "positive projection" onto the true gradient of the likelihood function.   How is this a projection? What are the implications for comparing EM and direct optimization?
+\end{itemize}
+
+Also, how does the $\+P$ matrix magically keep update in param bounds?
+}
 
 \subsubsection{The EM algorithm for i.i.d data}
 
