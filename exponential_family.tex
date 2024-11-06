@@ -17,6 +17,7 @@
 %%%
 
 % General exponential family
+\newcommand{\normalizerFunction}{Z}
 \newcommand{\logNormalizerFunction}{a}
 \newcommand{\sufficientStatsFunction}{s}
 \newcommand{\carrierDensity}{h}
@@ -26,7 +27,7 @@
 % EF for a single observation, from which we take iid draws.
 \newcommand{\logNormalizerFunctionForSingleSample}{\wt{a}}
 \newcommand{\sufficientStatsFunctionForSingleSample}{\wt{\sufficientStatsFunction}}
-\newcommand{\carrierDensityForSingleSample}{\wt{h}}
+\newcommand{\carrierDensityForSingleSample}{\wt{\carrierDensity}}
 
 
 %%% 
@@ -87,11 +88,11 @@ We are interested in  exponential families primarily because they makes inferenc
 
 \input{inputs/definition_exponential_family}
 
-\begin{remark}
+\begin{remark}\remarktitle{Alternate constructions for the exponential family.}
 Observe \cite{chua2019stats} that without loss of generality, we can 
 \begin{alphabate} 
-\item Set $\carrierDensity(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$.\footnote{That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $Z(\eta) := \ds\int  \exp \{ \eta^\top \sufficientStatsFunction(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$. }
-\item \label{rk:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} Set $\carrierDensity(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\eta) := \ds\int  \exp \{ \eta^\top \sufficientStatsFunction(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:convexity_properties_of_the_exponential_family}. 
+\item \label{item:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter.)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
 \item Change $\carrierDensity$ to $\wt{\carrierDensity}(x) = p_0(x)$, assuming that $0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\eta)$ to $\wt{\logNormalizerFunction}(\eta) = \logNormalizerFunction(\eta) - \logNormalizerFunction(0)$ results in an equivalent family. 
 \end{alphabate}
 \label{rk:alternate_constructions_for_the_exponential_family}
@@ -99,7 +100,7 @@ Observe \cite{chua2019stats} that without loss of generality, we can
 
 
 \begin{definition}
-The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $\naturalParamSpace:=\set{\eta : Z(\eta) < \infty}$.
+The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $\naturalParamSpace:=\set{\eta : \normalizerFunction(\eta) < \infty}$.
 \end{definition}
 
 \begin{definition}
@@ -462,22 +463,54 @@ What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look 
 Let 
 \begin{align*}
 p(x \cond \eta) &=  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log \carrierDensity(x)\}  \\
-\wt{p}(x \cond \wt{\eta}) &=  \exp \{ \wt{\eta}^\top \wt{\sufficientStatsFunction}(x) - \wt{\logNormalizerFunction}(\wt{\eta}) + \log \wt{h}(x)\}  \\	
+\wt{p}(x \cond \wt{\eta}) &=  \exp \{ \wt{\eta}^\top \wt{\sufficientStatsFunction}(x) - \wt{\logNormalizerFunction}(\wt{\eta}) + \log \wt{\carrierDensity}(x)\}  \\	
 \end{align*}
  
 Then the cross entropy from $\wt{p}$ to $p$ is given by
 \begin{align*}
 \H(p, \wt{p}) &= -\E_p [\log \wt{p}(x)]	\\
 &= -\ds\int p(x \cond \eta) \; \log \wt{p} (x \cond \wt{\eta}) \; dx \\
-&= -\ds\int p(x \cond \eta) \bigg[ \bigip{\wt{\sufficientStatsFunction}(x)}{\wt{\eta}} - \wt{a} (\wt{\eta}) + \log \wt{h}(x)  \bigg] dx \\
-&= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{\sufficientStatsFunction}(x)]}{\wt{\eta}} - \E_p[\log \wt{h}(x)]
+&= -\ds\int p(x \cond \eta) \bigg[ \bigip{\wt{\sufficientStatsFunction}(x)}{\wt{\eta}} - \wt{a} (\wt{\eta}) + \log \wt{\carrierDensity}(x)  \bigg] dx \\
+&= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{\sufficientStatsFunction}(x)]}{\wt{\eta}} - \E_p[\log \wt{\carrierDensity}(x)]
 \end{align*}
 
-So there are now two potentially problematic terms, although in the case where $\wt{h}(x) \equiv 1$, only one potentially problematic term remains.
+So there are now two potentially problematic terms, although in the case where $\wt{\carrierDensity}(x) \equiv 1$, only one potentially problematic term remains.
 \end{remark}
 
 
 For more information on information theoretical quantities in exponential families, including connection to Bregman divergences,  see \cite{nielsen2010entropies} or \cite{nielsen2009statistical}.
+
+
+\subsubsection{Convexity}
+
+\begin{proposition}\propositiontitle{Convexity properties of the exponential family \cite{jordan2010exponential}.}
+The natural parameter space $\naturalParamSpace$ is convex (as a set) and the log normalizer function $\logNormalizerFunction(\eta)$ is convex (as a function). If the family is minimal then $\logNormalizerFunction(\eta)$ is strictly convex.
+\label{prop:convexity_properties_of_the_exponential_family}
+\end{proposition}
+
+\begin{proof}
+The proofs of both convexity results follow from an application of H\"{o}lder’s inequality. Consider distinct parameters $\eta_1 \in \naturalParamSpace$ and $\eta_2 \in \naturalParamSpace$ and let $\eta = \lambda \eta_1 + (1-\lambda) \eta_2$, for $0 < \lambda < 1$.  
+
+Then
+%
+\begin{align*}
+\exp \logNormalizerFunction(\eta) & \stackrel{1}{=} \int e^{(\lambda \eta_1 + (1-\lambda) \eta_2)^\top \sufficientStatsFunction(x)}  \nu(dx)  \\
+& \stackrel{2}{\leq} \bigg( \explaintermbrace{assumed finite}{\int e^{\eta_1^\top \sufficientStatsFunction(x)}  \nu(dx)} \bigg)^\lambda \bigg(  \explaintermbrace{assumed finite}{\int e^{\eta_2^\top \sufficientStatsFunction(x)}  \nu(dx)} \bigg)^{1-\lambda} \\
+& < \infty  
+\end{align*}
+%
+Hence $\logNormalizerFunction(\eta)$ is finite, and so $\eta \in \naturalParamSpace$.   Moreover, taking logarithms of the above yields
+%
+\[\logNormalizerFunction(\eta) \leq \lambda \logNormalizerFunction(\eta_1) + (1-\alpha) \logNormalizerFunction(\eta_2), \]
+%
+and so $\logNormalizerFunction$ is a convex function.   For an argument that minimality implies strict convexity, see \citet{jordan2010exponential}.
+
+For details:
+\begin{itemize}
+	\item In (1) we used the definition of the log normalizer function for an exponential family. For simplicity, we also applied Item~\ref{item:ignorabiity_of_carrier_density} of Remark~\ref{rk:alternate_constructions_for_the_exponential_family}, changing the ambient measure to $\nu(dx) = h(x) \mu(dx)$, so that we can ignore the carrier density (the carrier density $\wt{\carrierDensity}$ with respect to $\nu$ satisfies $\wt{\carrierDensity}(x) \equiv 1$).
+	\item In (2), we applied H\"{o}lder’s inequality.  Recall that H\"{o}lder’s inequality is that $||fg||_1 \leq ||f||_p ||g||_q$ whenever $p,q \in [1,\infty]$ and $\frac{1}{p} + \frac{1}{q}=1$.  Recall also the definition of norm $||f||_p = (\int f^p \wrt{\mu})^{1/p}$ in some underlying measure space (with measure $\mu$).  To apply H\"{o}lder’s inequality, we take the functions to be $f(x) = e^{\lambda \eta_1^\top \sufficientStatsFunction(x)}$ and $g(x) = e^{(1-\lambda)\eta_2^\top \sufficientStatsFunction(x)}$, the underlying measure to be $\mu=\nu$, and the H\"{o}lder exponents to be $p=\frac{1}{\lambda}$ and $q=\frac{1}{1-\lambda}$. 
+\end{itemize} 
+\end{proof}
 
 
 \subsubsection{Identifiability}
@@ -497,7 +530,7 @@ If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential fam
  \end{align}
 
 
-\subsection{Mean parametrization} \label{sec:mean_parametrization}
+\subsubsection{Mean parametrization} \label{sec:mean_parametrization}
 
 In Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer} (see Sec.~\ref{sec:relationship_between_moments_and_normalizer}), we showed that the expected sufficient statistics $\meanParameter \defeq \E[\sufficientStatsFunction(X)]$ can be obtained as a function of the natural parameter $\eta$; namely
 %
