@@ -19,11 +19,12 @@
 % General exponential family
 \newcommand{\obs}{\+x}
 \newcommand{\obsScalar}{x}
+\newcommand{\obsCaps}{X}
 \newcommand{\normalizerFunction}{Z}
 \newcommand{\logNormalizerFunction}{a}
 \newcommand{\sufficientStatsFunction}{\+s}
 \newcommand{\carrierDensity}{h}
-\newcommand{\meanParameter}{\mu}
+\newcommand{\meanParam}{\+\mu}
 
 % Parameters
 \newcommand{\param}{\+\theta}
@@ -343,7 +344,7 @@ Some non-examples include
 \begin{proposition}\propositiontitle{The gradient of the log normalizer equals the expected sufficient statistics.}
 Let $X$ have an exponential family distribution with natural parameter $\naturalParam$, sufficient statistics function $\sufficientStatsFunction$, and log normalizer function $\logNormalizerFunction$.   Then  
 \begin{align*}
-\nabla \logNormalizerFunction(\naturalParam) = \E[\sufficientStatsFunction(X)] 
+\nabla \logNormalizerFunction(\naturalParam) = \E[\sufficientStatsFunction(\obsCaps)] 
 \labelit \label{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}	
 \end{align*}
 \label{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}
@@ -361,7 +362,7 @@ Thus
 \nabla \logNormalizerFunction (\naturalParam) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} } \\
 & \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}}  \\
 & = \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \; p(\obs \cond \naturalParam) \; d\nu_{\mathcal{X}}  \\
-&= \E[\sufficientStatsFunction(X)]
+&= \E_\naturalParam[\sufficientStatsFunction(X)]
 \end{align*}
 
 where in  Equation (1) we take the derivative of a logarithm (interchanging the gradient and the integral), and in Equation (2) we recognize the denominator as $\exp \logNormalizerFunction(\naturalParam)$.	
@@ -543,11 +544,11 @@ If $\obs=(\obs_1, ..., \obs_n)$ are n independent samples from the same exponent
 
 \subsubsection{Mean parametrization} \label{sec:mean_parametrization}
 
-In Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer} (see Sec.~\ref{sec:relationship_between_moments_and_normalizer}), we showed that the expected sufficient statistics $\meanParameter \defeq \E[\sufficientStatsFunction(X)]$ can be obtained as a function of the natural parameter $\naturalParam$; namely
+In Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer} (see Sec.~\ref{sec:relationship_between_moments_and_normalizer}), we showed that the expected sufficient statistics $\meanParam \defeq \E[\sufficientStatsFunction(X)]$ can be obtained as a function of the natural parameter $\naturalParam$; namely
 %
 \[ \nabla \logNormalizerFunction(\naturalParam) = \E[\sufficientStatsFunction(X)] \]
 %
-For minimal families (Def.~\ref{def:minimal_exponential_families}), it turns out that this relationship is invertible \cite[Sec.~8.4]{jordan2010exponential}. \red{TODO: Prove this.}  This implies that a distribution in the exponential family can be parameterized not only by $\naturalParam$ -- the canonical parametrization -- but also by $\meanParameter$ -- the \textit{mean parametrization}. \red{TODO: Prove that we can always reparametrize a non-minimal EF into a minimal EF.}  
+For minimal families (Def.~\ref{def:minimal_exponential_families}), it turns out that this relationship is invertible \cite[Sec.~8.4]{jordan2010exponential}. \red{TODO: Prove this.}  This implies that a distribution in the exponential family can be parameterized not only by $\naturalParam$ -- the canonical parametrization -- but also by $\meanParam$ -- the \textit{mean parametrization}. \red{TODO: Prove that we can always reparametrize a non-minimal EF into a minimal EF.}  
 
 
 
@@ -558,29 +559,55 @@ For minimal families (Def.~\ref{def:minimal_exponential_families}), it turns out
 
 
 The goal for maximum likelihood is to determine the parameter
-\begin{equation}
-\label{eqn:ml}
-\param_{ML} = \argmax_\param  \, \log p(\+x \cond \param) 
-\end{equation}
-
-Let us assume that $\+x=(\obs_1, ..., \obs_n)$ are i.i.d observations  from a fixed exponential family, so that the likelihood has form \eqref{eqn:exponential_family_iid}.  Let us compute the gradient with respect to the natural parameter $\naturalParam$ of $\ell(\naturalParam) := \log p(\obs \cond \naturalParam)$
-
-\[ \nabla_\naturalParam \ell(\naturalParam) = \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) - n \; \nabla_\naturalParam \logNormalizerFunction(\naturalParam) \]
-
-Setting the gradient to zero, we obtain
-
-\[ \nabla_\naturalParam \logNormalizerFunction(\naturalParam) = \df{1}{n}  \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) \]
-
-But $\nabla_\naturalParam \logNormalizerFunction(\naturalParam) = \E [\sufficientStatsFunction(X)]$  (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}).  Thus, we should set $\param_{ML}$ such that
 %
-
 \begin{align}
-\meanParameter(\param_{ML}) = \df{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) 	
- \label{eqn:maximum_likelihood_solution_for_exponential_families}
+\param_{ML} = \argmax_\param  \, \log p(\+x \cond \param) 
+\label{eqn:ml}
 \end{align}
 %
-where $\meanParameter:= \E[\sufficientStatsFunction(X)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the likelihood.  \redfootnote{TODO: This switching of parameterization should be handled more constructively.}
+To proceed, we follow the argument of \citet{dempster1977maximum} and \citet{jordan2010exponential}, among others.   We will assume a natural parametrization for simplicity, although the same procedure gives the maximum likelihood solution under any parametrization via the invariance property of the MLE.
 
+Suppose we observe $\obs$ from an exponential family distribution. Then 
+%
+\begin{align*}
+ p_\naturalParam(\obs) &= \carrierDensity(\obs) \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam)\}  \\
+\implies \log  p_\naturalParam(\obs) &= \log \carrierDensity(\obs) +  \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam) \\
+ \implies \nabla_\naturalParam \log  p_\naturalParam(\obs) &= \sufficientStatsFunction(\obs) - \nabla_\naturalParam \logNormalizerFunction(\naturalParam) 
+ \\ &= \sufficientStatsFunction(\obs) - \E_\naturalParam[\sufficientStatsFunction(\obsCaps)] && \scripttext{(Prop.~ \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer})}
+ \end{align*}
+%
+Hence, the log likelihood has a critical point at natural parameter 
+%
+\begin{align}
+\widehat{\naturalParam} : \quad   \E_{\widehat{\naturalParam}}[\sufficientStatsFunction(\obsCaps)] = \sufficientStatsFunction(\obs)
+\label{eqn:condition_for_critical_point_of_EF_likelihood}
+\end{align}
+% 
+Using the mean parameterization $\meanParam \defeq \E[\sufficientStatsFunction(X)]$ (see Sec.~\ref{sec:mean_parametrization}) of the likelihood, \redfootnote{TODO: This switching of parameterization should be handled more constructively.} the critical point condition can be expressed as 
+%
+\begin{align}\widehat{\meanParam}(\naturalParam) = \sufficientStatsFunction(\obs)
+\label{eqn:condition_for_critical_point_of_EF_likelihood__under_mean_parametrization}
+\end{align}
+% 
+that is, we simply set the mean parameter $\widehat{\meanParam}(\naturalParam)$ to equal the sufficient statistics.
+
+Since the log-likelihood of a (regular) exponential family is convex \citet[pp.~4]{dempster1977maximum} (\red{TODO: Add justification in my convexity section that the full log likelihood is convex (currently I just have that the log normalizer is convex; probably I just need to apply that convexity is closed under certain arithmetic operations); be sure to pay close attention to where the regularity condition is applied}), solving \Eqref{eqn:condition_for_critical_point_of_EF_likelihood} will find the maximum likelihood value of the density $p_\naturalParam$ unless the maximizing value $\naturalParam$ lies on the boundary of the parameter space $\naturalParamSpace$.
+
+
+\subsubsection{...for i.i.d observations}
+
+Let us assume that $\+x=(\obs_1, ..., \obs_n)$ are i.i.d observations  from a fixed exponential family, so that the likelihood has form \eqref{eqn:exponential_family_iid}. In this case, the gradient with respect to the natural parameter $\naturalParam$ can be written as
+%
+\[ \nabla_\naturalParam \log p(\obs \cond \naturalParam) = \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) - n \; \nabla_\naturalParam \logNormalizerFunction(\naturalParam) \]
+%
+Hence, the log likelihood has a critical point at  
+%
+\begin{align*}
+\widehat{\naturalParam} : \quad   \E_{\widehat{\naturalParam}}[\sufficientStatsFunction(\obsCaps)] &= \frac{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) && \scripttext{(natural parameterization)} \\
+\widehat{\meanParam} : \quad \widehat{\meanParam}&= \frac{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) && \scripttext{(mean parameterization)} \\
+\labelit \label{eqn:condition_for_critical_point_of_EF_likelihood_under_iid_observations}
+\end{align*}
+% 
 \subsection{Latent variable models}
 
 Some models have latent variables associated with each observation.   Let us  assume that $(\+\obs, \+z)=((\obs_1,\+z_1), ..., (\obs_n, \+z_n))$ where $\+x$ is observed data and $\+z$ is unobserved data.   Then we say that the \textit{complete data likelihood} is an exponential family if we can write
@@ -667,7 +694,7 @@ This is precisely the M-step of the EM algorithm.
 
 \subsubsection{Gradient of the Q-function}
 
- Here, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. Using that, we can provide an interesting representation of the EM step \Eqref{eqn:EM_algorithm} in Prop.~\ref{prop:EM_update}. 
+ Here, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. Using that, we can provide an interesting representation of the EM step \Eqref{eqn:EM_algorithm} in Prop.~\ref{prop:interesting_representation_of_EM_update_to_params}. 
 
 
 \begin{proposition}\propositiontitle{The gradient of the Q-function \cite{salakhutdinov2002relationship}.}
@@ -737,16 +764,16 @@ The interpretation of the RHS of \Eqref{eqn:gradient_of_Q_function_for_EM} was g
  %
 \end{notation}
 
-\begin{proposition}\propositiontitle{EM update to parameters.}
+\begin{proposition}\propositiontitle{An interesting representation of the EM update to parameters.}
 The solution to the EM objective in \Eqref{eqn:M_step_for_EM} for obtaining the next parameter value $\param^^{t+1}$ given the previous parameter value $\param^^{t}$ is given by finding the $\param^^{t+1}$ that solves
 %
 \begin{align}
 \E_{\param^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
-\label{eqn:EM_update_to_parameters}	
+\label{eqn:EM_update_to_parameters__interesting_representation}	
 \end{align}
 %
 That is, we must find the parameter value which makes the expected sufficient statistic vector with  unclamped data equal to that with clamped data.
-\label{prop:EM_update}
+\label{prop:interesting_representation_of_EM_update_to_params}
 \end{proposition}
 
 \begin{proof}
@@ -820,11 +847,26 @@ We have
 \label{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}
 \end{align}
 %
+\label{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}
 \end{corollary}
 
 \begin{proof}
 This follows immediately from the gradient of the Q-function (see \Eqref{eqn:the_gradient_of_the_Q_function_evaluated_at_the_current_parameter_and_using_jeffs_notation}) along with the fact that the Q-function and the log marginal likelihood have equal gradients when evaluated at the current parameter value (Prop.~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}).	
 \end{proof}
+
+\begin{remark}\remarktitle{Intuition on convergence of EM algorithm to a local maximum.} Following \citet[pp.~5]{dempster1977maximum}, suppose that the EM algorithm produces a convergent sequence of parameters $\param^^t \to \param^*$ for an exponential family latent variable model (see \Eqref{eqn:exponential_family_complete_data_likelihood}).  Then by Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} we have
+	%
+\begin{align}
+\E_{\param^*}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^*}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
+\label{eqn:apply_EM_update_at_convergence}
+\end{align}
+%
+Hence, by Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}, we have 
+%
+\[ \frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^*} \stackrel{(Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model})}{=} \; \E_{\param^*}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - \E_{\param^*}[\sufficientStatsFunction(\+X,\+Z)]   \stackrel{\Eqref{eqn:apply_EM_update_at_convergence}}{=} \; \+0 \] 
+%
+So we have shown that, at least for exponential family models, if the EM algorithm converges, then the resulting parameter value $\param^*$ is a critical point of the marginal likelihood.
+\end{remark}
 
 
 \begin{proposition}\propositiontitle{Relating the EM step to the ordinary gradient \cite{salakhutdinov2002relationship}.}
@@ -857,7 +899,7 @@ Using these definitions, we can write the gradient of the log marginal likelihoo
 \label{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model__in_compact_notation}
 \end{align}
 %
-Using these same definitions, the EM update of \Eqref{eqn:EM_update_to_parameters} is given by $\param^^{t+1}$ which solves
+Using these same definitions, the EM update of \Eqref{eqn:EM_update_to_parameters__interesting_representation} is given by $\param^^{t+1}$ which solves
 %
 \[  \overline{T}(\param^^{t+1}) = \overline{T}_z(\param^^t)  \]
 %
@@ -1005,18 +1047,18 @@ for some functions $ \naturalParam, \sufficientStatsFunctionForSingleSample, \ca
 Following the logic of Section \ref{sec:ml_with_ef}, we expect that in the i.i.d case, we should select $\param^{(t+1)}$ such that
 %
 \begin{align}
-\meanParameter(\param^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \param^{(t)})} \sufficientStatsFunction(\obs_i, \+z_i) 
+\meanParam(\param^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \param^{(t)})} \sufficientStatsFunction(\obs_i, \+z_i) 
 \label{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics}	
 \end{align}
 %
-where $\meanParameter := \E[\sufficientStatsFunction(\obs_i,\+z_i)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the \textit{unit complete data likelihood}.  This is true.  \red{TODO: Justify.} \red{TODO: I believe that I read \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} in some paper -- perhaps notes by Jordan.  Find the source so that I can cite it and perhaps provide additional context.} 
+where $\meanParam := \E[\sufficientStatsFunction(\obs_i,\+z_i)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the \textit{unit complete data likelihood}.  This is true.  \red{TODO: Justify.} \red{TODO: I believe that I read \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} in some paper -- perhaps notes by Jordan.  Find the source so that I can cite it and perhaps provide additional context.} 
 
 \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics}	 reveals why an EM iteration is often described and/or implemented as performing maximum likelihood with the expected sufficient statistics.
 
 \red{TODO: But is EM \textit{always} equivalent to performing ML with ESS's? Or is this ONLY true if I'm working within the exponential family?  I need to read up some more on EM theory.}
 
 
-Note that the update in \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} also corroborates with the more general update (not assuming i.i.d models) given in \Eqref{eqn:EM_update_to_parameters}. \red{TODO: Prove directly that the latter implies the former in the i.i.d case.}
+Note that the update in \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} also corroborates with the more general update (not assuming i.i.d models) given in \Eqref{eqn:EM_update_to_parameters__interesting_representation}. \red{TODO: Prove directly that the latter implies the former in the i.i.d case.}
 
 \red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \param, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
  

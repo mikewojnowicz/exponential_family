@@ -1,10 +1,12 @@
 \begin{definition}
 We can define an \textit{exponential family} as a set of probability distributions, indexed by natural parameter $\naturalParam \in \naturalParamSpace$,%\redfootnote{TODO: Add restriction on parameter space so that the density is normalizable}  
  whose probability density functions with respect to measure $\mu$ on $\X$ have the following form
+%
 \begin{align}
  p_\naturalParam(\obs) = \carrierDensity(\obs) \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam)\} 
 \label{eqn:exponential_family_natural}
  \end{align}
+%
 where $\sufficientStatsFunction  : \X \to \R^p$ is the \textit{sufficient statistics function}, $\carrierDensity : \X \to \R$ is the \textit{carrier density}, $\naturalParam \in \naturalParamSpace \subset \R^p$ is the \textit{natural parameter},  and $\logNormalizerFunction : \naturalParamSpace \to \R$ is a strictly convex and $C^{\infty}$ differentiable real-valued function known as the \textit{log normalizer} or \textit{log partition function};  that is $\logNormalizerFunction(\naturalParam) = \log \normalizerFunction(\naturalParam)$ where 
 \begin{equation}
 \label{eqn:partition_function}
