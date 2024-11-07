@@ -583,43 +583,73 @@ for some functions $\carrierDensity, \eta, \sufficientStatsFunction, \logNormali
 
 \subsection{Expectation Maximization}
 
-When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references. 
+When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references.  \red{TODO: Rewrite to clarify that EM applies more broadly than just to EF models.}
 
-\subsubsection{The EM step}
-
-The expectation maximization procedure is to update parameters $\+\theta$ by iteratively solving
+\begin{subequations}
 %
-\begin{equation}
- \+\theta^{(t+1)} =  \text{argmax}_{\+\theta} \; \E_{p(\+z \cond \+x , \+\theta^{(t)})} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
-\label{eqn:em_objective_on_parameters}
- \end{equation}
- %
-In particular, at the $(t+1)$-st iterate we seek to find $\+\theta$ which optimizes the so-called \textit{Q-function}
-% 
+The \textbf{Expectation Maximization (EM)} algorithm is to recursively update parameters $\+\theta$ by solving at iteration $t=0,1,\hdots$
+%
 \begin{align}
+ \+\theta^{(t+1)} &=  \text{argmax}_{\+\theta} \; Q(\+\theta \cond \+\theta^^t) \label{eqn:M_step_for_EM}
+\intertext{where}
  Q(\+\theta \cond \+\theta^^t) &\defeq  \E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
- \label{eqn:Q_function_for_EM}
+\label{eqn:E_step_for_EM}
 \end{align}
-%
-
-\red{TODO: Justify why we are optimizing THIS particular function; one justification comes from a special case of CAVI, but it would be interesting to see the justification that does not use that.}   \blue{DISCUSS: Does Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value} give a/the justification?} 
+\label{eqn:EM_algorithm}
+\end{subequations}
 
 \begin{notation}\remarktitle{Notation for expected values.}
-In the Q-function of \Eqref{eqn:Q_function_for_EM} above, our notation means
+In the Q-function of \Eqref{eqn:E_step_for_EM}
+above, our notation means
 %
 \[\E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \defeq \int \ln p(\+x, \+z \cond \+\theta) \, p(\+z \cond \+x , \+\theta^^t) \, \mu(d\+z).\]
 %
 This $Q$ function is perhaps more clearly denoted by \citet{miller2011why} as 
-\[ \E_{\+\theta^^t} \bigg[ \ln p_{\+\theta}(\+X, \+Z) \cond \+X=\+x \bigg].\]
+\[  Q(\+\theta \cond \+\theta^^t)  = \E_{\+\theta^^t} \bigg[ \ln p_{\+\theta}(\+X, \+Z) \cond \+X=\+x \bigg].\]
 \label{notation:Q_function}
 \end{notation}
 
 
-We will provide a solution to the EM objective of \Eqref{eqn:em_objective_on_parameters} in Prop.~\ref{prop:EM_update}. First, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. %Before that, we provide some justification for optimizing the Q-function in Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}.
+In the EM algorithm of 
+\Eqref{eqn:EM_algorithm}, we refer to \Eqref{eqn:E_step_for_EM} as the \textit{E-step} and \Eqref{eqn:M_step_for_EM} as the \textit{M-step}.
+
+\textbf{What justifies this particular algorithm?}  One way to justify EM is as a special case of Coordinate Ascent Variational Inference (CAVI) \cite{wojnowiczXXXXvariational}. In particular, suppose we have a frequentist latent variable model (with observed data $\+x$, random latent variables $\+z$, and fixed but unknown parameters $\+\theta$) for which we can compute the exact posterior.  In this setting, an unrestricted variational family is formed by $q=q_\+z q_\+\theta$  where $q_\+\theta = \delta_\+\theta$.  Now at the $t$-th iteration of coordinate ascent, we do:
+
+\begin{itemize}
+\item \textit{Update to $q_\+z$.} We have:
+%
+\begin{align}
+\VLBO(q_\+z, q_\+\theta^^t) = \log p(\+x \cond \+\theta^^t) \quad \text{ if } \quad 	q_\+z=p(\+z \cond \+x, \+\theta^^t)
+\end{align}
+%
+That is, by setting $q_\+z$ to the exact posterior, the variational lower bound ($\VLBO$) becomes tight, exactly equaling the log marginal likelihood. Hence, it is the optimal update when there are no restrictions on $\mathcal{Q}_z \ni q_\+z$.  This is precisely the E-step of the EM algorithm.
+
+\item \textit{Update to $q_\+\theta$.}	 To update $q_\+\theta$, we note that the variational lower bound has the form
+%
+\begin{align}
+\VLBO(q_\+\theta, q_\+z^^t) = \explaintermbrace{energy}{Q(\+\theta \cond \+\theta^^t)} + \explaintermbrace{entropy}{H(\+\theta^^t)}
+\end{align}
+%
+And so the optimal coordinate ascent step for $q_\+\theta$ amounts to maximizing the Q-function
+%
+\begin{align}
+\max_{q_\+\theta} \VLBO(q_\+\theta, q_\+z^^t) = \max_{\+\theta}  Q(\+\theta \cond \+\theta^^t). 
+\end{align}
+%
+This is precisely the M-step of the EM algorithm.
+\end{itemize}
+%
+
+\red{TODO: Justify the EM algorithm WITHOUT going through CAVI.  How did the original EM paper do it? How did Neal's "perspective" paper do it?}   \blue{DISCUSS: Does Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value} give a/the justification?} 
+
+
+
+We will provide a solution to the EM objective of \Eqref{eqn:M_step_for_EM} in Prop.~\ref{prop:EM_update}. First, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. %Before that, we provide some justification for optimizing the Q-function in Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}.
 
 
 \begin{proposition}\propositiontitle{The gradient of the Q-function \cite{salakhutdinov2002relationship}.}
- The gradient of the Q-function of \Eqref{eqn:Q_function_for_EM} is given by 
+ The gradient of the Q-function of \Eqref{eqn:E_step_for_EM}
+is given by 
  %
  \begin{align}
  \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta)}[\sufficientStatsFunction(\+x,\+z)]
@@ -649,7 +679,8 @@ _{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)]
 \end{align*}
 %
 Here, in (1), we used the definition in \Eqref{eqn:exponential_family_complete_data_likelihood} of exponential family for latent variable models, as well as the chain rule for derivatives.   Note that here $\E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \+\theta) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:Q_function_for_EM} of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \+\theta^^t)$, which integrates to 1.  In (6), we simply applied notation.  
+_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \+\theta) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:E_step_for_EM}
+of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \+\theta^^t)$, which integrates to 1.  In (6), we simply applied notation.  
 \end{proof}
 
 
@@ -684,7 +715,7 @@ The interpretation of the RHS of \Eqref{eqn:gradient_of_Q_function_for_EM} was g
 \end{notation}
 
 \begin{proposition}\propositiontitle{EM update to parameters.}
-The solution to the EM objective in \Eqref{eqn:em_objective_on_parameters} for obtaining the next parameter value $\+\theta^^{t+1}$ given the previous parameter value $\+\theta^^{t}$ is given by finding the $\+\theta^^{t+1}$ that solves
+The solution to the EM objective in \Eqref{eqn:M_step_for_EM} for obtaining the next parameter value $\+\theta^^{t+1}$ given the previous parameter value $\+\theta^^{t}$ is given by finding the $\+\theta^^{t+1}$ that solves
 %
 \begin{align}
 \E_{\+\theta^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
