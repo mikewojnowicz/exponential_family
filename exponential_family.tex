@@ -21,10 +21,13 @@
 \newcommand{\logNormalizerFunction}{a}
 \newcommand{\sufficientStatsFunction}{s}
 \newcommand{\carrierDensity}{h}
-\newcommand{\naturalParamSpace}{H}
 \newcommand{\meanParameter}{\mu}
-\newcommand{\param}{\+\theta}
-\newcommand{\paramSpace}{\Theta}
+
+% Parameters
+\newcommand{\param}{\theta}
+\newcommand{\paramSpace}{\param}
+\newcommand{\naturalParam}{\eta}
+\newcommand{\naturalParamSpace}{H}
 
 %Relating EM step and ordinary gradient
 \newcommand{\transformationMatrixGradientToEMStep}{\+P}
@@ -65,7 +68,7 @@
 
 %%% EMISSIONS PARAMETER
 % (Used in posterior predictives section, since this was copied from the changepoint_notes repo)
-\newcommand{\emissionsParam}{\+\theta}
+\newcommand{\emissionsParam}{\param}
 
 
 
@@ -97,28 +100,28 @@ We are interested in  exponential families primarily because they makes inferenc
 \begin{remark}\remarktitle{Alternate constructions for the exponential family.}
 Observe \cite{chua2019stats} that without loss of generality, we can 
 \begin{alphabate} 
-\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} Set $\carrierDensity(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\eta(x) = \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\eta) := \ds\int  \exp \{ \eta^\top \sufficientStatsFunction(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:convexity_properties_of_the_exponential_family}. 
-\item \label{item:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter.)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(x)$. Then defining $\wt{\eta} = M^{-1} \eta$ results in an equivalent family.  As a special case, $\eta$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
-\item Change $\carrierDensity$ to $\wt{\carrierDensity}(x) = p_0(x)$, assuming that $0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\eta)$ to $\wt{\logNormalizerFunction}(\eta) = \logNormalizerFunction(\eta) - \logNormalizerFunction(0)$ results in an equivalent family. 
+\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} Set $\carrierDensity(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\naturalParam(x) = \exp \{ \naturalParam^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\naturalParam)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\naturalParam) := \ds\int  \exp \{ \naturalParam^\top \sufficientStatsFunction(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:convexity_properties_of_the_exponential_family}. 
+\item \label{item:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter.)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(x)$. Then defining $\wt{\naturalParam} = M^{-1} \naturalParam$ results in an equivalent family.  As a special case, $\naturalParam$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\item Change $\carrierDensity$ to $\wt{\carrierDensity}(x) = p_0(x)$, assuming that $0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\naturalParam)$ to $\wt{\logNormalizerFunction}(\naturalParam) = \logNormalizerFunction(\naturalParam) - \logNormalizerFunction(0)$ results in an equivalent family. 
 \end{alphabate}
 \label{rk:alternate_constructions_for_the_exponential_family}
 \end{remark}
 
 
 \begin{definition}
-The \textit{natural parameter space} is the set of parameters $\eta$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $\naturalParamSpace:=\set{\eta : \normalizerFunction(\eta) < \infty}$.
+The \textit{natural parameter space} is the set of parameters $\naturalParam$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $\naturalParamSpace:=\set{\naturalParam : \normalizerFunction(\naturalParam) < \infty}$.
 \end{definition}
 
 \begin{definition}
 An exponential family is said to be \textit{regular} if the natural parameter space is an open set.
 \end{definition}
 
-One can \textit{reparameterize} a regular exponential family with some other coordinates $\theta$.  If one writes the natural parameter as a continuous function $\eta(\theta)$, then the density \eqref{eqn:exponential_family_natural} becomes
+One can \textit{reparameterize} a regular exponential family with some other coordinates $\param$.  If one writes the natural parameter as a continuous function $\naturalParam(\param)$, then the density \eqref{eqn:exponential_family_natural} becomes
 \begin{align}
 \label{eqn:exponential_family}
- p_\theta(x) = \carrierDensity(x) \exp \{ \eta(\theta)^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta(\theta))\} 
+ p_\param(x) = \carrierDensity(x) \exp \{ \naturalParam(\param)^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\naturalParam(\param))\} 
  \end{align}
- The reparameterized family is regular as well, since $\Theta := \eta^{-1}(\naturalParamSpace)$ is open. 
+ The reparameterized family is regular as well, since $\param := \naturalParam^{-1}(\naturalParamSpace)$ is open. 
 
 
 \begin{remark}
@@ -127,7 +130,7 @@ Exponential family members can have intractable normalization constants.  Consid
 
 
 \begin{definition}
-An exponential family is said to be \textbf{minimal} if the components of the sufficient statistics $\sufficientStatsFunction(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\eta(\theta) \in \R^n \textbackslash \set{0}$ such that $\eta(\theta)^\top \sufficientStatsFunction(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
+An exponential family is said to be \textbf{minimal} if the components of the sufficient statistics $\sufficientStatsFunction(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\naturalParam(\param) \in \R^n \textbackslash \set{0}$ such that $\naturalParam(\param)^\top \sufficientStatsFunction(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
 \label{def:minimal_exponential_families}
 \end{definition}
 
@@ -145,7 +148,7 @@ Here we give examples of exponential families, showing how to derive the exponen
 \begin{example}{(Categorical Distribution)}
 \label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $x \in \set{0,1}^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
 \[p(x \cond \pi) = \prod_{k=1}^K \pi_k^{x_k} = \exp \{ \sum_{k=1}^K x_k \log \pi_k\} \]
- with natural parameter, $\eta(\pi) = \log \pi$, the sufficient statistics $\sufficientStatsFunction(x) = x$, carrier density $\carrierDensity(x)=1$ and log normalizer $0$.
+ with natural parameter, $\naturalParam(\pi) = \log \pi$, the sufficient statistics $\sufficientStatsFunction(x) = x$, carrier density $\carrierDensity(x)=1$ and log normalizer $0$.
 \end{example}
 
 \subsubsection{Dirichlet distribution}
@@ -155,7 +158,7 @@ Here we give examples of exponential families, showing how to derive the exponen
 p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
 &= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^\top$, sufficient statistics $\sufficientStatsFunction(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^\top$, carrier density $\carrierDensity(\pi)=1$, and log normalizer $\logNormalizerFunction(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
+with natural parameter $\naturalParam(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^\top$, sufficient statistics $\sufficientStatsFunction(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^\top$, carrier density $\carrierDensity(\pi)=1$, and log normalizer $\logNormalizerFunction(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
   
 \end{example} 
 
@@ -165,7 +168,7 @@ For an example of how the natural parametrization can help provide insight into 
 
 In those notes,  we see
 \begin{align} 
-\E [ \log \pi_k] &= \E [\sufficientStatsFunction_k(p)] \stackrel{1}{=} \df{\partial}{\partial \eta_k} a(\eta) \nonumber \\
+\E [ \log \pi_k] &= \E [\sufficientStatsFunction_k(p)] \stackrel{1}{=} \df{\partial}{\partial \naturalParam_k} a(\naturalParam) \nonumber \\
 &=\Psi(\alpha_k) -  \Psi(\sum_k  \alpha_k) \label{eqn:expectation_of_log_probability} 
 \end{align}
 where (1) uses a well-known exponential family property (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}) and where $\Psi(\cdot)$ is the first derivative of the $\log \Gamma$ function.   It is known as the \textit{digamma function}.  $ $
@@ -191,12 +194,12 @@ If we write
 f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\half \df{(x-\mu)^2}{\sigma^2}}  \indicate{a \leq x \leq b} \\
 & = K \df{1}{\sqrt{2 \pi}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
 \end{align*} 
-where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\eta = (\frac{1}{\sigma^2},  \frac{\mu}{\sigma^2})\top$,  sufficient statistics function $\sufficientStatsFunction(x) = (-\half x^2,  x)^\top$,  carrier density $\carrierDensity(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\theta) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
+where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\naturalParam = (\frac{1}{\sigma^2},  \frac{\mu}{\sigma^2})\top$,  sufficient statistics function $\sufficientStatsFunction(x) = (-\half x^2,  x)^\top$,  carrier density $\carrierDensity(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\param) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
  
 \end{example}
 
 \begin{remark}
-The truncated normal distribution differs from the normal distribution only in its carrier density $\carrierDensity(x)$ and therefore log normalizer $\logNormalizerFunction(\theta)$.  The natural parameter $\eta$ and sufficient statistics function $\sufficientStatsFunction(x)$ are identical.   Thus,  knowing $\eta$ and $\sufficientStatsFunction(x)$ is not sufficient to determine the form of the probability distribution.
+The truncated normal distribution differs from the normal distribution only in its carrier density $\carrierDensity(x)$ and therefore log normalizer $\logNormalizerFunction(\param)$.  The natural parameter $\naturalParam$ and sufficient statistics function $\sufficientStatsFunction(x)$ are identical.   Thus,  knowing $\naturalParam$ and $\sufficientStatsFunction(x)$ is not sufficient to determine the form of the probability distribution.
 \label{rk:truncated_normal_differs_from_normal_only_in_terms_of_carrier_density}
 \end{remark}
 
@@ -209,7 +212,7 @@ The truncated normal distribution differs from the normal distribution only in i
 p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1} \exp \bigg(- \df{\beta}{x} \bigg) \\
 &= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
 \end{align*}
-with natural parameter $\eta(\alpha) = [-\alpha-1,  -\beta]\top$, sufficient statistics $\sufficientStatsFunction(x) = [\log x ,  \frac{1}{x}]^\top$, carrier density $\carrierDensity(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
+with natural parameter $\naturalParam(\alpha) = [-\alpha-1,  -\beta]\top$, sufficient statistics $\sufficientStatsFunction(x) = [\log x ,  \frac{1}{x}]^\top$, carrier density $\carrierDensity(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
   
 \end{example} 
 
@@ -223,7 +226,7 @@ We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribu
 & \stackrel{1}{=} (2\pi)^{-d/2} \exp \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^\top \vectorize (\+x\+x^\top) $}{\+x^\top \+\Sigma^{-1} \+x} + \+x^\top \+\Sigma^{-1} \+\mu -\half \+\mu^\top \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
 	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
-with natural parameter $\eta(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $\sufficientStatsFunction(\+x) = \big(\vectorize (\+x \+x^\top), \+x \big)$, carrier density $\carrierDensity(x) = (2\pi)^{-d/2}$ and log normalizing $\logNormalizerFunction(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
+with natural parameter $\naturalParam(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $\sufficientStatsFunction(\+x) = \big(\vectorize (\+x \+x^\top), \+x \big)$, carrier density $\carrierDensity(x) = (2\pi)^{-d/2}$ and log normalizing $\logNormalizerFunction(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
 \end{example}
 
 \begin{remark}
@@ -256,7 +259,7 @@ p (\+X  \cond \+\Psi,  \nu) & \stackrel{1}{=} C(\+\Psi,  \nu) \; | \+X | ^{-(\nu
 Equation (1) gives the standard representation of the $\InverseWishart(\+\Psi,  \nu)$ density,  where   $C(\+\Psi,  \nu)$ is the normalizing constant,  $| \cdot |$ refers to the determinant,  $\+X,  \+\Psi \in \R^{p \times p}$ are positive definite matrices,  and $\nu > p-1$.    Equation (2) uses the fact that the trace of a matrix product behaves like a dot product \eqref{eqn:trace_of_matrix_product}.      
 
 
-As we see from the last line,  in the exponential family representation,  we have natural parameter $\eta = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^\top$, sufficient statistics $\sufficientStatsFunction(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^\top$, carrier density $\carrierDensity(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
+As we see from the last line,  in the exponential family representation,  we have natural parameter $\naturalParam = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^\top$, sufficient statistics $\sufficientStatsFunction(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^\top$, carrier density $\carrierDensity(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
   
 \end{example} 
 
@@ -286,7 +289,7 @@ A  hidden Markov model (HMM) is a tool for representing probability distribution
 The the \textit{complete data likelihood} for the HMM is given by
 
 \begin{align}
- p(\state_{1:T}, y_{1:T} \cond \theta) &=  p(\state_1 \cond \theta)  p(y_1 \cond \state_1, \theta) \ds\prod_{t=2}^T p(\state_t \cond \state_{t-1}, \theta) p(y_t \cond \state_t, \theta) \nonumber \\
+ p(\state_{1:T}, y_{1:T} \cond \param) &=  p(\state_1 \cond \param)  p(y_1 \cond \state_1, \param) \ds\prod_{t=2}^T p(\state_t \cond \state_{t-1}, \param) p(y_t \cond \state_t, \param) \nonumber \\
  &=  p(\state_1 \cond \pi) p(y_1 \cond \state_1, \phi) \ds\prod_{t=2}^T p(\state_t \cond \state_{t-1}, A) p(y_t \cond \state_t, \phi)   \nonumber \\
  &= \pi_{\state_1}  \; \ds\prod_{t=2}^T A_{\state_{t-1}, \state_t} \ds\prod_{t=1}^T p(y_1 \cond \phi_{\state_t}) \label{eqn:hmm_cdl_compact}
  \end{align}
@@ -299,13 +302,13 @@ where we have defined
 \item $\pi = \{ \pi_k \}, \pi_k = P(\state_1 = k)$: initial state distribution
 \item $A=\{A_{kk'}\}, A_{kk'} = P(\state_t= k' \cond \state_{t-1}=k):$ state transition probability matrix 
 \item $\phi = (\phi_k)_{k=1}^K$ a set of parameters, each governing an output distribution (also called emissions distribution) associated to each hidden state; that is, $ P(y_t \cond \state_t=k) = P(y_t \cond \phi_k)$. 
-\item $\theta = (\pi, A, \phi)$: model parameters
+\item $\param = (\pi, A, \phi)$: model parameters
 \end{itemize}
 
 
 We can write the complete data likelihood \eqref{eqn:hmm_cdl_compact} as
 \begin{align}
-p(\state_{1:T}, y_{1:T} \cond \theta) &=  \exp\bigg \{ \log p(\state_1 \cond \pi) + \ds\sum_{t=2}^T \log p(\state_t \cond \state_{t-1}, A) +  \ds\sum_{t=1}^T \log p(y_t \cond \state_t, \phi) \bigg\}  \nonumber \\
+p(\state_{1:T}, y_{1:T} \cond \param) &=  \exp\bigg \{ \log p(\state_1 \cond \pi) + \ds\sum_{t=2}^T \log p(\state_t \cond \state_{t-1}, A) +  \ds\sum_{t=1}^T \log p(y_t \cond \state_t, \phi) \bigg\}  \nonumber \\
 &= \exp \bigg \{ \log \pi_{\state_1}  + \ds\sum_{t=2}^T \log A_{\state_{t-1}, \state_t} + \ds\sum_{t=1}^T \log p(y_1 \cond \phi_{\state_t}) \bigg\} \nonumber \\
 &=  \exp\bigg \{  \ds\sum_{k=1}^K \state_1^k \log \pi_k + \ds\sum_{t=2}^T \ds\sum_{k, k'=1}^K \state_{t-1}^k \state_t^{k'} \log A_{kk'} + \ds\sum_{t=1}^T \ds\sum_{k=1}^K \state_t^k \log p(y_t \cond \phi_k)  \bigg\} \label{eqn:hmm_ef_form}
 \end{align}
@@ -336,9 +339,9 @@ Some non-examples include
 \subsubsection{Relationship between moments and the normalizer function} \label{sec:relationship_between_moments_and_normalizer}
 
 \begin{proposition}\propositiontitle{The gradient of the log normalizer equals the expected sufficient statistics.}
-Let $X$ have an exponential family distribution with natural parameter $\eta$, sufficient statistics function $\sufficientStatsFunction$, and log normalizer function $\logNormalizerFunction$.   Then  
+Let $X$ have an exponential family distribution with natural parameter $\naturalParam$, sufficient statistics function $\sufficientStatsFunction$, and log normalizer function $\logNormalizerFunction$.   Then  
 \begin{align*}
-\nabla \logNormalizerFunction(\eta) = \E[\sufficientStatsFunction(X)] 
+\nabla \logNormalizerFunction(\naturalParam) = \E[\sufficientStatsFunction(X)] 
 \labelit \label{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}	
 \end{align*}
 \label{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}
@@ -347,19 +350,19 @@ Let $X$ have an exponential family distribution with natural parameter $\eta$, s
 \begin{proof}
 
 Since $X$ is in the exponential family, its density can be written in the form
- \[ p(x \cond \eta) =  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log \carrierDensity(x)\} \] 
+ \[ p(x \cond \naturalParam) =  \exp \{ \naturalParam^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(x)\} \] 
 where 
-\[\logNormalizerFunction(\eta) = \log \int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \eta> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} \] 
+\[\logNormalizerFunction(\naturalParam) = \log \int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \naturalParam> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} \] 
 
 Thus
 \begin{align*}
-\nabla \logNormalizerFunction (\eta) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \eta> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \eta> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} } \\
-& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \eta> - \logNormalizerFunction(\eta) + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}}  \\
-& = \int_{\mathcal{X}} \sufficientStatsFunction(x)  \; p(x \cond \eta) \; d\nu_{\mathcal{X}}  \\
+\nabla \logNormalizerFunction (\naturalParam) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \naturalParam> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \naturalParam> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} } \\
+& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \naturalParam> - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}}  \\
+& = \int_{\mathcal{X}} \sufficientStatsFunction(x)  \; p(x \cond \naturalParam) \; d\nu_{\mathcal{X}}  \\
 &= \E[\sufficientStatsFunction(X)]
 \end{align*}
 
-where in  Equation (1) we take the derivative of a logarithm (interchanging the gradient and the integral), and in Equation (2) we recognize the denominator as $\exp \logNormalizerFunction(\eta)$.	
+where in  Equation (1) we take the derivative of a logarithm (interchanging the gradient and the integral), and in Equation (2) we recognize the denominator as $\exp \logNormalizerFunction(\naturalParam)$.	
 \end{proof}
 
 
@@ -370,7 +373,7 @@ Justify formally the interchange of gradient and integral in Proposition \ref{pr
 
 \begin{remark}
 In a manner similar to that of Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, we can show that the covariance matrix of the sufficient statistics is the Hessian of the log-normalizer calculated at its natural parameter:
-\[ \Cov[\sufficientStatsFunction(X)] = \nabla^2 \logNormalizerFunction(\eta) \]	
+\[ \Cov[\sufficientStatsFunction(X)] = \nabla^2 \logNormalizerFunction(\naturalParam) \]	
 
 In fact, all moments of an exponential family are finite (recall from Definition \ref{def:exponential_family} that exponential family membership requires $a$ to be a $C^\infty$ function).  This explains why the Cauchy distribution (of undefined mean) is not an exponential family.
 \label{rk:any_exponential_family_has_finite_moments}
@@ -385,10 +388,10 @@ For more information on Proposition \ref{prop:expected_sufficient_statistic_as_d
 We can provide a closed-form expression for the KL divergence between two members of the same exponential family. 
 
 \begin{proposition}
-Consider two probability distributions from the same exponential family with density $p$, and and let their natural  parameters denoted $\eta$ and $\wt{\eta}$, respectively.  Then the KL-divergence (i.e. relative entropy) is given by
+Consider two probability distributions from the same exponential family with density $p$, and and let their natural  parameters denoted $\naturalParam$ and $\wt{\naturalParam}$, respectively.  Then the KL-divergence (i.e. relative entropy) is given by
 
 \begin{align*}
-\texttt{KL}(\eta || \wt{\eta}) = \bigip{\nabla \logNormalizerFunction(\eta)}{\eta - \wt{\eta}} + \logNormalizerFunction(\eta) - \logNormalizerFunction(\eta) 
+\texttt{KL}(\naturalParam || \wt{\naturalParam}) = \bigip{\nabla \logNormalizerFunction(\naturalParam)}{\naturalParam - \wt{\naturalParam}} + \logNormalizerFunction(\naturalParam) - \logNormalizerFunction(\naturalParam) 
 \labelit \label{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}
 \end{align*}
  
@@ -398,34 +401,34 @@ Consider two probability distributions from the same exponential family with den
 We assume for simplicity of notation (but without loss of generality) that $\mu$ in Definition \ref{def:exponential_family} is the Lesbesgue measure. 
 
 \begin{align*}
-\texttt{KL}(\eta || \wt{\eta}) &= \ds\int p(x \cond \eta) \log \bigg( \df{p(x \cond \eta)}{p(x \cond \wt{\eta})}\bigg) \;dx \\ 
-& = \ds\int p(x \cond \eta) \; \bigg[ \bigip{\sufficientStatsFunction(x)}{\eta - \wt{\eta}}  + \logNormalizerFunction(\wt{\eta}) - \logNormalizerFunction(\eta) \bigg] \; dx \\
-&= \bigip{\E_{\eta}[\sufficientStatsFunction(X)]}{\eta - \wt{\eta} } + \logNormalizerFunction(\wt{\eta}) - \logNormalizerFunction(\eta) \\
-& \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla \logNormalizerFunction(\eta)}{\eta - \wt{\eta} } + \logNormalizerFunction(\wt{\eta}) - \logNormalizerFunction(\eta)
+\texttt{KL}(\naturalParam || \wt{\naturalParam}) &= \ds\int p(x \cond \naturalParam) \log \bigg( \df{p(x \cond \naturalParam)}{p(x \cond \wt{\naturalParam})}\bigg) \;dx \\ 
+& = \ds\int p(x \cond \naturalParam) \; \bigg[ \bigip{\sufficientStatsFunction(x)}{\naturalParam - \wt{\naturalParam}}  + \logNormalizerFunction(\wt{\naturalParam}) - \logNormalizerFunction(\naturalParam) \bigg] \; dx \\
+&= \bigip{\E_{\naturalParam}[\sufficientStatsFunction(X)]}{\naturalParam - \wt{\naturalParam} } + \logNormalizerFunction(\wt{\naturalParam}) - \logNormalizerFunction(\naturalParam) \\
+& \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla \logNormalizerFunction(\naturalParam)}{\naturalParam - \wt{\naturalParam} } + \logNormalizerFunction(\wt{\naturalParam}) - \logNormalizerFunction(\naturalParam)
 \end{align*}
 	
 \end{proof}
 \label{prop:kl_divergence_between_members_of_same_exponential_family}
 \end{proposition}
 
-By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergence_between_members_of_same_exponential_family}, expressions for the entropy $\H[\eta] = -\E_{\eta}[\log p(\eta)]$ and cross-entropy $\H[\eta, \wt{\eta}] = -\E_{\eta}[\log p(\wt{\eta})]$ can also be provided:
+By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergence_between_members_of_same_exponential_family}, expressions for the entropy $\H[\naturalParam] = -\E_{\naturalParam}[\log p(\naturalParam)]$ and cross-entropy $\H[\naturalParam, \wt{\naturalParam}] = -\E_{\naturalParam}[\log p(\wt{\naturalParam})]$ can also be provided:
 
 \begin{subequations}
 \begin{align}
-\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} - \E_{\eta} [\log \carrierDensity(X)]	\label{eqn:entropy_of_an_exponential_family}\\
-\H[\eta, \wt{\eta}] &=  \logNormalizerFunction(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla \logNormalizerFunction(\eta)} - \E_{\eta}  [\log \carrierDensity(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
+\H[\naturalParam]&= \logNormalizerFunction(\naturalParam) - \bigip{\naturalParam}{\nabla \logNormalizerFunction(\naturalParam)} - \E_{\naturalParam} [\log \carrierDensity(X)]	\label{eqn:entropy_of_an_exponential_family}\\
+\H[\naturalParam, \wt{\naturalParam}] &=  \logNormalizerFunction(\wt{\naturalParam}) - \bigip{\wt{\naturalParam}}{\nabla \logNormalizerFunction(\naturalParam)} - \E_{\naturalParam}  [\log \carrierDensity(X)] \label{eqn:cross_entropy_between_two_exponential_family_members}
 \end{align}
 \label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members}
 \end{subequations}
 
 
 
-Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the carrier density satisfies $\carrierDensity(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $\carrierDensity(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $\logNormalizerFunction(\eta)$.}. In that case, we have 
+Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the carrier density satisfies $\carrierDensity(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $\carrierDensity(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $\logNormalizerFunction(\naturalParam)$.}. In that case, we have 
 
 \begin{subequations}
 \begin{align}
-\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} \label{eqn:entropy_of_an_exponential_family_with_base_measure_unity}\\
-\H[\eta, \wt{\eta}] &=  \logNormalizerFunction(\wt{\eta}) - \bigip{\wt{\eta}}{\nabla \logNormalizerFunction(\eta)}  \label{eqn:cross_entropy_between_two_exponential_family_members_with_base_measure_unity}
+\H[\naturalParam]&= \logNormalizerFunction(\naturalParam) - \bigip{\naturalParam}{\nabla \logNormalizerFunction(\naturalParam)} \label{eqn:entropy_of_an_exponential_family_with_base_measure_unity}\\
+\H[\naturalParam, \wt{\naturalParam}] &=  \logNormalizerFunction(\wt{\naturalParam}) - \bigip{\wt{\naturalParam}}{\nabla \logNormalizerFunction(\naturalParam)}  \label{eqn:cross_entropy_between_two_exponential_family_members_with_base_measure_unity}
 \end{align}
 \label{eqn:entropy_and_cross_entropy_between_two_exponential_family_members_with_base_measure_unit}
 \end{subequations}
@@ -436,10 +439,10 @@ Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members
 \begin{example}
 Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a centered Laplace distribution, which has pdf
 \[ f(x \cond \sigma) = -\frac{1}{2 \sigma} \exp \bigg\{ - \frac{|x|}{\sigma}\bigg\}  \]	
-The natural parameter is $\eta = - \frac{1}{\sigma}$, the log normalizer is $\logNormalizerFunction(\eta) = \log (-\frac{2}{\eta})$ (and so $\nabla \logNormalizerFunction(\eta) = -\frac{1}{\eta}$), and the carrier density is $\carrierDensity(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
+The natural parameter is $\naturalParam = - \frac{1}{\sigma}$, the log normalizer is $\logNormalizerFunction(\naturalParam) = \log (-\frac{2}{\naturalParam})$ (and so $\nabla \logNormalizerFunction(\naturalParam) = -\frac{1}{\naturalParam}$), and the carrier density is $\carrierDensity(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).    
 Using this, we can easily compute 
 \begin{align*}
-\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} = \log \bigg(-\frac{2}{\eta} \bigg)  - \bigip{\eta}{- \frac{1}{\eta}}  =\log \bigg(-\frac{2}{\eta} \bigg) + 1 \\ 
+\H[\naturalParam]&= \logNormalizerFunction(\naturalParam) - \bigip{\naturalParam}{\nabla \logNormalizerFunction(\naturalParam)} = \log \bigg(-\frac{2}{\naturalParam} \bigg)  - \bigip{\naturalParam}{- \frac{1}{\naturalParam}}  =\log \bigg(-\frac{2}{\naturalParam} \bigg) + 1 \\ 
 \implies \H[\sigma] & = \log 2\sigma + 1
 \end{align*}
 \end{example}
@@ -448,14 +451,14 @@ Using this, we can easily compute
 \begin{example}
 Let us apply \eqref{eqn:entropy_of_an_exponential_family} to compute the entropy of a univariate Gaussian.  The necessary exponential family quantities can be found in many tables (e.g. see \cite{nielsen2009statistical}); they are:
 %
-\[ \eta=\bigg(\frac{\mu}{\sigma^2}, \; -\frac{1}{2\sigma^2}\bigg)^\top, \quad \logNormalizerFunction(\eta) = \frac{-\eta_1^2}{4 \eta_2} + \half \log (-\frac{\pi}{\eta_2}), \quad  \nabla \logNormalizerFunction(\eta) = \bigg( -\frac{\eta_1}{2\eta_2}, \; -\frac{1}{2\eta_2} + \frac{\eta_1^2}{4\eta_2^2}\bigg)^\top\] 
+\[ \naturalParam=\bigg(\frac{\mu}{\sigma^2}, \; -\frac{1}{2\sigma^2}\bigg)^\top, \quad \logNormalizerFunction(\naturalParam) = \frac{-\naturalParam_1^2}{4 \naturalParam_2} + \half \log (-\frac{\pi}{\naturalParam_2}), \quad  \nabla \logNormalizerFunction(\naturalParam) = \bigg( -\frac{\naturalParam_1}{2\naturalParam_2}, \; -\frac{1}{2\naturalParam_2} + \frac{\naturalParam_1^2}{4\naturalParam_2^2}\bigg)^\top\] 
 %
 and $\carrierDensity(x)=1$ (which allows us to use \eqref{eqn:entropy_of_an_exponential_family_with_base_measure_unity} instead of \eqref{eqn:entropy_of_an_exponential_family}).
 
 Using this, we can easily compute 
 \begin{align*}
-\H[\eta]&= \logNormalizerFunction(\eta) - \bigip{\eta}{\nabla \logNormalizerFunction(\eta)} \\
-&=  \cancel{\frac{-\eta_1^2}{4 \eta_2}} + \half \log (-\frac{\pi}{\eta_2}) - \Big[ \cancel{\frac{-\eta_1^2}{2 \eta_2}} -\half + \cancel{\frac{\eta_1^2}{4 \eta_2}} \Big] \\ 
+\H[\naturalParam]&= \logNormalizerFunction(\naturalParam) - \bigip{\naturalParam}{\nabla \logNormalizerFunction(\naturalParam)} \\
+&=  \cancel{\frac{-\naturalParam_1^2}{4 \naturalParam_2}} + \half \log (-\frac{\pi}{\naturalParam_2}) - \Big[ \cancel{\frac{-\naturalParam_1^2}{2 \naturalParam_2}} -\half + \cancel{\frac{\naturalParam_1^2}{4 \naturalParam_2}} \Big] \\ 
 \implies \H[\sigma] & = \half \log (2 \pi \sigma^2) + \half
 \end{align*}
 
@@ -468,16 +471,16 @@ What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look 
 
 Let 
 \begin{align*}
-p(x \cond \eta) &=  \exp \{ \eta^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\eta) + \log \carrierDensity(x)\}  \\
-\wt{p}(x \cond \wt{\eta}) &=  \exp \{ \wt{\eta}^\top \wt{\sufficientStatsFunction}(x) - \wt{\logNormalizerFunction}(\wt{\eta}) + \log \wt{\carrierDensity}(x)\}  \\	
+p(x \cond \naturalParam) &=  \exp \{ \naturalParam^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(x)\}  \\
+\wt{p}(x \cond \wt{\naturalParam}) &=  \exp \{ \wt{\naturalParam}^\top \wt{\sufficientStatsFunction}(x) - \wt{\logNormalizerFunction}(\wt{\naturalParam}) + \log \wt{\carrierDensity}(x)\}  \\	
 \end{align*}
  
 Then the cross entropy from $\wt{p}$ to $p$ is given by
 \begin{align*}
 \H(p, \wt{p}) &= -\E_p [\log \wt{p}(x)]	\\
-&= -\ds\int p(x \cond \eta) \; \log \wt{p} (x \cond \wt{\eta}) \; dx \\
-&= -\ds\int p(x \cond \eta) \bigg[ \bigip{\wt{\sufficientStatsFunction}(x)}{\wt{\eta}} - \wt{a} (\wt{\eta}) + \log \wt{\carrierDensity}(x)  \bigg] dx \\
-&= \wt{a}(\wt{\eta})- \bigip{ \E_p[\wt{\sufficientStatsFunction}(x)]}{\wt{\eta}} - \E_p[\log \wt{\carrierDensity}(x)]
+&= -\ds\int p(x \cond \naturalParam) \; \log \wt{p} (x \cond \wt{\naturalParam}) \; dx \\
+&= -\ds\int p(x \cond \naturalParam) \bigg[ \bigip{\wt{\sufficientStatsFunction}(x)}{\wt{\naturalParam}} - \wt{a} (\wt{\naturalParam}) + \log \wt{\carrierDensity}(x)  \bigg] dx \\
+&= \wt{a}(\wt{\naturalParam})- \bigip{ \E_p[\wt{\sufficientStatsFunction}(x)]}{\wt{\naturalParam}} - \E_p[\log \wt{\carrierDensity}(x)]
 \end{align*}
 
 So there are now two potentially problematic terms, although in the case where $\wt{\carrierDensity}(x) \equiv 1$, only one potentially problematic term remains.
@@ -490,40 +493,40 @@ For more information on information theoretical quantities in exponential famili
 \subsubsection{Convexity}
 
 \begin{proposition}\propositiontitle{Convexity properties of the exponential family \cite{jordan2010exponential}.}
-The natural parameter space $\naturalParamSpace$ is convex (as a set) and the log normalizer function $\logNormalizerFunction(\eta)$ is convex (as a function). If the family is minimal then $\logNormalizerFunction(\eta)$ is strictly convex.
+The natural parameter space $\naturalParamSpace$ is convex (as a set) and the log normalizer function $\logNormalizerFunction(\naturalParam)$ is convex (as a function). If the family is minimal then $\logNormalizerFunction(\naturalParam)$ is strictly convex.
 \label{prop:convexity_properties_of_the_exponential_family}
 \end{proposition}
 
 \begin{proof}
-The proofs of both convexity results follow from an application of H\"{o}lder’s inequality. Consider distinct parameters $\eta_1 \in \naturalParamSpace$ and $\eta_2 \in \naturalParamSpace$ and let $\eta = \lambda \eta_1 + (1-\lambda) \eta_2$, for $0 < \lambda < 1$.  
+The proofs of both convexity results follow from an application of H\"{o}lder’s inequality. Consider distinct parameters $\naturalParam_1 \in \naturalParamSpace$ and $\naturalParam_2 \in \naturalParamSpace$ and let $\naturalParam = \lambda \naturalParam_1 + (1-\lambda) \naturalParam_2$, for $0 < \lambda < 1$.  
 
 Then
 %
 \begin{align*}
-\exp \logNormalizerFunction(\eta) & \stackrel{1}{=} \int e^{(\lambda \eta_1 + (1-\lambda) \eta_2)^\top \sufficientStatsFunction(x)}  \nu(dx)  \\
-& \stackrel{2}{\leq} \bigg( \explaintermbrace{assumed finite}{\int e^{\eta_1^\top \sufficientStatsFunction(x)}  \nu(dx)} \bigg)^\lambda \bigg(  \explaintermbrace{assumed finite}{\int e^{\eta_2^\top \sufficientStatsFunction(x)}  \nu(dx)} \bigg)^{1-\lambda} \\
+\exp \logNormalizerFunction(\naturalParam) & \stackrel{1}{=} \int e^{(\lambda \naturalParam_1 + (1-\lambda) \naturalParam_2)^\top \sufficientStatsFunction(x)}  \nu(dx)  \\
+& \stackrel{2}{\leq} \bigg( \explaintermbrace{assumed finite}{\int e^{\naturalParam_1^\top \sufficientStatsFunction(x)}  \nu(dx)} \bigg)^\lambda \bigg(  \explaintermbrace{assumed finite}{\int e^{\naturalParam_2^\top \sufficientStatsFunction(x)}  \nu(dx)} \bigg)^{1-\lambda} \\
 & < \infty  
 \end{align*}
 %
-Hence $\logNormalizerFunction(\eta)$ is finite, and so $\eta \in \naturalParamSpace$.   Moreover, taking logarithms of the above yields
+Hence $\logNormalizerFunction(\naturalParam)$ is finite, and so $\naturalParam \in \naturalParamSpace$.   Moreover, taking logarithms of the above yields
 %
-\[\logNormalizerFunction(\eta) \leq \lambda \logNormalizerFunction(\eta_1) + (1-\alpha) \logNormalizerFunction(\eta_2), \]
+\[\logNormalizerFunction(\naturalParam) \leq \lambda \logNormalizerFunction(\naturalParam_1) + (1-\alpha) \logNormalizerFunction(\naturalParam_2), \]
 %
 and so $\logNormalizerFunction$ is a convex function.   For an argument that minimality implies strict convexity, see \citet{jordan2010exponential}.
 
 For details:
 \begin{itemize}
 	\item In (1) we used the definition of the log normalizer function for an exponential family. For simplicity, we also applied Item~\ref{item:ignorabiity_of_carrier_density} of Remark~\ref{rk:alternate_constructions_for_the_exponential_family}, changing the ambient measure to $\nu(dx) = h(x) \mu(dx)$, so that we can ignore the carrier density (the carrier density $\wt{\carrierDensity}$ with respect to $\nu$ satisfies $\wt{\carrierDensity}(x) \equiv 1$).
-	\item In (2), we applied H\"{o}lder’s inequality.  Recall that H\"{o}lder’s inequality is that $||fg||_1 \leq ||f||_p ||g||_q$ whenever $p,q \in [1,\infty]$ and $\frac{1}{p} + \frac{1}{q}=1$.  Recall also the definition of norm $||f||_p = (\int f^p \wrt{\mu})^{1/p}$ in some underlying measure space (with measure $\mu$).  To apply H\"{o}lder’s inequality, we take the functions to be $f(x) = e^{\lambda \eta_1^\top \sufficientStatsFunction(x)}$ and $g(x) = e^{(1-\lambda)\eta_2^\top \sufficientStatsFunction(x)}$, the underlying measure to be $\mu=\nu$, and the H\"{o}lder exponents to be $p=\frac{1}{\lambda}$ and $q=\frac{1}{1-\lambda}$. 
+	\item In (2), we applied H\"{o}lder’s inequality.  Recall that H\"{o}lder’s inequality is that $||fg||_1 \leq ||f||_p ||g||_q$ whenever $p,q \in [1,\infty]$ and $\frac{1}{p} + \frac{1}{q}=1$.  Recall also the definition of norm $||f||_p = (\int f^p \wrt{\mu})^{1/p}$ in some underlying measure space (with measure $\mu$).  To apply H\"{o}lder’s inequality, we take the functions to be $f(x) = e^{\lambda \naturalParam_1^\top \sufficientStatsFunction(x)}$ and $g(x) = e^{(1-\lambda)\naturalParam_2^\top \sufficientStatsFunction(x)}$, the underlying measure to be $\mu=\nu$, and the H\"{o}lder exponents to be $p=\frac{1}{\lambda}$ and $q=\frac{1}{1-\lambda}$. 
 \end{itemize} 
 \end{proof}
 
 
 \subsubsection{Identifiability}
 
-A model is called \textit{globally identifiable} if $p(\cdot \cond \theta_1) = p(\cdot \cond \theta_2)$ implies $\theta_1=\theta_2$ \cite{cole2020parameter}. For exponential families as defined in Def.~\ref{def:exponential_family},\footnote{Note that the log normalizer function is assumed to be continuously differentiable by definition.} if the Fisher information matrix is non-singular, then the model is globally identifiable.  For exponential families, we may compute the Fisher information matrix as\footnote{For justification, see \url{https://www2.stat.duke.edu/courses/Spring05/sta215/lec/wk06a.pdf.}}
+A model is called \textit{globally identifiable} if $p(\cdot \cond \param_1) = p(\cdot \cond \param_2)$ implies $\param_1=\param_2$ \cite{cole2020parameter}. For exponential families as defined in Def.~\ref{def:exponential_family},\footnote{Note that the log normalizer function is assumed to be continuously differentiable by definition.} if the Fisher information matrix is non-singular, then the model is globally identifiable.  For exponential families, we may compute the Fisher information matrix as\footnote{For justification, see \url{https://www2.stat.duke.edu/courses/Spring05/sta215/lec/wk06a.pdf.}}
 \begin{align*}
-I(\theta) = \E [ -\nabla^2 \log p(x \cond \theta)]
+I(\param) = \E [ -\nabla^2 \log p(x \cond \param)]
 \labelit \label{eqn:fisher_information_matrix_for_exponential_families}	
 \end{align*}
 For more information on identifiability in exponential families, see \cite{cole2020parameter} pp.62. 
@@ -532,17 +535,17 @@ For more information on identifiability in exponential families, see \cite{cole2
 If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
 \begin{align}
 \label{eqn:exponential_family_iid}
- p(\+x \cond \theta) = \ds\prod_{i=1}^n \carrierDensity(x_i) \exp \big\{ \eta(\theta)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i) - n \,\logNormalizerFunction(\eta(\theta))\big\} 
+ p(\+x \cond \param) = \ds\prod_{i=1}^n \carrierDensity(x_i) \exp \big\{ \naturalParam(\param)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i) - n \,\logNormalizerFunction(\naturalParam(\param))\big\} 
  \end{align}
 
 
 \subsubsection{Mean parametrization} \label{sec:mean_parametrization}
 
-In Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer} (see Sec.~\ref{sec:relationship_between_moments_and_normalizer}), we showed that the expected sufficient statistics $\meanParameter \defeq \E[\sufficientStatsFunction(X)]$ can be obtained as a function of the natural parameter $\eta$; namely
+In Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer} (see Sec.~\ref{sec:relationship_between_moments_and_normalizer}), we showed that the expected sufficient statistics $\meanParameter \defeq \E[\sufficientStatsFunction(X)]$ can be obtained as a function of the natural parameter $\naturalParam$; namely
 %
-\[ \nabla \logNormalizerFunction(\eta) = \E[\sufficientStatsFunction(X)] \]
+\[ \nabla \logNormalizerFunction(\naturalParam) = \E[\sufficientStatsFunction(X)] \]
 %
-For minimal families (Def.~\ref{def:minimal_exponential_families}), it turns out that this relationship is invertible \cite[Sec.~8.4]{jordan2010exponential}. \red{TODO: Prove this.}  This implies that a distribution in the exponential family can be parameterized not only by $\eta$ -- the canonical parametrization -- but also by $\meanParameter$ -- the \textit{mean parametrization}. \red{TODO: Prove that we can always reparametrize a non-minimal EF into a minimal EF.}  
+For minimal families (Def.~\ref{def:minimal_exponential_families}), it turns out that this relationship is invertible \cite[Sec.~8.4]{jordan2010exponential}. \red{TODO: Prove this.}  This implies that a distribution in the exponential family can be parameterized not only by $\naturalParam$ -- the canonical parametrization -- but also by $\meanParameter$ -- the \textit{mean parametrization}. \red{TODO: Prove that we can always reparametrize a non-minimal EF into a minimal EF.}  
 
 
 
@@ -555,22 +558,22 @@ For minimal families (Def.~\ref{def:minimal_exponential_families}), it turns out
 The goal for maximum likelihood is to determine the parameter
 \begin{equation}
 \label{eqn:ml}
-\theta_{ML} = \argmax_\theta  \, \log p(\+x \cond \theta) 
+\param_{ML} = \argmax_\param  \, \log p(\+x \cond \param) 
 \end{equation}
 
-Let us assume that $\+x=(x_1, ..., x_n)$ are i.i.d observations  from a fixed exponential family, so that the likelihood has form \eqref{eqn:exponential_family_iid}.  Let us compute the gradient with respect to the natural parameter $\eta$ of $\ell(\eta) := \log p(\+x \cond \eta)$
+Let us assume that $\+x=(x_1, ..., x_n)$ are i.i.d observations  from a fixed exponential family, so that the likelihood has form \eqref{eqn:exponential_family_iid}.  Let us compute the gradient with respect to the natural parameter $\naturalParam$ of $\ell(\naturalParam) := \log p(\+x \cond \naturalParam)$
 
-\[ \nabla_\eta \ell(\eta) = \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) - n \; \nabla_\eta \logNormalizerFunction(\eta) \]
+\[ \nabla_\naturalParam \ell(\naturalParam) = \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) - n \; \nabla_\naturalParam \logNormalizerFunction(\naturalParam) \]
 
 Setting the gradient to zero, we obtain
 
-\[ \nabla_\eta \logNormalizerFunction(\eta) = \df{1}{n}  \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) \]
+\[ \nabla_\naturalParam \logNormalizerFunction(\naturalParam) = \df{1}{n}  \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) \]
 
-But $\nabla_\eta \logNormalizerFunction(\eta) = \E [\sufficientStatsFunction(X)]$  (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}).  Thus, we should set $\theta_{ML}$ such that
+But $\nabla_\naturalParam \logNormalizerFunction(\naturalParam) = \E [\sufficientStatsFunction(X)]$  (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}).  Thus, we should set $\param_{ML}$ such that
 %
 
 \begin{align}
-\meanParameter(\theta_{ML}) = \df{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) 	
+\meanParameter(\param_{ML}) = \df{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) 	
  \label{eqn:maximum_likelihood_solution_for_exponential_families}
 \end{align}
 %
@@ -581,11 +584,11 @@ where $\meanParameter:= \E[\sufficientStatsFunction(X)]$ refers to the mean para
 Some models have latent variables associated with each observation.   Let us  assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ where $\+x$ is observed data and $\+z$ is unobserved data.   Then we say that the \textit{complete data likelihood} is an exponential family if we can write
 %
 \begin{align}
- p(\+x, \+z \cond \+\theta) = \carrierDensity(\+x, \+z) \exp \big\{ \eta(\+\theta)^\top \sufficientStatsFunction(\+x, \+z) - \logNormalizerFunction(\eta(\+\theta))\big\}. 
+ p(\+x, \+z \cond \param) = \carrierDensity(\+x, \+z) \exp \big\{ \naturalParam(\param)^\top \sufficientStatsFunction(\+x, \+z) - \logNormalizerFunction(\naturalParam(\param))\big\}. 
 \label{eqn:exponential_family_complete_data_likelihood}
  \end{align}
 %
-for some functions $\carrierDensity, \eta, \sufficientStatsFunction, \logNormalizerFunction$. 
+for some functions $\carrierDensity, \naturalParam, \sufficientStatsFunction, \logNormalizerFunction$. 
 
 \subsection{Expectation Maximization}
 
@@ -596,12 +599,12 @@ When a model contains latent variables as in \Eqref{eqn:exponential_family_compl
 
 \begin{subequations}
 %
-The \textbf{Expectation Maximization (EM)} algorithm is to recursively update parameters $\+\theta$ by solving at iteration $t=0,1,\hdots$
+The \textbf{Expectation Maximization (EM)} algorithm is to recursively update parameters $\param$ by solving at iteration $t=0,1,\hdots$
 %
 \begin{align}
- \+\theta^{(t+1)} &=  \text{argmax}_{\+\theta} \; Q(\+\theta \cond \+\theta^^t) \label{eqn:M_step_for_EM}
+ \param^{(t+1)} &=  \text{argmax}_{\param} \; Q(\param \cond \param^^t) \label{eqn:M_step_for_EM}
 \intertext{where}
- Q(\+\theta \cond \+\theta^^t) &\defeq  \E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] 
+ Q(\param \cond \param^^t) &\defeq  \E_{p(\+z \cond \+x , \param^^t)} \bigg[ \ln p(\+x, \+z \cond \param) \bigg] 
 \label{eqn:E_step_for_EM}
 \end{align}
 \label{eqn:EM_algorithm}
@@ -611,11 +614,11 @@ The \textbf{Expectation Maximization (EM)} algorithm is to recursively update pa
 In the Q-function of \Eqref{eqn:E_step_for_EM}
 above, our notation means
 %
-\[\E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \defeq \int \ln p(\+x, \+z \cond \+\theta) \, p(\+z \cond \+x , \+\theta^^t) \, \mu(d\+z).\]
+\[\E_{p(\+z \cond \+x , \param^^t)} \bigg[ \ln p(\+x, \+z \cond \param) \bigg] \defeq \int \ln p(\+x, \+z \cond \param) \, p(\+z \cond \+x , \param^^t) \, \mu(d\+z).\]
 %
 This $Q$ function is perhaps more clearly denoted by \citet{miller2011why} as 
 %
-\[  Q(\+\theta \cond \+\theta^^t)  = \E_{\+\theta^^t} \bigg[ \ln p_{\+\theta}(\+X, \+Z) \cond \+X=\+x \bigg].\]
+\[  Q(\param \cond \param^^t)  = \E_{\param^^t} \bigg[ \ln p_{\param}(\+X, \+Z) \cond \+X=\+x \bigg].\]
 %
 \blue{DISCUSS: However, I believe both notations are somewhat misleading. They only make sense formally, because the density of a random variable $p(\+Y)$ is not a function of the random variable $\+Y$.} 
 \label{notation:Q_function}
@@ -625,7 +628,7 @@ This $Q$ function is perhaps more clearly denoted by \citet{miller2011why} as
 In the EM algorithm of 
 \Eqref{eqn:EM_algorithm}, we refer to \Eqref{eqn:E_step_for_EM} as the \textit{E-step} and \Eqref{eqn:M_step_for_EM} as the \textit{M-step}.
 
-\textbf{What justifies this particular algorithm?}  One way to justify EM is as a special case of Coordinate Ascent Variational Inference (CAVI) \cite{wojnowiczXXXXvariational}.\footnotemark~In particular, suppose we have a frequentist latent variable model (with observed data $\+x$, random latent variables $\+z$, and fixed but unknown parameters $\+\theta$) for which we can compute the exact posterior.  In this setting, an unrestricted variational family is $\mathcal{Q} = \set{q: q=q_\+z q_\+\theta \text{ where } q_\+\theta = \delta_\+\theta}$.  Now at the $t$-th iteration of coordinate ascent, we do:
+\textbf{What justifies this particular algorithm?}  One way to justify EM is as a special case of Coordinate Ascent Variational Inference (CAVI) \cite{wojnowiczXXXXvariational}.\footnotemark~In particular, suppose we have a frequentist latent variable model (with observed data $\+x$, random latent variables $\+z$, and fixed but unknown parameters $\param$) for which we can compute the exact posterior.  In this setting, an unrestricted variational family is $\mathcal{Q} = \set{q: q=q_\+z q_\param \text{ where } q_\param = \delta_\param}$.  Now at the $t$-th iteration of coordinate ascent, we do:
 
 \footnotetext{My notes in \citet{wojnowiczXXXXvariational} cite \citet{beal2003variational} for this insight. However, per \citet[pp.~2]{salakhutdinov2003optimization}, I believe this perspective on EM may trace all the way back to \citet{neal1998view}.}
 
@@ -633,21 +636,21 @@ In the EM algorithm of
 \item \textit{Update to $q_\+z$.} We have:
 %
 \begin{align}
-\VLBO(q_\+z, q_\+\theta^^t) = \log p(\+x \cond \+\theta^^t) \quad \text{ if } \quad 	q_\+z=p(\+z \cond \+x, \+\theta^^t)
+\VLBO(q_\+z, q_\param^^t) = \log p(\+x \cond \param^^t) \quad \text{ if } \quad 	q_\+z=p(\+z \cond \+x, \param^^t)
 \end{align}
 %
 That is, by setting $q_\+z$ to the exact posterior, the variational lower bound ($\VLBO$) becomes tight, exactly equaling the log marginal likelihood. Hence, it is the optimal update when there are no restrictions on $\mathcal{Q}_z \ni q_\+z$.  This is precisely the E-step of the EM algorithm.
 
-\item \textit{Update to $q_\+\theta$.}	 To update $q_\+\theta$, we note that when we evaluate the variational lower bound at the exact posterior over latent variables, we obtain
+\item \textit{Update to $q_\param$.}	 To update $q_\param$, we note that when we evaluate the variational lower bound at the exact posterior over latent variables, we obtain
 %
 \begin{align}
-\VLBO(q_\+\theta, q_\+z^^t) = \explaintermbrace{energy}{Q(\+\theta \cond \+\theta^^t)} + \explaintermbrace{entropy}{H(\+\theta^^t)}
+\VLBO(q_\param, q_\+z^^t) = \explaintermbrace{energy}{Q(\param \cond \param^^t)} + \explaintermbrace{entropy}{H(\param^^t)}
 \end{align}
 %
-And so the optimal coordinate ascent step for $q_\+\theta$ amounts to maximizing the Q-function
+And so the optimal coordinate ascent step for $q_\param$ amounts to maximizing the Q-function
 %
 \begin{align}
-\max_{q_\+\theta} \VLBO(q_\+\theta, q_\+z^^t) = \max_{\+\theta}  Q(\+\theta \cond \+\theta^^t). 
+\max_{q_\param} \VLBO(q_\param, q_\+z^^t) = \max_{\param}  Q(\param \cond \param^^t). 
 \end{align}
 %
 This is precisely the M-step of the EM algorithm.
@@ -668,7 +671,7 @@ This is precisely the M-step of the EM algorithm.
 is given by 
  %
  \begin{align}
- \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta)}[\sufficientStatsFunction(\+x,\+z)]
+ \frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  \E_{p(\+z \cond \+x, \param^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \param)}[\sufficientStatsFunction(\+x,\+z)]
  \label{eqn:gradient_of_Q_function_for_EM}
  \end{align}
 %
@@ -681,22 +684,22 @@ is given by
 
 We have 
 \begin{align*}
-\frac{\partial}{\partial \+\theta}  p(\+x, \+z \cond \+\theta) & \stackrel{1}{=} p(\+x, \+z \cond \+\theta) \bigg( \sufficientStatsFunction(\+x, \+z) - \E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] \bigg) \\
-\implies \frac{\partial}{\partial \+\theta}  \log p(\+x, \+z \cond \+\theta) & \stackrel{2}{=} \frac{\frac{\partial p(\+x, \+z \cond \+\theta)}{\partial \+\theta}}{p(\+x, \+z \cond \+\theta)} \stackrel{3}{=}  \sufficientStatsFunction(\+x, \+z) - \E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] \\
-\implies \frac{\partial}{\partial \+\theta}  Q(\+\theta \cond \+\theta^^t) & \stackrel{4}{=} \int \frac{\partial}{\partial \+\theta} \ln p(
-\+x ,\+z \cond \+\theta) p(\+z \cond \+x, \+\theta^^t) \, \mu(d\+z) \\
-& \stackrel{5}{=} \bigg( \int \sufficientStatsFunction(\+x, \+z) p(\+z \cond \+x, \+\theta^^t) \, \mu(d\+z)\bigg) - \E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)]  \\
+\frac{\partial}{\partial \param}  p(\+x, \+z \cond \param) & \stackrel{1}{=} p(\+x, \+z \cond \param) \bigg( \sufficientStatsFunction(\+x, \+z) - \E
+_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)] \bigg) \\
+\implies \frac{\partial}{\partial \param}  \log p(\+x, \+z \cond \param) & \stackrel{2}{=} \frac{\frac{\partial p(\+x, \+z \cond \param)}{\partial \param}}{p(\+x, \+z \cond \param)} \stackrel{3}{=}  \sufficientStatsFunction(\+x, \+z) - \E
+_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)] \\
+\implies \frac{\partial}{\partial \param}  Q(\param \cond \param^^t) & \stackrel{4}{=} \int \frac{\partial}{\partial \param} \ln p(
+\+x ,\+z \cond \param) p(\+z \cond \+x, \param^^t) \, \mu(d\+z) \\
+& \stackrel{5}{=} \bigg( \int \sufficientStatsFunction(\+x, \+z) p(\+z \cond \+x, \param^^t) \, \mu(d\+z)\bigg) - \E
+_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)]  \\
 & \stackrel{6}{=} \E
-_{p(\+z \cond \+x, \+\theta^^t)} [\sufficientStatsFunction(\+x, \+z)]   - \E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] 
+_{p(\+z \cond \+x, \param^^t)} [\sufficientStatsFunction(\+x, \+z)]   - \E
+_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)] 
 \end{align*}
 %
 Here, in (1), we used the definition in \Eqref{eqn:exponential_family_complete_data_likelihood} of exponential family for latent variable models, as well as the chain rule for derivatives.   Note that here $\E
-_{p(\+x,\+z \cond \+\theta)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \+\theta) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:E_step_for_EM}
-of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \+\theta^^t)$, which integrates to 1.  In (6), we simply applied notation.  
+_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \param) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:E_step_for_EM}
+of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \param^^t)$, which integrates to 1.  In (6), we simply applied notation.  
 \end{proof}
 
 
@@ -704,7 +707,7 @@ of the Q-function, along with an (assumed) interchange of the integral and the d
 By Prop.~\ref{prop:gradient_of_the_Q_function}, the gradient of the Q-function evaluated at the current estimate of the parameter
 %
 \begin{align}
-\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} \Bigr|_{\+\theta = \+\theta^^t} =  \E_{p(\+z \cond \+x, \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \+\theta^^t)}[\sufficientStatsFunction(\+x,\+z)] 
+\frac{\partial Q(\param \cond \param^^t)}{\partial \param} \Bigr|_{\param = \param^^t} =  \E_{p(\+z \cond \+x, \param^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \param^^t)}[\sufficientStatsFunction(\+x,\+z)] 
 \label{eqn:gradient_of_Q_function_as_difference_in_expected_sufficient_stats_with_clamped_and_unclamped_data}
 \end{align}
 %
@@ -717,24 +720,24 @@ can be interpreted as the difference in the expected sufficient statistic vector
 The interpretation of the RHS of \Eqref{eqn:gradient_of_Q_function_for_EM} was given in Notation~\ref{notation:Q_function}.     Using the alternative notation of \citet{miller2011why} that we mentioned in Notation~\ref{notation:Q_function}, we could also write the gradient in \Eqref{eqn:gradient_of_Q_function_for_EM} as 
  %
  \begin{align}
- \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta}[\sufficientStatsFunction(\+X,\+Z)]
+ \frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param}[\sufficientStatsFunction(\+X,\+Z)]
  \label{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}
  \end{align}
  %
  Similarly, we could write \Eqref{eqn:gradient_of_Q_function_as_difference_in_expected_sufficient_stats_with_clamped_and_unclamped_data} as
   %
  \begin{align}
- \frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} \Bigr|_{\+\theta = \+\theta^^t} =  \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z)]
+ \frac{\partial Q(\param \cond \param^^t)}{\partial \param} \Bigr|_{\param = \param^^t} =  \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)]
  \label{eqn:the_gradient_of_the_Q_function_evaluated_at_the_current_parameter_and_using_jeffs_notation}
  \end{align}
  %
 \end{notation}
 
 \begin{proposition}\propositiontitle{EM update to parameters.}
-The solution to the EM objective in \Eqref{eqn:M_step_for_EM} for obtaining the next parameter value $\+\theta^^{t+1}$ given the previous parameter value $\+\theta^^{t}$ is given by finding the $\+\theta^^{t+1}$ that solves
+The solution to the EM objective in \Eqref{eqn:M_step_for_EM} for obtaining the next parameter value $\param^^{t+1}$ given the previous parameter value $\param^^{t}$ is given by finding the $\param^^{t+1}$ that solves
 %
 \begin{align}
-\E_{\+\theta^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
+\E_{\param^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
 \label{eqn:EM_update_to_parameters}	
 \end{align}
 %
@@ -743,30 +746,30 @@ That is, we must find the parameter value which makes the expected sufficient st
 \end{proposition}
 
 \begin{proof}
-We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  How do we know that the optimum is a maximum and not a minimum?}   By applying the representation of $\frac{\partial Q(\+\theta \cond \+\theta^^t)}{\partial \+\theta}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\+\theta \in \+\Theta$ which solves the equation
+We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  How do we know that the optimum is a maximum and not a minimum?}   By applying the representation of $\frac{\partial Q(\param \cond \param^^t)}{\partial \param}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\param \in \param$ which solves the equation
 %
 \begin{align*}
-\E_{\+\theta}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 	
+\E_{\param}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 	
 \end{align*}
 %
-Setting the solution $\+\theta^*$ as the next parameter value $\+\theta^^{t+1} = \+\theta^*$ gives the result. \red{TODO: How do we know the solution exists?}
+Setting the solution $\param^*$ as the next parameter value $\param^^{t+1} = \param^*$ gives the result. \red{TODO: How do we know the solution exists?}
 \end{proof}
 
 \subsubsection{Relating the EM step and the ordinary gradient}
 
 
 \begin{proposition}\propositiontitle{The Q-function and log marginal likelihood have equal gradients \cite{salakhutdinov2002relationship}.}
-Consider a latent variable model whose complete data likelihood  $p(\+x, \+z \cond \+\theta)$ is in the exponential family.  Define its log marginal likelihood as
+Consider a latent variable model whose complete data likelihood  $p(\+x, \+z \cond \param)$ is in the exponential family.  Define its log marginal likelihood as
 % 
 \begin{align}
-\ell(\+\theta) \defeq \log p(\+x \cond \+\theta) = \log \int p(\+x,\+z \cond \+\theta) \mu(d\+z).	
+\ell(\param) \defeq \log p(\+x \cond \param) = \log \int p(\+x,\+z \cond \param) \mu(d\+z).	
 \label{eqn:log_marginal_likelihood_definition}
 \end{align}
 %
 Then 
 %
 \begin{align}
-\frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \frac{\partial }{\partial \+\theta} Q(\+\theta \cond \+\theta^^t) \Bigr|_{\+\theta = \+\theta^^t}.
+\frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t} = \frac{\partial }{\partial \param} Q(\param \cond \param^^t) \Bigr|_{\param = \param^^t}.
 \end{align}
 %
 \label{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}
@@ -777,26 +780,26 @@ Then
 On the one hand, we have
 %
 \begin{align*}
-Q(\+\theta \cond \+\theta^^t) &= \int p(\+z \cond \+x, \+\theta^^t) \log p(\+x, \+z \cond \+\theta) \, \mu(d\+z) && \scripttext{Def. Q function} \\
-&= \int \frac{p(\+x, \+z \cond \+\theta^^t)}{p(\+x \cond \+\theta^^t)} \log p(\+x, \+z \cond \+\theta) \, \mu(d\+z) && \scripttext{Bayes rule} \\
-\implies \frac{\partial}{\partial \+\theta} Q(\+\theta \cond \+\theta^^t)  \Bigr|_{\+\theta=\+\theta^^t} &= \int \frac{p(\+x, \+z \cond \+\theta^^t)}{p(\+x \cond \+\theta^^t)} \frac{\partial}{\partial \+\theta} \log p(\+x, \+z \cond \+\theta)\Bigr|_{\+\theta=\+\theta^^t} \, \mu(d\+z) && \scripttext{Assume deriv interchanges with int.} \\
-&= \int \frac{\cancel{p(\+x, \+z \cond \+\theta^^t)}}{p(\+x \cond \+\theta^^t)} \frac{\frac{\partial}{\partial \+\theta} p(\+x, \+z \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t}}{\cancel{p(\+x, \+z \cond \+\theta^^t)}} \, \mu(d\+z) && \scripttext{Deriv. of logarithms} \\
-&= \frac{1}{p(\+x \cond \+\theta^^t)}  \int \frac{\partial}{\partial \+\theta} p(\+x, \+z \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t}\, \mu(d\+z) && \scripttext{Pull out constant} \labelit \label{eqn:intermediate_result_1_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients}
+Q(\param \cond \param^^t) &= \int p(\+z \cond \+x, \param^^t) \log p(\+x, \+z \cond \param) \, \mu(d\+z) && \scripttext{Def. Q function} \\
+&= \int \frac{p(\+x, \+z \cond \param^^t)}{p(\+x \cond \param^^t)} \log p(\+x, \+z \cond \param) \, \mu(d\+z) && \scripttext{Bayes rule} \\
+\implies \frac{\partial}{\partial \param} Q(\param \cond \param^^t)  \Bigr|_{\param=\param^^t} &= \int \frac{p(\+x, \+z \cond \param^^t)}{p(\+x \cond \param^^t)} \frac{\partial}{\partial \param} \log p(\+x, \+z \cond \param)\Bigr|_{\param=\param^^t} \, \mu(d\+z) && \scripttext{Assume deriv interchanges with int.} \\
+&= \int \frac{\cancel{p(\+x, \+z \cond \param^^t)}}{p(\+x \cond \param^^t)} \frac{\frac{\partial}{\partial \param} p(\+x, \+z \cond \param) \Bigr|_{\param=\param^^t}}{\cancel{p(\+x, \+z \cond \param^^t)}} \, \mu(d\+z) && \scripttext{Deriv. of logarithms} \\
+&= \frac{1}{p(\+x \cond \param^^t)}  \int \frac{\partial}{\partial \param} p(\+x, \+z \cond \param) \Bigr|_{\param=\param^^t}\, \mu(d\+z) && \scripttext{Pull out constant} \labelit \label{eqn:intermediate_result_1_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients}
 \end{align*}
 %
 On the other hand, we have
 %
 \begin{align*}
-\frac{\partial}{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta=\+\theta^^t} &= \frac{\partial}{\partial \+\theta} \log p(\+x \cond \+\theta)\Bigr|_{\+\theta=\+\theta^^t}  && \scripttext{Definition of $\ell$} \\
- &= \frac{\frac{\partial}{\partial \+\theta} p(\+x \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t}}{p(\+x \cond \+\theta^^t)} && \scripttext{Deriv of logarithm} \\
-  &= \frac{1}{p(\+x \cond \+\theta^^t)} \; \frac{\partial}{\partial \+\theta} \bigg[ \int p(\+x, \+z \cond \+\theta) \, \mu(d\+z) \bigg]\Bigr|_{\+\theta=\+\theta^^t} && \scripttext{Law of total probability} \\
-    &= \frac{1}{p(\+x \cond \+\theta^^t)} \;  \int \frac{\partial}{\partial \+\theta}  p(\+x, \+z \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t} \, \mu(d\+z) && \scripttext{Assume deriv. interchanges with int.} \labelit \label{eqn:intermediate_result_2_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients}
+\frac{\partial}{\partial \param} \ell(\param) \Bigr|_{\param=\param^^t} &= \frac{\partial}{\partial \param} \log p(\+x \cond \param)\Bigr|_{\param=\param^^t}  && \scripttext{Definition of $\ell$} \\
+ &= \frac{\frac{\partial}{\partial \param} p(\+x \cond \param) \Bigr|_{\param=\param^^t}}{p(\+x \cond \param^^t)} && \scripttext{Deriv of logarithm} \\
+  &= \frac{1}{p(\+x \cond \param^^t)} \; \frac{\partial}{\partial \param} \bigg[ \int p(\+x, \+z \cond \param) \, \mu(d\+z) \bigg]\Bigr|_{\param=\param^^t} && \scripttext{Law of total probability} \\
+    &= \frac{1}{p(\+x \cond \param^^t)} \;  \int \frac{\partial}{\partial \param}  p(\+x, \+z \cond \param) \Bigr|_{\param=\param^^t} \, \mu(d\+z) && \scripttext{Assume deriv. interchanges with int.} \labelit \label{eqn:intermediate_result_2_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients}
 \end{align*}
 %
 Together, \Eqref{eqn:intermediate_result_1_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients} and \Eqref{eqn:intermediate_result_2_for_proposition_that_Q_function_and_log_marginal_likelihood_have_the_same_gradients} imply that
 %
 \begin{align*}
-\frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \frac{\partial }{\partial \+\theta} Q(\+\theta \cond \+\theta^^t) \Bigr|_{\+\theta = \+\theta^^t} \bigg( = \frac{1}{p(\+x \cond \+\theta^^t)} \;  \int \frac{\partial}{\partial \+\theta}  p(\+x, \+z \cond \+\theta) \Bigr|_{\+\theta=\+\theta^^t} \, \mu(d\+z) \bigg)
+\frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t} = \frac{\partial }{\partial \param} Q(\param \cond \param^^t) \Bigr|_{\param = \param^^t} \bigg( = \frac{1}{p(\+x \cond \param^^t)} \;  \int \frac{\partial}{\partial \param}  p(\+x, \+z \cond \param) \Bigr|_{\param=\param^^t} \, \mu(d\+z) \bigg)
 \end{align*}
 as claimed.
 
@@ -809,7 +812,7 @@ as claimed.
 We have 
 %
 \begin{align}
-\frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\+\theta^^t}[\sufficientStatsFunction(\+X,\+Z)]
+\frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t} = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)]
 \label{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}
 \end{align}
 %
@@ -821,10 +824,10 @@ This follows immediately from the gradient of the Q-function (see \Eqref{eqn:the
 
 
 \begin{proposition}\propositiontitle{Relating the EM step to the ordinary gradient \cite{salakhutdinov2002relationship}.}
-There exists a symmetric positive define \enquote{transformation matrix} $\transformationMatrixGradientToEMStep(\+\theta^^t)$ such that the EM step $\+\theta^^{t-1} - \+\theta^^t$ can be expressed as
+There exists a symmetric positive define \enquote{transformation matrix} $\transformationMatrixGradientToEMStep(\param^^t)$ such that the EM step $\param^^{t-1} - \param^^t$ can be expressed as
 %
 \begin{align}
-\+\theta^^{t+1} - \+\theta^^t = \transformationMatrixGradientToEMStep(\+\theta^^t) \frac{\partial}{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta=\+\theta^^t}
+\param^^{t+1} - \param^^t = \transformationMatrixGradientToEMStep(\param^^t) \frac{\partial}{\partial \param} \ell(\param) \Bigr|_{\param=\param^^t}
 \label{eqn:relating_the_EM_step_to_the_ordinary_gradient}
 \end{align}
 %
@@ -837,8 +840,8 @@ where $\ell$ the the log marginal likelihood as in \Eqref{eqn:log_marginal_likel
 Define
 %
 \begin{align}
-\overline{T}(\+\theta) & \defeq \int p(\+z, \+x \cond \+\theta) \sufficientStatsFunction(\+x, \+z) \mu_{\+x,\+z}(d\+x, d\+z) \\
-\overline{T}_z(\+\theta) & \defeq \int p(\+z \cond \+x, \+\theta) \sufficientStatsFunction(\+x, \+z) \mu_\+z(d\+z) 
+\overline{T}(\param) & \defeq \int p(\+z, \+x \cond \param) \sufficientStatsFunction(\+x, \+z) \mu_{\+x,\+z}(d\+x, d\+z) \\
+\overline{T}_z(\param) & \defeq \int p(\+z \cond \+x, \param) \sufficientStatsFunction(\+x, \+z) \mu_\+z(d\+z) 
 \end{align}
 %
 Using these definitions, we can write the gradient of the log marginal likelihood from  \Eqref{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model} as
@@ -846,25 +849,25 @@ Using these definitions, we can write the gradient of the log marginal likelihoo
 %MTW: [Commenting this out because I think we aren't explicitly referring to these ambient measures again] Using these definitions, along with a slight abuse of notation where we distinguish the ambient measures $\mu_{\+x,\+z}(d\+x, d\+z)$ and $\mu_{\+z}(d\+z)$ by their arguments, 
 %
 \begin{align}
-\frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t} = \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t)
+\frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t} = \overline{T}_z(\param^^t)  - 	\overline{T}(\param^^t)
 \label{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model__in_compact_notation}
 \end{align}
 %
-Using these same definitions, the EM update of \Eqref{eqn:EM_update_to_parameters} is given by $\+\theta^^{t+1}$ which solves
+Using these same definitions, the EM update of \Eqref{eqn:EM_update_to_parameters} is given by $\param^^{t+1}$ which solves
 %
-\[  \overline{T}(\+\theta^^{t+1}) = \overline{T}_z(\+\theta^^t)  \]
+\[  \overline{T}(\param^^{t+1}) = \overline{T}_z(\param^^t)  \]
 %
 Since $ \overline{T}$ is an  invertible function (see Sec.~\ref{sec:mean_parametrization}), the EM update is given by
 %
 \begin{align}
-\+\theta^^{t+1} = \overline{T}^{-1} \overline{T}_z(\+\theta^^t)
+\param^^{t+1} = \overline{T}^{-1} \overline{T}_z(\param^^t)
 \label{eqn:EM_update__in_compact_notation} 
 \end{align}
 %
 Substituting \Eqref{eqn:EM_update__in_compact_notation}  and \Eqref{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model__in_compact_notation} into the claim of \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient} to be justified, we obtain the question of whether 
 %
 \begin{align}
-\bigg[\overline{T}^{-1} \overline{T}_z(\+\theta^^t) - \+\theta^^t \bigg] \stackrel{?}{=} \transformationMatrixGradientToEMStep(\+\theta^^t)  \bigg[ \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t) \bigg]
+\bigg[\overline{T}^{-1} \overline{T}_z(\param^^t) - \param^^t \bigg] \stackrel{?}{=} \transformationMatrixGradientToEMStep(\param^^t)  \bigg[ \overline{T}_z(\param^^t)  - 	\overline{T}(\param^^t) \bigg]
 \label{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}
 \end{align}
 %
@@ -873,21 +876,21 @@ for some symmetric positive definite matrix $\transformationMatrixGradientToEMSt
 By defining notation for the LHS and RHS of \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}
 %
 \begin{align}
-\+v(\+\theta^^t)& \defeq \overline{T}^{-1} \overline{T}_z(\+\theta^^t) - \+\theta^^t && \scripttext{LHS} \\
-\+u(\+\theta^^t)& \defeq \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t), && \scripttext{RHS}
+\+v(\param^^t)& \defeq \overline{T}^{-1} \overline{T}_z(\param^^t) - \param^^t && \scripttext{LHS} \\
+\+u(\param^^t)& \defeq \overline{T}_z(\param^^t)  - 	\overline{T}(\param^^t), && \scripttext{RHS}
 \end{align}
 %
 we can further simplify \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}.  In particular, we must show that there exists symmetric positive definite matrix $\transformationMatrixGradientToEMStep$ such that
 %
 \begin{align}
-\+v(\+\theta^^t) \stackrel{?}{=} \transformationMatrixGradientToEMStep(\+\theta^^t)  \+u(\+\theta^^t)
+\+v(\param^^t) \stackrel{?}{=} \transformationMatrixGradientToEMStep(\param^^t)  \+u(\param^^t)
 \label{eqn:relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation}
 \end{align}
 %
 \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} clearly holds by defining
 %
 \begin{align}
-\transformationMatrixGradientToEMStep(\+\theta^^t) \defeq  \frac{\+v(\+\theta^^t) \+v(\+\theta^^t)^\top}{\+v(\+\theta^^t)^\top \+u(\+\theta^^t)}.
+\transformationMatrixGradientToEMStep(\param^^t) \defeq  \frac{\+v(\param^^t) \+v(\param^^t)^\top}{\+v(\param^^t)^\top \+u(\param^^t)}.
 \label{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} 
 \end{align}
 %
@@ -907,10 +910,10 @@ The EM step gives an ascent direction for the log marginal likelihood.
 \end{corollary}
 
 \begin{proof}
-Since the matrix $\transformationMatrixGradientToEMStep$ in Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient} is symmetric positive definite, the EM step $\+\theta^^{t+1} - \+\theta^^t$ is an ascent direction by \citet[pp.31, Eqn. (3.2)]{nocedal2006numerical}.  Namely, using shorthand notation $\nabla \ell_t \defeq \frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t}$, we compute the directional derivative as
+Since the matrix $\transformationMatrixGradientToEMStep$ in Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient} is symmetric positive definite, the EM step $\param^^{t+1} - \param^^t$ is an ascent direction by \citet[pp.31, Eqn. (3.2)]{nocedal2006numerical}.  Namely, using shorthand notation $\nabla \ell_t \defeq \frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t}$, we compute the directional derivative as
 %
-\[ \nabla \ell_t^\top (\+\theta^^{t+1} - \+\theta^^t) \stackrel{(Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient})}{=}  \nabla \ell_t^\top  \transformationMatrixGradientToEMStep  \nabla \ell_t \stackrel{p.d.}{>} 0,\]
-and hence the EM step $\+\theta^^{t+1} - \+\theta^^t$ is an ascent direction.
+\[ \nabla \ell_t^\top (\param^^{t+1} - \param^^t) \stackrel{(Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient})}{=}  \nabla \ell_t^\top  \transformationMatrixGradientToEMStep  \nabla \ell_t \stackrel{p.d.}{>} 0,\]
+and hence the EM step $\param^^{t+1} - \param^^t$ is an ascent direction.
 %
 \end{proof}
 
@@ -935,7 +938,7 @@ Also, how does the $\transformationMatrixGradientToEMStep$ matrix magically keep
 
 Here, we discuss the convergence behavior of the EM algorithm, following \citet{salakhutdinov2002relationship} and \citet{salakhutdinov2003optimization}.
 
-The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSpace$ where $\EMmap(\+\param^^t) = \+\param^^{t+1}$.
+The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSpace$ where $\EMmap(\param^^t) = \param^^{t+1}$.
 
 \red{TODO: Use this material to address some of the questions at the end of the section on relating the EM step and the ordinary gradient.}
 
@@ -944,16 +947,16 @@ The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSp
 In the special case where $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are $n$ i.i.d samples from some exponential family, we can write the complete data likelihood of \Eqref{eqn:exponential_family_complete_data_likelihood} as 
 %
 \begin{align}
- p(\+x, \+z \cond \+\theta) = \bigg( \ds\prod_{i=1}^n \carrierDensityForSingleSample(x_i, z_i) \bigg) \exp \big\{ \eta(\+\theta)^\top \sum_{i=1}^n \sufficientStatsFunctionForSingleSample(x_i, z_i) - n \,\logNormalizerFunctionForSingleSample(\eta(\+\theta))\big\} 
+ p(\+x, \+z \cond \param) = \bigg( \ds\prod_{i=1}^n \carrierDensityForSingleSample(x_i, z_i) \bigg) \exp \big\{ \naturalParam(\param)^\top \sum_{i=1}^n \sufficientStatsFunctionForSingleSample(x_i, z_i) - n \,\logNormalizerFunctionForSingleSample(\naturalParam(\param))\big\} 
 \label{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}
  \end{align}
 %
-for some functions $\carrierDensityForSingleSample, \eta, \sufficientStatsFunctionForSingleSample, \logNormalizerFunctionForSingleSample$ describing the exponential family for a single observation (the so-called \textit{unit complete data likelihood}). 
+for some functions $\carrierDensityForSingleSample, \naturalParam, \sufficientStatsFunctionForSingleSample, \logNormalizerFunctionForSingleSample$ describing the exponential family for a single observation (the so-called \textit{unit complete data likelihood}). 
 
-Following the logic of Section \ref{sec:ml_with_ef}, we expect that in the i.i.d case, we should select $\+\theta^{(t+1)}$ such that
+Following the logic of Section \ref{sec:ml_with_ef}, we expect that in the i.i.d case, we should select $\param^{(t+1)}$ such that
 %
 \begin{align}
-\meanParameter(\+\theta^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \+\theta^{(t)})} \sufficientStatsFunction(x_i, z_i) 
+\meanParameter(\param^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \param^{(t)})} \sufficientStatsFunction(x_i, z_i) 
 \label{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics}	
 \end{align}
 %
@@ -966,10 +969,10 @@ where $\meanParameter := \E[\sufficientStatsFunction(x_i,z_i)]$ refers to the me
 
 Note that the update in \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} also corroborates with the more general update (not assuming i.i.d models) given in \Eqref{eqn:EM_update_to_parameters}. \red{TODO: Prove directly that the latter implies the former in the i.i.d case.}
 
-\red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \theta, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
+\red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \param, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
  
  
- \red{TODO (Notation): Fix notation here and throughout. For instance: (1) As usual, the boldfacing is giving me headaches.  For instance, if we use boldface $\+\theta$ to represent arbitrary params, then we should presumably  use boldface for the natural and mean parameterizations. (2) Be more consistently careful about when we're referring to random variables, and when to realizations.}
+ \red{TODO (Notation): Fix notation here and throughout. For instance: (1) As usual, the boldfacing is giving me headaches.  For instance, if we use boldface $\param$ to represent arbitrary params, then we should presumably  use boldface for the natural and mean parameterizations. (2) Be more consistently careful about when we're referring to random variables, and when to realizations.}
 
  
  \section{Bayesian inference for conjugate and semi-conjugate models} \label{sec:conjugate_exponential_family_models}
@@ -1335,7 +1338,7 @@ Consider a Bayesian hierarchical linear regression.    We take the regression to
 A simple version of this model is\footnote{The version is simple because,  for example,   we ignore problems with the Inverse Wishart for modeling covariance matrices (see Section \ref{sec:inverse_wishart_distribution}),  we are not imagining that the regression coefficients are sparse,  etc.} \footnote{Recall that the inverse gamma distribution is parametrized in a convenient way for interpretability,  where $\nu_0$ is a prior sample size from which a  prior sample variance of $\sigma_0^2$ has been obtained.  This parametrization,  and corresponding interpretation,  falls out of the use of the inverse gamma as a prior on the variance in a univariate normal model (see Remark \ref{rk:inverse_gamma_prior_with_hoff_parametrization}). }:
 \begin{align*}
 \+\mu &\sim  \N (\+m_0,\+V_0) \\
-\+\Sigma &\sim \InvWish(\eta_0,  \+\Psi_0) \\
+\+\Sigma &\sim \InvWish(\naturalParam_0,  \+\Psi_0) \\
 \+\beta_j &\iid \N(\+\mu,  \+\Sigma) \\
 \sigma^2 &\sim \InverseGamma (\frac{\nu_0}{2}, \frac{\nu_0}{2} \sigma_0^2) \\
 \epsilon_{ij} &\iid \N(0, \sigma^2) \\
@@ -1361,8 +1364,8 @@ N &:= \sum_{j=1}^J n_j \\
 \+m^\prime &= \+V^\prime \bigg( \+V_0^{-1} \+m_0 + J \+\Sigma^{-1} \overline{\+\beta} \bigg),  \quad \quad \overline{\+\beta} := \frac{1}{J} \sum_{j=1}^J \+\beta_j \\ 
 \+V^\prime &=  \bigg( \+V_0^{-1} + J \+\Sigma^{-1} \bigg)^{-1} \\
 & \\ 
-\+\Sigma \cond \+\beta_1, ...,\+\beta_J,  \+\mu &\sim \InverseWishart (\eta^\prime,  \+\Psi^\prime) \\
-\eta^\prime &= \eta_0 + J \\
+\+\Sigma \cond \+\beta_1, ...,\+\beta_J,  \+\mu &\sim \InverseWishart (\naturalParam^\prime,  \+\Psi^\prime) \\
+\naturalParam^\prime &= \naturalParam_0 + J \\
 \+\Psi^\prime &= \+\Psi_0 + \ds\sum_{j=1}^J (\+\beta_j - \+\mu) (\+\beta_j -\+\mu)^\top \\
 \labelit \label{eqn:hierarchical_linear_regression_ccs}
 \end{align*}
@@ -1745,26 +1748,26 @@ Note that this argument yields the same parameter updating scheme of \eqref{eqn:
 Following \cite{jordan2010conjugate}, here we provide a general formalism for conjugate priors for exponential family data models. 
 
 Writing the exponential family density in canonical form, we have
-\[ p(x \cond \eta) = \carrierDensity(x) \exp \{ \eta^\top T(x) - A(\eta) \} \]
-where $\eta$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $\carrierDensity(x)$ is the carrier density, and $A(\eta)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
+\[ p(x \cond \naturalParam) = \carrierDensity(x) \exp \{ \naturalParam^\top T(x) - A(\naturalParam) \} \]
+where $\naturalParam$ is the canonical parameter, $T(x)$ are the sufficient statistics,  $\carrierDensity(x)$ is the carrier density, and $A(\naturalParam)$ is the log normalizer (and so is \textit{not} a degree of freedom). 
 
 The natural parameter space is 
-\[  \bigg\{\eta : \ds\int \carrierDensity(x) \exp \{ \eta^\top T(x) - A(\eta) \} < \infty \bigg \}\]
+\[  \bigg\{\naturalParam : \ds\int \carrierDensity(x) \exp \{ \naturalParam^\top T(x) - A(\naturalParam) \} < \infty \bigg \}\]
 
 Given a random sample, $\+x=(x_1, x_2, .., x_N)$, we obtain:
-\[ p(\+x \cond \eta) = \bigg( \ds\prod_{i=1}^N \carrierDensity(x_i)  \bigg) \exp \bigg\{ \eta^\top  \ds\sum_{i=1}^N T(x_i) - N A(\eta) \bigg\} \]
+\[ p(\+x \cond \naturalParam) = \bigg( \ds\prod_{i=1}^N \carrierDensity(x_i)  \bigg) \exp \bigg\{ \naturalParam^\top  \ds\sum_{i=1}^N T(x_i) - N A(\naturalParam) \bigg\} \]
 as the likelihood function.
 
 A conjugate prior can be obtained by mimicking the likelihood
 \begin{equation}
-p (\eta \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^\top \eta - n_0 A(\eta)\}
+p (\naturalParam \cond \tau, n_0) = H(\tau, n_0) \exp \{ \tau^\top \naturalParam - n_0 A(\naturalParam)\}
 \label{eqn:conjugate_prior_exptl_family}
 \end{equation}
 
-where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan2010conjugate}).   Note that $\tau$ has the dimensionality of the canonical parameter $\eta$ and $n_0$ is a scalar.
+where now $H(\tau, n_0)$ is the normalizing factor.  (For conditions on normalizability, see \cite{jordan2010conjugate}).   Note that $\tau$ has the dimensionality of the canonical parameter $\naturalParam$ and $n_0$ is a scalar.
 
 To verify conjugacy, we compute the posterior density
-\[ p (\eta \cond \+x, \tau, \eta_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^\top \eta - (n_0 + N) A(\eta) \bigg\} \]
+\[ p (\naturalParam \cond \+x, \tau, \naturalParam_0)  \propto \exp \bigg\{ \bigg( \tau + \ds\sum_{n=1}^N  T(x_n) \bigg)^\top \naturalParam - (n_0 + N) A(\naturalParam) \bigg\} \]
 which retains the form of \eqref{eqn:conjugate_prior_exptl_family}.  For an argument that is perhaps more intuitive, see Section \ref{sec:general_conjugacy_alternate_argument} 
 
 Thus, the prior-to-posterior conversion can be summarized with the following update rules
