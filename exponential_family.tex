@@ -17,16 +17,18 @@
 %%%
 
 % General exponential family
+\newcommand{\obs}{\+x}
+\newcommand{\obsScalar}{x}
 \newcommand{\normalizerFunction}{Z}
 \newcommand{\logNormalizerFunction}{a}
-\newcommand{\sufficientStatsFunction}{s}
+\newcommand{\sufficientStatsFunction}{\+s}
 \newcommand{\carrierDensity}{h}
 \newcommand{\meanParameter}{\mu}
 
 % Parameters
-\newcommand{\param}{\theta}
-\newcommand{\paramSpace}{\param}
-\newcommand{\naturalParam}{\eta}
+\newcommand{\param}{\+\theta}
+\newcommand{\paramSpace}{\Theta}
+\newcommand{\naturalParam}{\+\eta}
 \newcommand{\naturalParamSpace}{H}
 
 %Relating EM step and ordinary gradient
@@ -100,9 +102,9 @@ We are interested in  exponential families primarily because they makes inferenc
 \begin{remark}\remarktitle{Alternate constructions for the exponential family.}
 Observe \cite{chua2019stats} that without loss of generality, we can 
 \begin{alphabate} 
-\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} Set $\carrierDensity(x) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\naturalParam(x) = \exp \{ \naturalParam^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\naturalParam)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\naturalParam) := \ds\int  \exp \{ \naturalParam^\top \sufficientStatsFunction(x)  \} \; \wt{\mu} (dx) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:convexity_properties_of_the_exponential_family}. 
-\item \label{item:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter.)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(x)$. Then defining $\wt{\naturalParam} = M^{-1} \naturalParam$ results in an equivalent family.  As a special case, $\naturalParam$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(x)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
-\item Change $\carrierDensity$ to $\wt{\carrierDensity}(x) = p_0(x)$, assuming that $0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\naturalParam)$ to $\wt{\logNormalizerFunction}(\naturalParam) = \logNormalizerFunction(\naturalParam) - \logNormalizerFunction(0)$ results in an equivalent family. 
+\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} Set $\carrierDensity(\obs) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\naturalParam(\obs) = \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\naturalParam) := \ds\int  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs)  \} \; \wt{\mu} (d\obs) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:convexity_properties_of_the_exponential_family}. 
+\item \label{item:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter.)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(\obs)$. Then defining $\wt{\naturalParam} = M^{-1} \naturalParam$ results in an equivalent family.  As a special case, $\naturalParam$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(\obs)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
+\item Change $\carrierDensity$ to $\wt{\carrierDensity}(\obs) = p_\+0(\obs)$, assuming that $\+0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\naturalParam)$ to $\wt{\logNormalizerFunction}(\naturalParam) = \logNormalizerFunction(\naturalParam) - \logNormalizerFunction(\+0)$ results in an equivalent family. 
 \end{alphabate}
 \label{rk:alternate_constructions_for_the_exponential_family}
 \end{remark}
@@ -119,7 +121,7 @@ An exponential family is said to be \textit{regular} if the natural parameter sp
 One can \textit{reparameterize} a regular exponential family with some other coordinates $\param$.  If one writes the natural parameter as a continuous function $\naturalParam(\param)$, then the density \eqref{eqn:exponential_family_natural} becomes
 \begin{align}
 \label{eqn:exponential_family}
- p_\param(x) = \carrierDensity(x) \exp \{ \naturalParam(\param)^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\naturalParam(\param))\} 
+ p_\param(\obs) = \carrierDensity(\obs) \exp \{ \naturalParam(\param)^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam(\param))\} 
  \end{align}
  The reparameterized family is regular as well, since $\param := \naturalParam^{-1}(\naturalParamSpace)$ is open. 
 
@@ -130,7 +132,7 @@ Exponential family members can have intractable normalization constants.  Consid
 
 
 \begin{definition}
-An exponential family is said to be \textbf{minimal} if the components of the sufficient statistics $\sufficientStatsFunction(x)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\naturalParam(\param) \in \R^n \textbackslash \set{0}$ such that $\naturalParam(\param)^\top \sufficientStatsFunction(x) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
+An exponential family is said to be \textbf{minimal} if the components of the sufficient statistics $\sufficientStatsFunction(\obs)$ are linearly independent ($\mu$-a.e.).\redfootnote{CHECK: This statement, when given by David Blei, made no mention of almost everywhere.  The next statement, however, which came from \cite{johnson2016composing}, does.  I attempted to align them by adding ``almost everywhere" to the linear independence claim.  Hopefully this is valid.}  That is, there must be no $\naturalParam(\param) \in \R^n \textbackslash \set{\+0}$ such that $\naturalParam(\param)^\top \sufficientStatsFunction(\obs) = 0$ ($\mu$-a.e.).\redfootnote{Is it strictly speaking necessary to assume that the parameters are real-valued? If so, why?}
 \label{def:minimal_exponential_families}
 \end{definition}
 
@@ -146,9 +148,9 @@ Here we give examples of exponential families, showing how to derive the exponen
 \subsubsection{Categorical distribution}
 
 \begin{example}{(Categorical Distribution)}
-\label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $x \in \set{0,1}^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
-\[p(x \cond \pi) = \prod_{k=1}^K \pi_k^{x_k} = \exp \{ \sum_{k=1}^K x_k \log \pi_k\} \]
- with natural parameter, $\naturalParam(\pi) = \log \pi$, the sufficient statistics $\sufficientStatsFunction(x) = x$, carrier density $\carrierDensity(x)=1$ and log normalizer $0$.
+\label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $\obs \in \set{0,1}^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
+\[p(\obs \cond \pi) = \prod_{k=1}^K \pi_k^{\obsScalar_k} = \exp \{ \sum_{k=1}^K \obsScalar_k \log \pi_k\} \]
+ with natural parameter, $\naturalParam(\pi) = \log \pi$, the sufficient statistics $\sufficientStatsFunction(\obs) = \obs$, carrier density $\carrierDensity(\obs)=1$ and log normalizer $0$.
 \end{example}
 
 \subsubsection{Dirichlet distribution}
@@ -226,7 +228,7 @@ We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribu
 & \stackrel{1}{=} (2\pi)^{-d/2} \exp \bigg\{ -\half \explaintermbrace{$-\half \vectorize (\+\Sigma^{-1})^\top \vectorize (\+x\+x^\top) $}{\+x^\top \+\Sigma^{-1} \+x} + \+x^\top \+\Sigma^{-1} \+\mu -\half \+\mu^\top \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | \bigg\} \\
 	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
-with natural parameter $\naturalParam(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $\sufficientStatsFunction(\+x) = \big(\vectorize (\+x \+x^\top), \+x \big)$, carrier density $\carrierDensity(x) = (2\pi)^{-d/2}$ and log normalizing $\logNormalizerFunction(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
+with natural parameter $\naturalParam(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $\sufficientStatsFunction(\+x) = \big(\vectorize (\+x \+x^\top), \+x \big)$, carrier density $\carrierDensity(\obs) = (2\pi)^{-d/2}$ and log normalizing $\logNormalizerFunction(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
 \end{example}
 
 \begin{remark}
@@ -350,15 +352,15 @@ Let $X$ have an exponential family distribution with natural parameter $\natural
 \begin{proof}
 
 Since $X$ is in the exponential family, its density can be written in the form
- \[ p(x \cond \naturalParam) =  \exp \{ \naturalParam^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(x)\} \] 
+ \[ p(\obs \cond \naturalParam) =  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(\obs)\} \] 
 where 
-\[\logNormalizerFunction(\naturalParam) = \log \int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \naturalParam> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} \] 
+\[\logNormalizerFunction(\naturalParam) = \log \int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} \] 
 
 Thus
 \begin{align*}
-\nabla \logNormalizerFunction (\naturalParam) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \naturalParam> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(x), \naturalParam> + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}} } \\
-& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(x)  \exp \{ <\sufficientStatsFunction(x), \naturalParam> - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(x) \} \; d\nu_{\mathcal{X}}  \\
-& = \int_{\mathcal{X}} \sufficientStatsFunction(x)  \; p(x \cond \naturalParam) \; d\nu_{\mathcal{X}}  \\
+\nabla \logNormalizerFunction (\naturalParam) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} } \\
+& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}}  \\
+& = \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \; p(\obs \cond \naturalParam) \; d\nu_{\mathcal{X}}  \\
 &= \E[\sufficientStatsFunction(X)]
 \end{align*}
 
@@ -401,8 +403,8 @@ Consider two probability distributions from the same exponential family with den
 We assume for simplicity of notation (but without loss of generality) that $\mu$ in Definition \ref{def:exponential_family} is the Lesbesgue measure. 
 
 \begin{align*}
-\texttt{KL}(\naturalParam || \wt{\naturalParam}) &= \ds\int p(x \cond \naturalParam) \log \bigg( \df{p(x \cond \naturalParam)}{p(x \cond \wt{\naturalParam})}\bigg) \;dx \\ 
-& = \ds\int p(x \cond \naturalParam) \; \bigg[ \bigip{\sufficientStatsFunction(x)}{\naturalParam - \wt{\naturalParam}}  + \logNormalizerFunction(\wt{\naturalParam}) - \logNormalizerFunction(\naturalParam) \bigg] \; dx \\
+\texttt{KL}(\naturalParam || \wt{\naturalParam}) &= \ds\int p(\obs \cond \naturalParam) \log \bigg( \df{p(\obs \cond \naturalParam)}{p(\obs \cond \wt{\naturalParam})}\bigg) \;d\obs \\ 
+& = \ds\int p(\obs \cond \naturalParam) \; \bigg[ \bigip{\sufficientStatsFunction(\obs)}{\naturalParam - \wt{\naturalParam}}  + \logNormalizerFunction(\wt{\naturalParam}) - \logNormalizerFunction(\naturalParam) \bigg] \; d\obs \\
 &= \bigip{\E_{\naturalParam}[\sufficientStatsFunction(X)]}{\naturalParam - \wt{\naturalParam} } + \logNormalizerFunction(\wt{\naturalParam}) - \logNormalizerFunction(\naturalParam) \\
 & \stackrel{\eqref{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}}{=}  \bigip{\nabla \logNormalizerFunction(\naturalParam)}{\naturalParam - \wt{\naturalParam} } + \logNormalizerFunction(\wt{\naturalParam}) - \logNormalizerFunction(\naturalParam)
 \end{align*}
@@ -471,19 +473,19 @@ What does \eqref{eqn:cross_entropy_between_two_exponential_family_members} look 
 
 Let 
 \begin{align*}
-p(x \cond \naturalParam) &=  \exp \{ \naturalParam^\top \sufficientStatsFunction(x) - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(x)\}  \\
-\wt{p}(x \cond \wt{\naturalParam}) &=  \exp \{ \wt{\naturalParam}^\top \wt{\sufficientStatsFunction}(x) - \wt{\logNormalizerFunction}(\wt{\naturalParam}) + \log \wt{\carrierDensity}(x)\}  \\	
+p(\obs \cond \naturalParam) &=  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(\obs)\}  \\
+\wt{p}(\obs \cond \wt{\naturalParam}) &=  \exp \{ \wt{\naturalParam}^\top \wt{\sufficientStatsFunction}(\obs) - \wt{\logNormalizerFunction}(\wt{\naturalParam}) + \log \wt{\carrierDensity}(\obs)\}  \\	
 \end{align*}
  
 Then the cross entropy from $\wt{p}$ to $p$ is given by
 \begin{align*}
-\H(p, \wt{p}) &= -\E_p [\log \wt{p}(x)]	\\
-&= -\ds\int p(x \cond \naturalParam) \; \log \wt{p} (x \cond \wt{\naturalParam}) \; dx \\
-&= -\ds\int p(x \cond \naturalParam) \bigg[ \bigip{\wt{\sufficientStatsFunction}(x)}{\wt{\naturalParam}} - \wt{a} (\wt{\naturalParam}) + \log \wt{\carrierDensity}(x)  \bigg] dx \\
-&= \wt{a}(\wt{\naturalParam})- \bigip{ \E_p[\wt{\sufficientStatsFunction}(x)]}{\wt{\naturalParam}} - \E_p[\log \wt{\carrierDensity}(x)]
+\H(p, \wt{p}) &= -\E_p [\log \wt{p}(\obs)]	\\
+&= -\ds\int p(\obs \cond \naturalParam) \; \log \wt{p} (\obs \cond \wt{\naturalParam}) \; d\obs \\
+&= -\ds\int p(\obs \cond \naturalParam) \bigg[ \bigip{\wt{\sufficientStatsFunction}(\obs)}{\wt{\naturalParam}} - \wt{a} (\wt{\naturalParam}) + \log \wt{\carrierDensity}(\obs)  \bigg] d\obs \\
+&= \wt{a}(\wt{\naturalParam})- \bigip{ \E_p[\wt{\sufficientStatsFunction}(\obs)]}{\wt{\naturalParam}} - \E_p[\log \wt{\carrierDensity}(\obs)]
 \end{align*}
 
-So there are now two potentially problematic terms, although in the case where $\wt{\carrierDensity}(x) \equiv 1$, only one potentially problematic term remains.
+So there are now two potentially problematic terms, although in the case where $\wt{\carrierDensity}(\obs) \equiv 1$, only one potentially problematic term remains.
 \end{remark}
 
 
@@ -503,8 +505,8 @@ The proofs of both convexity results follow from an application of H\"{o}lder’
 Then
 %
 \begin{align*}
-\exp \logNormalizerFunction(\naturalParam) & \stackrel{1}{=} \int e^{(\lambda \naturalParam_1 + (1-\lambda) \naturalParam_2)^\top \sufficientStatsFunction(x)}  \nu(dx)  \\
-& \stackrel{2}{\leq} \bigg( \explaintermbrace{assumed finite}{\int e^{\naturalParam_1^\top \sufficientStatsFunction(x)}  \nu(dx)} \bigg)^\lambda \bigg(  \explaintermbrace{assumed finite}{\int e^{\naturalParam_2^\top \sufficientStatsFunction(x)}  \nu(dx)} \bigg)^{1-\lambda} \\
+\exp \logNormalizerFunction(\naturalParam) & \stackrel{1}{=} \int e^{(\lambda \naturalParam_1 + (1-\lambda) \naturalParam_2)^\top \sufficientStatsFunction(\obs)}  \nu(d\obs)  \\
+& \stackrel{2}{\leq} \bigg( \explaintermbrace{assumed finite}{\int e^{\naturalParam_1^\top \sufficientStatsFunction(\obs)}  \nu(d\obs)} \bigg)^\lambda \bigg(  \explaintermbrace{assumed finite}{\int e^{\naturalParam_2^\top \sufficientStatsFunction(\obs)}  \nu(d\obs)} \bigg)^{1-\lambda} \\
 & < \infty  
 \end{align*}
 %
@@ -516,8 +518,8 @@ and so $\logNormalizerFunction$ is a convex function.   For an argument that min
 
 For details:
 \begin{itemize}
-	\item In (1) we used the definition of the log normalizer function for an exponential family. For simplicity, we also applied Item~\ref{item:ignorabiity_of_carrier_density} of Remark~\ref{rk:alternate_constructions_for_the_exponential_family}, changing the ambient measure to $\nu(dx) = h(x) \mu(dx)$, so that we can ignore the carrier density (the carrier density $\wt{\carrierDensity}$ with respect to $\nu$ satisfies $\wt{\carrierDensity}(x) \equiv 1$).
-	\item In (2), we applied H\"{o}lder’s inequality.  Recall that H\"{o}lder’s inequality is that $||fg||_1 \leq ||f||_p ||g||_q$ whenever $p,q \in [1,\infty]$ and $\frac{1}{p} + \frac{1}{q}=1$.  Recall also the definition of norm $||f||_p = (\int f^p \wrt{\mu})^{1/p}$ in some underlying measure space (with measure $\mu$).  To apply H\"{o}lder’s inequality, we take the functions to be $f(x) = e^{\lambda \naturalParam_1^\top \sufficientStatsFunction(x)}$ and $g(x) = e^{(1-\lambda)\naturalParam_2^\top \sufficientStatsFunction(x)}$, the underlying measure to be $\mu=\nu$, and the H\"{o}lder exponents to be $p=\frac{1}{\lambda}$ and $q=\frac{1}{1-\lambda}$. 
+	\item In (1) we used the definition of the log normalizer function for an exponential family. For simplicity, we also applied Item~\ref{item:ignorabiity_of_carrier_density} of Remark~\ref{rk:alternate_constructions_for_the_exponential_family}, changing the ambient measure to $\nu(d\obs) = h(\obs) \mu(d\obs)$, so that we can ignore the carrier density (the carrier density $\wt{\carrierDensity}$ with respect to $\nu$ satisfies $\wt{\carrierDensity}(\obs) \equiv 1$).
+	\item In (2), we applied H\"{o}lder’s inequality.  Recall that H\"{o}lder’s inequality is that $||fg||_1 \leq ||f||_p ||g||_q$ whenever $p,q \in [1,\infty]$ and $\frac{1}{p} + \frac{1}{q}=1$.  Recall also the definition of norm $||f||_p = (\int f^p \wrt{\mu})^{1/p}$ in some underlying measure space (with measure $\mu$).  To apply H\"{o}lder’s inequality, we take the functions to be $f(\obs) = e^{\lambda \naturalParam_1^\top \sufficientStatsFunction(\obs)}$ and $g(\obs) = e^{(1-\lambda)\naturalParam_2^\top \sufficientStatsFunction(\obs)}$, the underlying measure to be $\mu=\nu$, and the H\"{o}lder exponents to be $p=\frac{1}{\lambda}$ and $q=\frac{1}{1-\lambda}$. 
 \end{itemize} 
 \end{proof}
 
@@ -526,16 +528,16 @@ For details:
 
 A model is called \textit{globally identifiable} if $p(\cdot \cond \param_1) = p(\cdot \cond \param_2)$ implies $\param_1=\param_2$ \cite{cole2020parameter}. For exponential families as defined in Def.~\ref{def:exponential_family},\footnote{Note that the log normalizer function is assumed to be continuously differentiable by definition.} if the Fisher information matrix is non-singular, then the model is globally identifiable.  For exponential families, we may compute the Fisher information matrix as\footnote{For justification, see \url{https://www2.stat.duke.edu/courses/Spring05/sta215/lec/wk06a.pdf.}}
 \begin{align*}
-I(\param) = \E [ -\nabla^2 \log p(x \cond \param)]
+I(\param) = \E [ -\nabla^2 \log p(\obs \cond \param)]
 \labelit \label{eqn:fisher_information_matrix_for_exponential_families}	
 \end{align*}
 For more information on identifiability in exponential families, see \cite{cole2020parameter} pp.62. 
 
 \subsubsection{i.i.d samples from an exponential family} \label{sec:iid_samples_from_an_exponential_family}
-If $\+x=(x_1, ..., x_n)$ are n independent samples from the same exponential family, then 
+If $\obs=(\obs_1, ..., \obs_n)$ are n independent samples from the same exponential family, then 
 \begin{align}
 \label{eqn:exponential_family_iid}
- p(\+x \cond \param) = \ds\prod_{i=1}^n \carrierDensity(x_i) \exp \big\{ \naturalParam(\param)^\top \sum_{i=1}^n \sufficientStatsFunction(x_i) - n \,\logNormalizerFunction(\naturalParam(\param))\big\} 
+ p(\obs \cond \param) = \ds\prod_{i=1}^n \carrierDensity(\obs_i) \exp \big\{ \naturalParam(\param)^\top \sum_{i=1}^n \sufficientStatsFunction(\obs_i) - n \,\logNormalizerFunction(\naturalParam(\param))\big\} 
  \end{align}
 
 
@@ -561,19 +563,19 @@ The goal for maximum likelihood is to determine the parameter
 \param_{ML} = \argmax_\param  \, \log p(\+x \cond \param) 
 \end{equation}
 
-Let us assume that $\+x=(x_1, ..., x_n)$ are i.i.d observations  from a fixed exponential family, so that the likelihood has form \eqref{eqn:exponential_family_iid}.  Let us compute the gradient with respect to the natural parameter $\naturalParam$ of $\ell(\naturalParam) := \log p(\+x \cond \naturalParam)$
+Let us assume that $\+x=(\obs_1, ..., \obs_n)$ are i.i.d observations  from a fixed exponential family, so that the likelihood has form \eqref{eqn:exponential_family_iid}.  Let us compute the gradient with respect to the natural parameter $\naturalParam$ of $\ell(\naturalParam) := \log p(\obs \cond \naturalParam)$
 
-\[ \nabla_\naturalParam \ell(\naturalParam) = \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) - n \; \nabla_\naturalParam \logNormalizerFunction(\naturalParam) \]
+\[ \nabla_\naturalParam \ell(\naturalParam) = \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) - n \; \nabla_\naturalParam \logNormalizerFunction(\naturalParam) \]
 
 Setting the gradient to zero, we obtain
 
-\[ \nabla_\naturalParam \logNormalizerFunction(\naturalParam) = \df{1}{n}  \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) \]
+\[ \nabla_\naturalParam \logNormalizerFunction(\naturalParam) = \df{1}{n}  \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) \]
 
 But $\nabla_\naturalParam \logNormalizerFunction(\naturalParam) = \E [\sufficientStatsFunction(X)]$  (see Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}).  Thus, we should set $\param_{ML}$ such that
 %
 
 \begin{align}
-\meanParameter(\param_{ML}) = \df{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(x_i) 	
+\meanParameter(\param_{ML}) = \df{1}{n} \ds\sum_{i=1}^n \sufficientStatsFunction(\obs_i) 	
  \label{eqn:maximum_likelihood_solution_for_exponential_families}
 \end{align}
 %
@@ -581,7 +583,7 @@ where $\meanParameter:= \E[\sufficientStatsFunction(X)]$ refers to the mean para
 
 \subsection{Latent variable models}
 
-Some models have latent variables associated with each observation.   Let us  assume that $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ where $\+x$ is observed data and $\+z$ is unobserved data.   Then we say that the \textit{complete data likelihood} is an exponential family if we can write
+Some models have latent variables associated with each observation.   Let us  assume that $(\+\obs, \+z)=((\obs_1,\+z_1), ..., (\obs_n, \+z_n))$ where $\+x$ is observed data and $\+z$ is unobserved data.   Then we say that the \textit{complete data likelihood} is an exponential family if we can write
 %
 \begin{align}
  p(\+x, \+z \cond \param) = \carrierDensity(\+x, \+z) \exp \big\{ \naturalParam(\param)^\top \sufficientStatsFunction(\+x, \+z) - \logNormalizerFunction(\naturalParam(\param))\big\}. 
@@ -938,29 +940,29 @@ Also, how does the $\transformationMatrixGradientToEMStep$ matrix magically keep
 
 Here, we discuss the convergence behavior of the EM algorithm, following \citet{salakhutdinov2002relationship} and \citet{salakhutdinov2003optimization}.
 
-The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSpace$ where $\EMmap(\param^^t) = \param^^{t+1}$.
+The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSpace$ where $\EMmap(\param^^t) = \param^^{t+1}$.  
 
 \red{TODO: Use this material to address some of the questions at the end of the section on relating the EM step and the ordinary gradient.}
 
 \subsubsection{The EM algorithm for i.i.d data}
 
-In the special case where $(\+x, \+z)=((x_1,z_1), ..., (x_n, z_n))$ are $n$ i.i.d samples from some exponential family, we can write the complete data likelihood of \Eqref{eqn:exponential_family_complete_data_likelihood} as 
+In the special case where $(\obs, \+z)=((\obs_1,\+z_1), ..., (\obs_n, \+z_n))$ are $n$ i.i.d samples from some exponential family, we can write the complete data likelihood of \Eqref{eqn:exponential_family_complete_data_likelihood} as 
 %
 \begin{align}
- p(\+x, \+z \cond \param) = \bigg( \ds\prod_{i=1}^n \carrierDensityForSingleSample(x_i, z_i) \bigg) \exp \big\{ \naturalParam(\param)^\top \sum_{i=1}^n \sufficientStatsFunctionForSingleSample(x_i, z_i) - n \,\logNormalizerFunctionForSingleSample(\naturalParam(\param))\big\} 
+ p(\obs, \+z \cond \param) = \bigg( \ds\prod_{i=1}^n \carrierDensityForSingleSample(\obs_i, \+z_i) \bigg) \exp \big\{ \naturalParam(\param)^\top \sum_{i=1}^n \sufficientStatsFunctionForSingleSample(\obs_i, \+z_i) - n \,\logNormalizerFunctionForSingleSample(\naturalParam(\param))\big\} 
 \label{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}
  \end{align}
 %
-for some functions $\carrierDensityForSingleSample, \naturalParam, \sufficientStatsFunctionForSingleSample, \logNormalizerFunctionForSingleSample$ describing the exponential family for a single observation (the so-called \textit{unit complete data likelihood}). 
+for some functions $ \naturalParam, \sufficientStatsFunctionForSingleSample, \carrierDensityForSingleSample,\logNormalizerFunctionForSingleSample$ describing the exponential family for a single observation (the so-called \textit{unit complete data likelihood}). 
 
 Following the logic of Section \ref{sec:ml_with_ef}, we expect that in the i.i.d case, we should select $\param^{(t+1)}$ such that
 %
 \begin{align}
-\meanParameter(\param^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \param^{(t)})} \sufficientStatsFunction(x_i, z_i) 
+\meanParameter(\param^{(t+1)}) = \df{1}{n} \ds\sum_{i=1}^n   \E_{p(\+z \cond \+x , \param^{(t)})} \sufficientStatsFunction(\obs_i, \+z_i) 
 \label{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics}	
 \end{align}
 %
-where $\meanParameter := \E[\sufficientStatsFunction(x_i,z_i)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the \textit{unit complete data likelihood}.  This is true.  \red{TODO: Justify.} \red{TODO: I believe that I read \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} in some paper -- perhaps notes by Jordan.  Find the source so that I can cite it and perhaps provide additional context.} 
+where $\meanParameter := \E[\sufficientStatsFunction(\obs_i,\+z_i)]$ refers to the mean parametrization (Sec.~\ref{sec:mean_parametrization}) of the \textit{unit complete data likelihood}.  This is true.  \red{TODO: Justify.} \red{TODO: I believe that I read \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} in some paper -- perhaps notes by Jordan.  Find the source so that I can cite it and perhaps provide additional context.} 
 
 \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics}	 reveals why an EM iteration is often described and/or implemented as performing maximum likelihood with the expected sufficient statistics.
 
