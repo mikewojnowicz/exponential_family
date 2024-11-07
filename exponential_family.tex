@@ -23,6 +23,12 @@
 \newcommand{\carrierDensity}{h}
 \newcommand{\naturalParamSpace}{H}
 \newcommand{\meanParameter}{\mu}
+\newcommand{\param}{\+\theta}
+\newcommand{\paramSpace}{\Theta}
+
+%Relating EM step and ordinary gradient
+\newcommand{\transformationMatrixGradientToEMStep}{\+P}
+\newcommand{\EMmap}{\+M}
 
 % EF for a single observation, from which we take iid draws.
 \newcommand{\logNormalizerFunctionForSingleSample}{\wt{a}}
@@ -585,6 +591,9 @@ for some functions $\carrierDensity, \eta, \sufficientStatsFunction, \logNormali
 
 When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references.  \red{TODO: Rewrite to clarify that EM applies more broadly than just to EF models.}
 
+
+\subsubsection{The EM algorithm}
+
 \begin{subequations}
 %
 The \textbf{Expectation Maximization (EM)} algorithm is to recursively update parameters $\+\theta$ by solving at iteration $t=0,1,\hdots$
@@ -605,7 +614,10 @@ above, our notation means
 \[\E_{p(\+z \cond \+x , \+\theta^^t)} \bigg[ \ln p(\+x, \+z \cond \+\theta) \bigg] \defeq \int \ln p(\+x, \+z \cond \+\theta) \, p(\+z \cond \+x , \+\theta^^t) \, \mu(d\+z).\]
 %
 This $Q$ function is perhaps more clearly denoted by \citet{miller2011why} as 
+%
 \[  Q(\+\theta \cond \+\theta^^t)  = \E_{\+\theta^^t} \bigg[ \ln p_{\+\theta}(\+X, \+Z) \cond \+X=\+x \bigg].\]
+%
+\blue{DISCUSS: However, I believe both notations are somewhat misleading. They only make sense formally, because the density of a random variable $p(\+Y)$ is not a function of the random variable $\+Y$.} 
 \label{notation:Q_function}
 \end{notation}
 
@@ -613,7 +625,9 @@ This $Q$ function is perhaps more clearly denoted by \citet{miller2011why} as
 In the EM algorithm of 
 \Eqref{eqn:EM_algorithm}, we refer to \Eqref{eqn:E_step_for_EM} as the \textit{E-step} and \Eqref{eqn:M_step_for_EM} as the \textit{M-step}.
 
-\textbf{What justifies this particular algorithm?}  One way to justify EM is as a special case of Coordinate Ascent Variational Inference (CAVI) \cite{wojnowiczXXXXvariational}. In particular, suppose we have a frequentist latent variable model (with observed data $\+x$, random latent variables $\+z$, and fixed but unknown parameters $\+\theta$) for which we can compute the exact posterior.  In this setting, an unrestricted variational family is formed by $q=q_\+z q_\+\theta$  where $q_\+\theta = \delta_\+\theta$.  Now at the $t$-th iteration of coordinate ascent, we do:
+\textbf{What justifies this particular algorithm?}  One way to justify EM is as a special case of Coordinate Ascent Variational Inference (CAVI) \cite{wojnowiczXXXXvariational}.\footnotemark~In particular, suppose we have a frequentist latent variable model (with observed data $\+x$, random latent variables $\+z$, and fixed but unknown parameters $\+\theta$) for which we can compute the exact posterior.  In this setting, an unrestricted variational family is $\mathcal{Q} = \set{q: q=q_\+z q_\+\theta \text{ where } q_\+\theta = \delta_\+\theta}$.  Now at the $t$-th iteration of coordinate ascent, we do:
+
+\footnotetext{My notes in \citet{wojnowiczXXXXvariational} cite \citet{beal2003variational} for this insight. However, per \citet[pp.~2]{salakhutdinov2003optimization}, I believe this perspective on EM may trace all the way back to \citet{neal1998view}.}
 
 \begin{itemize}
 \item \textit{Update to $q_\+z$.} We have:
@@ -624,7 +638,7 @@ In the EM algorithm of
 %
 That is, by setting $q_\+z$ to the exact posterior, the variational lower bound ($\VLBO$) becomes tight, exactly equaling the log marginal likelihood. Hence, it is the optimal update when there are no restrictions on $\mathcal{Q}_z \ni q_\+z$.  This is precisely the E-step of the EM algorithm.
 
-\item \textit{Update to $q_\+\theta$.}	 To update $q_\+\theta$, we note that the variational lower bound has the form
+\item \textit{Update to $q_\+\theta$.}	 To update $q_\+\theta$, we note that when we evaluate the variational lower bound at the exact posterior over latent variables, we obtain
 %
 \begin{align}
 \VLBO(q_\+\theta, q_\+z^^t) = \explaintermbrace{energy}{Q(\+\theta \cond \+\theta^^t)} + \explaintermbrace{entropy}{H(\+\theta^^t)}
@@ -644,7 +658,9 @@ This is precisely the M-step of the EM algorithm.
 
 
 
-We will provide a solution to the EM objective of \Eqref{eqn:M_step_for_EM} in Prop.~\ref{prop:EM_update}. First, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. %Before that, we provide some justification for optimizing the Q-function in Prop~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}.
+\subsubsection{Gradient of the Q-function}
+
+ Here, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. Using that, we can provide an interesting representation of the EM step \Eqref{eqn:EM_algorithm} in Prop.~\ref{prop:EM_update}. 
 
 
 \begin{proposition}\propositiontitle{The gradient of the Q-function \cite{salakhutdinov2002relationship}.}
@@ -786,6 +802,8 @@ as claimed.
 
 \end{proof}
 
+\red{TODO: It might be possible to give a much faster proof using the idea of EM as exact CAVI inference.}
+
 \begin{corollary}\propositiontitle{The ordinary gradient of the log marginal likelihood of an exponential family latent variable model.}
 
 We have 
@@ -803,10 +821,10 @@ This follows immediately from the gradient of the Q-function (see \Eqref{eqn:the
 
 
 \begin{proposition}\propositiontitle{Relating the EM step to the ordinary gradient \cite{salakhutdinov2002relationship}.}
-There exists a symmetric positive define matrix $\+P(\+\theta^^t)$ such that the EM step $\+\theta^^{t-1} - \+\theta^^t$ can be expressed as
+There exists a symmetric positive define \enquote{transformation matrix} $\transformationMatrixGradientToEMStep(\+\theta^^t)$ such that the EM step $\+\theta^^{t-1} - \+\theta^^t$ can be expressed as
 %
 \begin{align}
-\+\theta^^{t+1} - \+\theta^^t = \+P(\+\theta^^t) \frac{\partial}{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta=\+\theta^^t}
+\+\theta^^{t+1} - \+\theta^^t = \transformationMatrixGradientToEMStep(\+\theta^^t) \frac{\partial}{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta=\+\theta^^t}
 \label{eqn:relating_the_EM_step_to_the_ordinary_gradient}
 \end{align}
 %
@@ -846,11 +864,11 @@ Since $ \overline{T}$ is an  invertible function (see Sec.~\ref{sec:mean_paramet
 Substituting \Eqref{eqn:EM_update__in_compact_notation}  and \Eqref{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model__in_compact_notation} into the claim of \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient} to be justified, we obtain the question of whether 
 %
 \begin{align}
-\bigg[\overline{T}^{-1} \overline{T}_z(\+\theta^^t) - \+\theta^^t \bigg] \stackrel{?}{=} \+P(\+\theta^^t)  \bigg[ \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t) \bigg]
+\bigg[\overline{T}^{-1} \overline{T}_z(\+\theta^^t) - \+\theta^^t \bigg] \stackrel{?}{=} \transformationMatrixGradientToEMStep(\+\theta^^t)  \bigg[ \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t) \bigg]
 \label{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}
 \end{align}
 %
-for some symmetric positive definite matrix $\+P$.
+for some symmetric positive definite matrix $\transformationMatrixGradientToEMStep$.
 
 By defining notation for the LHS and RHS of \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}
 %
@@ -859,29 +877,29 @@ By defining notation for the LHS and RHS of \Eqref{eqn:relating_the_EM_step_to_t
 \+u(\+\theta^^t)& \defeq \overline{T}_z(\+\theta^^t)  - 	\overline{T}(\+\theta^^t), && \scripttext{RHS}
 \end{align}
 %
-we can further simplify \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}.  In particular, we must show that there exists symmetric positive definite matrix $\+P$ such that
+we can further simplify \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__compact_notation}.  In particular, we must show that there exists symmetric positive definite matrix $\transformationMatrixGradientToEMStep$ such that
 %
 \begin{align}
-\+v(\+\theta^^t) \stackrel{?}{=} \+P(\+\theta^^t)  \+u(\+\theta^^t)
+\+v(\+\theta^^t) \stackrel{?}{=} \transformationMatrixGradientToEMStep(\+\theta^^t)  \+u(\+\theta^^t)
 \label{eqn:relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation}
 \end{align}
 %
 \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} clearly holds by defining
 %
 \begin{align}
-\+P(\+\theta^^t) \defeq  \frac{\+v(\+\theta^^t) \+v(\+\theta^^t)^\top}{\+v(\+\theta^^t)^\top \+u(\+\theta^^t)}.
+\transformationMatrixGradientToEMStep(\+\theta^^t) \defeq  \frac{\+v(\+\theta^^t) \+v(\+\theta^^t)^\top}{\+v(\+\theta^^t)^\top \+u(\+\theta^^t)}.
 \label{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} 
 \end{align}
 %
 In particular, by substituting \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation}  into \Eqref{eqn:relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation}, we find 
 %
 \begin{align}
-\+P \+u =  \frac{\+v \cancel{\+v^\top}}{\cancel{\+v^\top \+u}} \cancel{\+u} = \+v,
+\transformationMatrixGradientToEMStep \+u =  \frac{\+v \cancel{\+v^\top}}{\cancel{\+v^\top \+u}} \cancel{\+u} = \+v,
 \end{align}
 %
 as desired.  
 
-Now all that remains is to show that $\+P$ is symmetric positive definite.  It is clear from \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} that $\+P$ is symmetric.  We also see from \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} that $\+P$ is positive definite if $\+v^\top \+u >0$, and that is shown in \citet[Eqn.~26]{salakhutdinov2002relationship}.
+Now all that remains is to show that $\transformationMatrixGradientToEMStep$ is symmetric positive definite.  It is clear from \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} that $\transformationMatrixGradientToEMStep$ is symmetric.  We also see from \Eqref{eqn:solution_to_transformation_matrix_relating_the_EM_step_to_the_ordinary_gradient__VERY_compact_notation} that $\transformationMatrixGradientToEMStep$ is positive definite if $\+v^\top \+u >0$, and that is shown in \citet[Eqn.~26]{salakhutdinov2002relationship}.
 \end{proof}
 
 \begin{corollary}
@@ -889,9 +907,9 @@ The EM step gives an ascent direction for the log marginal likelihood.
 \end{corollary}
 
 \begin{proof}
-The matrix $\+P$ in Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient} is symmetric positive definite, the EM step $\+\theta^^{t+1} - \+\theta^^t$ is an ascent direction by \citet[pp.31, Eqn. (3.2)]{nocedal2006numerical}.  Namely, using shorthand notation $\nabla \ell_t \defeq \frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t}$, we compute the directional derivative as
+Since the matrix $\transformationMatrixGradientToEMStep$ in Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient} is symmetric positive definite, the EM step $\+\theta^^{t+1} - \+\theta^^t$ is an ascent direction by \citet[pp.31, Eqn. (3.2)]{nocedal2006numerical}.  Namely, using shorthand notation $\nabla \ell_t \defeq \frac{\partial }{\partial \+\theta} \ell(\+\theta) \Bigr|_{\+\theta = \+\theta^^t}$, we compute the directional derivative as
 %
-\[ \nabla \ell_t^\top (\+\theta^^{t+1} - \+\theta^^t) \stackrel{(Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient})}{=}  \nabla \ell_t^\top  \+P  \nabla \ell_t \stackrel{p.d.}{>} 0,\]
+\[ \nabla \ell_t^\top (\+\theta^^{t+1} - \+\theta^^t) \stackrel{(Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient})}{=}  \nabla \ell_t^\top  \transformationMatrixGradientToEMStep  \nabla \ell_t \stackrel{p.d.}{>} 0,\]
 and hence the EM step $\+\theta^^{t+1} - \+\theta^^t$ is an ascent direction.
 %
 \end{proof}
@@ -904,14 +922,22 @@ Consider WHY/HOW gradient chasing could ever be faster than EM.
 \begin{itemize}
 
 \item Both are ascent directions.   How/when is one better than another?
-\item Is there some way to improve EM using ordinary gradient but without bringing in the 2nd order info?  I.e., is there some \textit{other} $\+P$ that would be better? If so, why?
+\item Is there some way to improve EM using ordinary gradient but without bringing in the 2nd order info?  I.e., is there some \textit{other} $\transformationMatrixGradientToEMStep$ that would be better? If so, why?
 \item  \citet[abstract]{qin2000direct} mentions that (at least in the context of HMMs), EM is especially slow (relative to direct optimization) in the low STN regime.  Why would this be?
 \item  Discuss with Jeff: Given this analysis, aren't both EM and direct optimization just different first-order methods, in contrast with bike/car/racecar analogy?
 \item \citet{salakhutdinov2002relationship} says the EM step has "positive projection" onto the true gradient of the likelihood function.   How is this a projection? What are the implications for comparing EM and direct optimization?
 \end{itemize}
 
-Also, how does the $\+P$ matrix magically keep update in param bounds?
+Also, how does the $\transformationMatrixGradientToEMStep$ matrix magically keep update in param bounds?
 }
+
+\subsubsection{Convergence behavior of the EM algorithm}
+
+Here, we discuss the convergence behavior of the EM algorithm, following \citet{salakhutdinov2002relationship} and \citet{salakhutdinov2003optimization}.
+
+The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSpace$ where $\EMmap(\+\param^^t) = \+\param^^{t+1}$.
+
+\red{TODO: Use this material to address some of the questions at the end of the section on relating the EM step and the ordinary gradient.}
 
 \subsubsection{The EM algorithm for i.i.d data}
 
