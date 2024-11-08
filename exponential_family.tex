@@ -1018,8 +1018,7 @@ Under a minimal exponential family model with mean parametrization, the EM step 
 %
 \begin{align*}
 \frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t} &= \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)] && \scripttext{Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}} \\
-&= \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\meanParam^^t && \scripttext{Def. mean parameter} \\
-&=\E_{\param^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] - 	\meanParam^^t && \scripttext{Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} (EM step)} \\
+&=\E_{\param^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)] && \scripttext{Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} (EM step)} \\
 &=\meanParam^^{t+1} - \meanParam^^t && \scripttext{Def. mean parameter}
 \end{align*}
 
