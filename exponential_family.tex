@@ -355,12 +355,12 @@ Let $X$ have an exponential family distribution with natural parameter $\natural
 Since $X$ is in the exponential family, its density can be written in the form
  \[ p(\obs \cond \naturalParam) =  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(\obs)\} \] 
 where 
-\[\logNormalizerFunction(\naturalParam) = \log \int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} \] 
+\[\logNormalizerFunction(\naturalParam) = \log \int_{\mathcal{X}} \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} \] 
 
 Thus
 \begin{align*}
-\nabla \logNormalizerFunction (\naturalParam) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} } \\
-& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \exp \{ <\sufficientStatsFunction(\obs), \naturalParam> - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}}  \\
+\nabla \logNormalizerFunction (\naturalParam) & \stackrel{1}{=}  \df{ \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} }{\int_{\mathcal{X}} \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}} } \\
+& \stackrel{2}{=} \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam) + \log \carrierDensity(\obs) \} \; d\nu_{\mathcal{X}}  \\
 & = \int_{\mathcal{X}} \sufficientStatsFunction(\obs)  \; p(\obs \cond \naturalParam) \; d\nu_{\mathcal{X}}  \\
 &= \E_\naturalParam[\sufficientStatsFunction(X)]
 \end{align*}
