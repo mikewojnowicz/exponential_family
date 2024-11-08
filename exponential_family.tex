@@ -600,7 +600,7 @@ For minimal exponential families (Def.~\ref{def:minimal_exponential_families}), 
 
 \section{Frequentist Inference}
 
-\subsection{Maximum Likelihood Estimation}
+\subsection{Maximum likelihood estimation for completely observed data}
 \label{sec:ml_with_ef}
 
 
@@ -654,7 +654,12 @@ Hence, the log likelihood has a critical point at
 \labelit \label{eqn:condition_for_critical_point_of_EF_likelihood_under_iid_observations}
 \end{align*}
 % 
-\subsection{Latent variable models}
+\subsection{Expectation Maximization}
+
+When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood approach of Sec.~\ref{sec:ml_with_ef} cannot be applied directly because the solution would be a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references.  \red{TODO: Clarify that EM applies more broadly than just to EF models.}
+
+
+\subsubsection{Latent variable exponential family models}
 
 Some models have latent variables associated with each observation.   Let us  assume that $(\+\obs, \+z)=((\obs_1,\+z_1), ..., (\obs_n, \+z_n))$ where $\+x$ is observed data and $\+z$ is unobserved data.   Then we say that the \textit{complete data likelihood} is an exponential family if we can write
 %
@@ -665,9 +670,6 @@ Some models have latent variables associated with each observation.   Let us  as
 %
 for some functions $\carrierDensity, \naturalParam, \sufficientStatsFunction, \logNormalizerFunction$. 
 
-\subsection{Expectation Maximization}
-
-When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood approach of Sec.~\ref{sec:ml_with_ef} cannot be applied directly because the solution would be a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references.  \red{TODO: Rewrite to clarify that EM applies more broadly than just to EF models.}
 
 
 \subsubsection{The EM algorithm}
@@ -1107,7 +1109,7 @@ Thus, the convergence behavior depends on the eigenvalues of the matrix $\EMmap'
 
 \red{TODO: Finish writing up the analysis of \citet{salakhutdinov2003optimization}, which builds off of the Demspter, Laird, and Rubin insight that the convergence rate matrix can be expressed as a ratio of the entropy information to energy information.  They use that to determine when to use EM and when to use a Newton method. Note for the CPD paper that an optimization based approach (what we're selling for the CPD paper) is \textit{critical} for both determining when EM is slow and determining how to fix it.  Without the optimization based approach, all we have is the Q (energy) function, and the H (entropy) term never appears. } 
 
-\subsubsection{The EM algorithm for i.i.d data}
+\subsubsection{The EM algorithm for i.i.d exponential family data}
 
 In the special case where $(\obs, \+z)=((\obs_1,\+z_1), ..., (\obs_n, \+z_n))$ are $n$ i.i.d samples from some exponential family, we can write the complete data likelihood of \Eqref{eqn:exponential_family_complete_data_likelihood} as 
 %
