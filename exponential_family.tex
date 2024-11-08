@@ -591,7 +591,7 @@ For minimal exponential families (Def.~\ref{def:minimal_exponential_families}), 
 \item \textit{Thus, there is a 1:1 mapping	between $\naturalParam$ and $\E_\naturalParam[\sufficientStatsFunction(X)]$}  (See Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}.)
 \end{enumerate}
 
- \red{TODO: Prove the above more carefully.} 
+ \red{TODO: Prove the above more carefully, being careful to show where the minimiality assumption is used.} 
  
  This result implies that a distribution in the exponential family can be parameterized not only by $\naturalParam$ -- the canonical parametrization -- but also by $\meanParam$ -- the \textit{mean parametrization}. \red{TODO: Prove that we can always reparametrize a non-minimal EF into a minimal EF.}  
 
@@ -823,7 +823,7 @@ That is, we must find the parameter value which makes the expected sufficient st
 \end{proposition}
 
 \begin{proof}
-We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  How do we know that the optimum is a maximum and not a minimum?}   By applying the representation of $\frac{\partial Q(\param \cond \param^^t)}{\partial \param}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\param \in \param$ which solves the equation
+We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  Also give argument that the optimum is a maximum and not a minimum, which follows from the concavity of the log likelihood along with the fact that concave functions are closed under integration.}   By applying the representation of $\frac{\partial Q(\param \cond \param^^t)}{\partial \param}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\param \in \param$ which solves the equation
 %
 \begin{align*}
 \E_{\param}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 	
@@ -1010,6 +1010,25 @@ and hence the EM step $\param^^{t+1} - \param^^t$ is an ascent direction.
 \end{proof}
 
 
+\begin{proposition}
+Under a minimal exponential family model with mean parametrization, the EM step is identical to gradient ascent  of the log marginal likelihood with step size of 1.  That is, $\transformationMatrixGradientToEMStep(\param^^t) = \+I$ in Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient}.
+\end{proposition}
+
+\begin{proof}[Proof sketch.]
+%
+\begin{align*}
+\frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t} &= \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)] && \scripttext{Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}} \\
+&= \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\meanParam^^t && \scripttext{Def. mean parameter} \\
+&=\E_{\param^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] - 	\meanParam^^t && \scripttext{Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} (EM step)} \\
+&=\meanParam^^{t+1} - \meanParam^^t && \scripttext{Def. mean parameter}
+\end{align*}
+
+\red{TODO: Convert from proof sketch to proof by clarifying assumptions behind Prop.~\ref{prop:interesting_representation_of_EM_update_to_params}; these assumptions must be inherited.}
+\end{proof}
+
+
+\subsubsection{Convergence behavior of the EM algorithm}
+
 \red{TODO: 
 	
 Consider WHY/HOW gradient chasing could ever be faster than EM. 
@@ -1025,8 +1044,6 @@ Consider WHY/HOW gradient chasing could ever be faster than EM.
 
 Also, how does the $\transformationMatrixGradientToEMStep$ matrix magically keep update in param bounds?
 }
-
-\subsubsection{Convergence behavior of the EM algorithm}
 
 Here, we discuss the convergence behavior of the EM algorithm, following \citet{salakhutdinov2002relationship} and \citet{salakhutdinov2003optimization}.
 
@@ -1075,7 +1092,7 @@ Thus, the convergence behavior depends on the eigenvalues of the matrix $\EMmap'
 \item If eigenvalues tend to 1, then EM takes smaller and smaller stepsizes, giving poor convergence.
 \end{itemize}
 
-\red{TODO: Use this material to address some of the questions at the end of the section on relating the EM step and the ordinary gradient.}
+\red{TODO: Use this material to address some of the questions at the beginning of this section.}
 
 \red{TODO: Finish writing up the analysis of \citet{salakhutdinov2003optimization}, which builds off of the Demspter, Laird, and Rubin insight that the convergence rate matrix can be expressed as a ratio of the entropy information to energy information.  They use that to determine when to use EM and when to use a Newton method. Note for the CPD paper that an optimization based approach (what we're selling for the CPD paper) is \textit{critical} for both determining when EM is slow and determining how to fix it.  Without the optimization based approach, all we have is the Q (energy) function, and the H (entropy) term never appears. } 
 
