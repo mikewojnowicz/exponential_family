@@ -103,7 +103,7 @@ We are interested in  exponential families primarily because they makes inferenc
 \begin{remark}\remarktitle{Alternate constructions for the exponential family.}
 Observe \cite{chua2019stats} that without loss of generality, we can 
 \begin{alphabate} 
-\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} Set $\carrierDensity(\obs) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\naturalParam(\obs) = \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\naturalParam) := \ds\int  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs)  \} \; \wt{\mu} (d\obs) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:convexity_properties_of_the_exponential_family}. 
+\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} Set $\carrierDensity(\obs) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\naturalParam(\obs) = \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\naturalParam) := \ds\int  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs)  \} \; \wt{\mu} (d\obs) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:basic_convexity_properties_of_the_exponential_family}. 
 \item \label{item:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter.)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(\obs)$. Then defining $\wt{\naturalParam} = M^{-1} \naturalParam$ results in an equivalent family.  As a special case, $\naturalParam$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(\obs)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
 \item Change $\carrierDensity$ to $\wt{\carrierDensity}(\obs) = p_\+0(\obs)$, assuming that $\+0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\naturalParam)$ to $\wt{\logNormalizerFunction}(\naturalParam) = \logNormalizerFunction(\naturalParam) - \logNormalizerFunction(\+0)$ results in an equivalent family. 
 \end{alphabate}
@@ -119,13 +119,14 @@ The \textit{natural parameter space} is the set of parameters $\naturalParam$ fo
 An exponential family is said to be \textit{regular} if the natural parameter space is an open set.
 \end{definition}
 
+\begin{remark}\remarktitle{Exponential families with general (non-natural) parametrizations.}
 One can \textit{reparameterize} a regular exponential family with some other coordinates $\param$.  If one writes the natural parameter as a continuous function $\naturalParam(\param)$, then the density \eqref{eqn:exponential_family_natural} becomes
 \begin{align}
-\label{eqn:exponential_family}
  p_\param(\obs) = \carrierDensity(\obs) \exp \{ \naturalParam(\param)^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam(\param))\} 
+\label{eqn:exponential_family}
  \end{align}
- The reparameterized family is regular as well, since $\param := \naturalParam^{-1}(\naturalParamSpace)$ is open. 
-
+ The reparameterized family is regular as well, since $\param := \naturalParam^{-1}(\naturalParamSpace)$ is open.
+\end{remark}
 
 \begin{remark}
 Exponential family members can have intractable normalization constants.  Consider, for example,  the Ising model.  See pp. 3 of \cite{taylor2013multiparameter}.
@@ -137,9 +138,7 @@ An exponential family is said to be \textbf{minimal} if the components of the su
 \label{def:minimal_exponential_families}
 \end{definition}
 
-  An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify, and state how to rectify. Also demonstrate the importance of this.} 
-
-\red{TODO: I believe a non-minimal EF can always be reparametrized into a minimal EF. This makes sense based on the definition, based on the categorical distribution, and based on an implication from \citet[Sec.~8.4]{jordan2010exponential}.  Justify this.}
+  An example of a non-minimal exponential family is the categorical distribution (Example \ref{ex:categorical_as_ef}).\redfootnote{Justify that the categorical distribution is non-minimal, and state how to rectify. Also demonstrate the importance of this.}\redfootnote{TODO: I believe a non-minimal EF can always be reparametrized into a minimal EF. This makes sense based on the definition, based on the categorical distribution, and based on an implication from \citet[Sec.~8.4]{jordan2010exponential}.  Justify this.}
 
 \subsection{Examples}
 
@@ -344,7 +343,7 @@ Some non-examples include
 \begin{proposition}\propositiontitle{The gradient of the log normalizer equals the expected sufficient statistics.}
 Let $X$ have an exponential family distribution with natural parameter $\naturalParam$, sufficient statistics function $\sufficientStatsFunction$, and log normalizer function $\logNormalizerFunction$.   Then  
 \begin{align*}
-\nabla \logNormalizerFunction(\naturalParam) = \E[\sufficientStatsFunction(\obsCaps)] 
+\nabla \logNormalizerFunction(\naturalParam) = \E_\naturalParam[\sufficientStatsFunction(\obsCaps)] 
 \labelit \label{eqn:expected_sufficient_statistic_as_derivative_of_log_normalizer}	
 \end{align*}
 \label{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}
@@ -374,11 +373,18 @@ where in  Equation (1) we take the derivative of a logarithm (interchanging the 
 Justify formally the interchange of gradient and integral in Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}.	
 \end{task}
 
-\begin{remark}
+\begin{remark}\remarktitle{The Hessian of the log normalizer equals the covariance of the sufficient statistics.}
 In a manner similar to that of Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, we can show that the covariance matrix of the sufficient statistics is the Hessian of the log-normalizer calculated at its natural parameter:
-\[ \Cov[\sufficientStatsFunction(X)] = \nabla^2 \logNormalizerFunction(\naturalParam) \]	
+%
+\begin{align}
+\nabla^2 \logNormalizerFunction(\naturalParam) = \Cov_\naturalParam[\sufficientStatsFunction(X)]		
+\end{align}
+%
+\label{rk:hessian_of_log_normalizer_equals_covariance_of_the_sufficient_statistics}
+\end{remark}
 
-In fact, all moments of an exponential family are finite (recall from Definition \ref{def:exponential_family} that exponential family membership requires $a$ to be a $C^\infty$ function).  This explains why the Cauchy distribution (of undefined mean) is not an exponential family.
+\begin{remark}
+In fact, generalizing from Remark~\ref{rk:hessian_of_log_normalizer_equals_covariance_of_the_sufficient_statistics}, all moments of an exponential family are finite (recall from Definition \ref{def:exponential_family} that exponential family membership requires $a$ to be a $C^\infty$ function).  This explains why the Cauchy distribution (of undefined mean) is not an exponential family.
 \label{rk:any_exponential_family_has_finite_moments}
 \end{remark}
 
@@ -495,9 +501,11 @@ For more information on information theoretical quantities in exponential famili
 
 \subsubsection{Convexity}
 
-\begin{proposition}\propositiontitle{Convexity properties of the exponential family \cite{jordan2010exponential}.}
+The exponential family has nice convexity properties.  For example, the log likelihood is concave (see Prop.~\ref{prop:log_likelihod_of_exponential_family_is_concave}), which makes finding the maximum likelihood value of parameters straightforward (see Sec.~\ref{sec:ml_with_ef}).
+
+\begin{proposition}\propositiontitle{Basic convexity properties of the exponential family \cite{jordan2010exponential}.}
 The natural parameter space $\naturalParamSpace$ is convex (as a set) and the log normalizer function $\logNormalizerFunction(\naturalParam)$ is convex (as a function). If the family is minimal then $\logNormalizerFunction(\naturalParam)$ is strictly convex.
-\label{prop:convexity_properties_of_the_exponential_family}
+\label{prop:basic_convexity_properties_of_the_exponential_family}
 \end{proposition}
 
 \begin{proof}
@@ -523,6 +531,28 @@ For details:
 	\item In (2), we applied H\"{o}lder’s inequality.  Recall that H\"{o}lder’s inequality is that $||fg||_1 \leq ||f||_p ||g||_q$ whenever $p,q \in [1,\infty]$ and $\frac{1}{p} + \frac{1}{q}=1$.  Recall also the definition of norm $||f||_p = (\int f^p \wrt{\mu})^{1/p}$ in some underlying measure space (with measure $\mu$).  To apply H\"{o}lder’s inequality, we take the functions to be $f(\obs) = e^{\lambda \naturalParam_1^\top \sufficientStatsFunction(\obs)}$ and $g(\obs) = e^{(1-\lambda)\naturalParam_2^\top \sufficientStatsFunction(\obs)}$, the underlying measure to be $\mu=\nu$, and the H\"{o}lder exponents to be $p=\frac{1}{\lambda}$ and $q=\frac{1}{1-\lambda}$. 
 \end{itemize} 
 \end{proof}
+
+\begin{remark}\remarktitle{A simpler proof that the log normalizer is convex.}
+We can provide a simpler proof than Prop.~\ref{prop:basic_convexity_properties_of_the_exponential_family} that the log normalizer $\logNormalizerFunction(\naturalParam)$ is convex.  From Remark~\ref{rk:hessian_of_log_normalizer_equals_covariance_of_the_sufficient_statistics}, we have that the Hessian of the log normalizer evaluated at any value $\naturalParam$ of the natural parameter  satisfies $\nabla^2 \logNormalizerFunction(\naturalParam) = \Cov_\naturalParam[\sufficientStatsFunction(X)]$. But a covariance matrix is positive semi-definite.  So the Hessian of $\logNormalizerFunction$ is positive semi-definite.  Therefore, $\logNormalizerFunction$  is convex (see the basic properties of convex functions in  \citet{grasmair2016basic}).
+	
+\end{remark}
+
+
+\begin{proposition}\propositiontitle{The log likelihood of an exponential family is concave.}
+\label{prop:log_likelihod_of_exponential_family_is_concave}
+\end{proposition}
+
+\begin{proof}
+By \Eqref{eqn:exponential_family_natural}, the log likelihood is 
+%
+\begin{align*}
+\log p_\naturalParam(\obs) =  \explaintermbrace{concave}{\log \carrierDensity(\obs) + \naturalParam^\top \sufficientStatsFunction(\obs)} + \explaintermbrace{concave}{- \logNormalizerFunction(\naturalParam)}	 
+\end{align*}
+%  
+The term $ \log \carrierDensity(\obs)+ \naturalParam^\top \sufficientStatsFunction(\obs) $ is affine in $\naturalParam$ and thus both convex and concave. The term $\logNormalizerFunction(\naturalParam)$ is convex by Prop~\ref{prop:basic_convexity_properties_of_the_exponential_family}; hence $-\logNormalizerFunction(\naturalParam)$ is concave. The sum of two concave functions is concave.	
+\end{proof}
+ 
+\red{TODO: \citet[pp.~4]{dempster1977maximum}  says that the  log-likelihood of a \textit{regular} exponential family is concave.  Is this regularity condition needed for concavity, and if so, where}
 
 
 \subsubsection{Identifiability}
@@ -591,7 +621,7 @@ Using the mean parameterization $\meanParam \defeq \E[\sufficientStatsFunction(X
 % 
 that is, we simply set the mean parameter $\widehat{\meanParam}(\naturalParam)$ to equal the sufficient statistics.
 
-Since the log-likelihood of a (regular) exponential family is convex \citet[pp.~4]{dempster1977maximum} (\red{TODO: Add justification in my convexity section that the full log likelihood is convex (currently I just have that the log normalizer is convex; probably I just need to apply that convexity is closed under certain arithmetic operations); be sure to pay close attention to where the regularity condition is applied}), solving \Eqref{eqn:condition_for_critical_point_of_EF_likelihood} will find the maximum likelihood value of the density $p_\naturalParam$ unless the maximizing value $\naturalParam$ lies on the boundary of the parameter space $\naturalParamSpace$.
+Since the log-likelihood of an exponential family is concave (Prop.~\ref{prop:log_likelihod_of_exponential_family_is_concave}), the critical point condition in \Eqref{eqn:condition_for_critical_point_of_EF_likelihood} will produce the maximum likelihood value of the density $p_\naturalParam$ unless the maximizing value $\naturalParam$ lies on the boundary of the parameter space $\naturalParamSpace$.
 
 
 \subsubsection{...for i.i.d observations}
@@ -621,7 +651,7 @@ for some functions $\carrierDensity, \naturalParam, \sufficientStatsFunction, \l
 
 \subsection{Expectation Maximization}
 
-When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood solution of \Eqref{eqn:maximum_likelihood_solution_for_exponential_families} cannot be applied because it is a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references.  \red{TODO: Rewrite to clarify that EM applies more broadly than just to EF models.}
+When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood approach of Sec.~\ref{sec:ml_with_ef} cannot be applied directly because the solution would be a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood_based_on_iid_draws}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references.  \red{TODO: Rewrite to clarify that EM applies more broadly than just to EF models.}
 
 
 \subsubsection{The EM algorithm}
