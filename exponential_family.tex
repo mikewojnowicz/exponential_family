@@ -112,11 +112,11 @@ Observe \cite{chua2019stats} that without loss of generality, we can
 
 
 \begin{definition}
-The \textit{natural parameter space} is the set of parameters $\naturalParam$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $\naturalParamSpace:=\set{\naturalParam : \normalizerFunction(\naturalParam) < \infty}$.
+The \textbf{natural parameter space} is the set of parameters $\naturalParam$ for which the integral \eqref{eqn:partition_function} is finite; i.e., it is $\naturalParamSpace:=\set{\naturalParam : \normalizerFunction(\naturalParam) < \infty}$.
 \end{definition}
 
 \begin{definition}
-An exponential family is said to be \textit{regular} if the natural parameter space is an open set.
+An exponential family is said to be \textbf{regular} if the natural parameter space is an open set.
 \end{definition}
 
 \begin{remark}\remarktitle{Exponential families with general (non-natural) parametrizations.}
@@ -501,7 +501,7 @@ For more information on information theoretical quantities in exponential famili
 
 \subsubsection{Convexity}
 
-The exponential family has nice convexity properties.  For example, the log likelihood is concave (see Prop.~\ref{prop:log_likelihod_of_exponential_family_is_concave}), which makes finding the maximum likelihood value of parameters straightforward (see Sec.~\ref{sec:ml_with_ef}).
+The exponential family has nice convexity properties. Most critically, the log likelihood is concave (see Prop.~\ref{prop:log_likelihod_of_exponential_family_is_concave}), which makes finding the maximum likelihood value of parameters straightforward (see Sec.~\ref{sec:ml_with_ef}).  Additionally, the convexity of the log normalizer can be useful in and of itself.  For example, see Sec.~\ref{sec:mean_parametrization}), where we use the convexity of the log normalizer to justify the existence of a mean reparametrization. 
 
 \begin{proposition}\propositiontitle{Basic convexity properties of the exponential family \cite{jordan2010exponential}.}
 The natural parameter space $\naturalParamSpace$ is convex (as a set) and the log normalizer function $\logNormalizerFunction(\naturalParam)$ is convex (as a function). If the family is minimal then $\logNormalizerFunction(\naturalParam)$ is strictly convex.
@@ -537,6 +537,9 @@ We can provide a simpler proof than Prop.~\ref{prop:basic_convexity_properties_o
 	
 \end{remark}
 
+\begin{remark}\remarktitle{A very quick justification for why the log normalizer is convex.}
+\citet{blei2011exponential} points out that $\logNormalizerFunction(\naturalParam)$ has the form of log-sum-exponential, and is therefore convex.
+\end{remark}
 
 \begin{proposition}\propositiontitle{The log likelihood of an exponential family is concave.}
 \label{prop:log_likelihod_of_exponential_family_is_concave}
@@ -574,12 +577,25 @@ If $\obs=(\obs_1, ..., \obs_n)$ are n independent samples from the same exponent
 
 \subsubsection{Mean parametrization} \label{sec:mean_parametrization}
 
-In Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer} (see Sec.~\ref{sec:relationship_between_moments_and_normalizer}), we showed that the expected sufficient statistics $\meanParam \defeq \E[\sufficientStatsFunction(X)]$ can be obtained as a function of the natural parameter $\naturalParam$; namely
+For exponential families, we define the \textbf{mean parameter} $\meanParam$ as the expected sufficient statistics 
 %
-\[ \nabla \logNormalizerFunction(\naturalParam) = \E[\sufficientStatsFunction(X)] \]
+\[ \meanParam \defeq \E_\naturalParam[\sufficientStatsFunction(X)]
+\]
 %
-For minimal families (Def.~\ref{def:minimal_exponential_families}), it turns out that this relationship is invertible \cite[Sec.~8.4]{jordan2010exponential}. \red{TODO: Prove this.}  This implies that a distribution in the exponential family can be parameterized not only by $\naturalParam$ -- the canonical parametrization -- but also by $\meanParam$ -- the \textit{mean parametrization}. \red{TODO: Prove that we can always reparametrize a non-minimal EF into a minimal EF.}  
+For minimal exponential families (Def.~\ref{def:minimal_exponential_families}), the mean parameter $\meanParam$ gives a another valid parametrization of the distribution \cite[Sec.~8.4]{jordan2010exponential}. That is, there is a 1-1 mapping between $\naturalParam$ and $\meanParam$.  Here we give a quick argument, following \citet{blei2011exponential}: 
 
+
+\begin{enumerate}
+\item \textit{The log normalizer $\logNormalizerFunction(\naturalParam)$ is convex.} (See Prop.~\ref{prop:basic_convexity_properties_of_the_exponential_family}.)
+\item \textit{Thus, there is a 1:1 mapping	between its argument $\naturalParam$ and its derivative $\nabla \logNormalizerFunction (\naturalParam)$.} 
+\item \textit{Thus, there is a 1:1 mapping	between $\naturalParam$ and $\E_\naturalParam[\sufficientStatsFunction(X)]$}  (See Prop.~\ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}.)
+\end{enumerate}
+
+ \red{TODO: Prove the above more carefully.} 
+ 
+ This result implies that a distribution in the exponential family can be parameterized not only by $\naturalParam$ -- the canonical parametrization -- but also by $\meanParam$ -- the \textit{mean parametrization}. \red{TODO: Prove that we can always reparametrize a non-minimal EF into a minimal EF.}  
+
+\red{TODO: Give examples of where we compute the mean parameterization from other parametrizations.}
 
 
 \section{Frequentist Inference}
@@ -694,7 +710,7 @@ In the EM algorithm of
 \footnotetext{My notes in \citet{wojnowiczXXXXvariational} cite \citet{beal2003variational} for this insight. However, per \citet[pp.~2]{salakhutdinov2003optimization}, I believe this perspective on EM may trace all the way back to \citet{neal1998view}.}
 
 \begin{itemize}
-\item \textit{Update to $q_\+z$.} We have:
+\item \textit{Update $q_\+z$.} We have:
 %
 \begin{align}
 \VLBO(q_\+z, q_\param^^t) = \log p(\+x \cond \param^^t) \quad \text{ if } \quad 	q_\+z=p(\+z \cond \+x, \param^^t)
@@ -702,7 +718,7 @@ In the EM algorithm of
 %
 That is, by setting $q_\+z$ to the exact posterior, the variational lower bound ($\VLBO$) becomes tight, exactly equaling the log marginal likelihood. Hence, it is the optimal update when there are no restrictions on $\mathcal{Q}_z \ni q_\+z$.  This is precisely the E-step of the EM algorithm.
 
-\item \textit{Update to $q_\param$.}	 To update $q_\param$, we note that when we evaluate the variational lower bound at the exact posterior over latent variables, we obtain
+\item \textit{Update $q_\param$.}	 To update $q_\param$, we note that when we evaluate the variational lower bound at the exact posterior over latent variables, we obtain
 %
 \begin{align}
 \VLBO(q_\param, q_\+z^^t) = \explaintermbrace{energy}{Q(\param \cond \param^^t)} + \explaintermbrace{entropy}{H(\param^^t)}
@@ -866,7 +882,7 @@ as claimed.
 
 \end{proof}
 
-\red{TODO: It might be possible to give a much faster proof using the idea of EM as exact CAVI inference.}
+\red{TODO: I think I can give a much faster proof using the idea of EM as exact CAVI inference.}
 
 \begin{corollary}\propositiontitle{The ordinary gradient of the log marginal likelihood of an exponential family latent variable model.}
 
