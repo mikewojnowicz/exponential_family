@@ -1012,6 +1012,7 @@ and hence the EM step $\param^^{t+1} - \param^^t$ is an ascent direction.
 
 \begin{proposition}
 Under a minimal exponential family model with mean parametrization, the EM step is identical to gradient ascent  of the log marginal likelihood with step size of 1.  That is, $\transformationMatrixGradientToEMStep(\param^^t) = \+I$ in Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient}.
+\label{prop:when_EM_is_exactly_gradient_ascent}
 \end{proposition}
 
 \begin{proof}[Proof sketch.]
@@ -1024,6 +1025,11 @@ Under a minimal exponential family model with mean parametrization, the EM step 
 
 \red{TODO: Convert from proof sketch to proof by clarifying assumptions behind Prop.~\ref{prop:interesting_representation_of_EM_update_to_params}; these assumptions must be inherited.}
 \end{proof}
+
+
+\begin{remark}
+The argument used to prove Prop.~\ref{prop:when_EM_is_exactly_gradient_ascent} can be applied to results made directly in \citet[pp.4-5]{dempster1977maximum}.  In particular, Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model} is the \enquote{striking representation} given in  \citet[Eqn. 2.13]{dempster1977maximum}, and Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} is given in \citet[Eqns. 2.2-2.3]{dempster1977maximum}. 
+\end{remark}
 
 
 \subsubsection{Convergence behavior of the EM algorithm}
