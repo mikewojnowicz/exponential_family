@@ -738,13 +738,13 @@ This is precisely the M-step of the EM algorithm.
 
 
 
-\subsubsection{Gradient of the Q-function}
+\subsubsection{Gradient of the Q-function for exponential family latent variable models}
 
- Here, we give the gradient of the Q-function in Prop.~\ref{prop:gradient_of_the_Q_function}. Using that, we can provide an interesting representation of the EM step \Eqref{eqn:EM_algorithm} in Prop.~\ref{prop:interesting_representation_of_EM_update_to_params}. 
+ In Prop.~\ref{prop:gradient_of_the_Q_function}, we give the gradient of the Q-function for exponential family latent variable models. Using that, we can provide an interesting representation of the EM step of \Eqref{eqn:EM_algorithm} in Prop.~\ref{prop:interesting_representation_of_EM_update_to_params}. 
 
 
-\begin{proposition}\propositiontitle{The gradient of the Q-function \cite{salakhutdinov2002relationship}.}
- The gradient of the Q-function of \Eqref{eqn:E_step_for_EM}
+\begin{proposition}\propositiontitle{The gradient of the Q-function for exponential family models \cite{salakhutdinov2002relationship}.}
+For a latent variable model of \Eqref{eqn:exponential_family_complete_data_likelihood}  whose complete data likelihood  $p(\+x, \+z \cond \param)$ is in the exponential family, the gradient of the Q-function of \Eqref{eqn:E_step_for_EM}
 is given by 
  %
  \begin{align}
@@ -810,12 +810,12 @@ The interpretation of the RHS of \Eqref{eqn:gradient_of_Q_function_for_EM} was g
  %
 \end{notation}
 
-\begin{proposition}\propositiontitle{An interesting representation of the EM update to parameters.}
+\begin{proposition}\propositiontitle{The EM step for exponential family latent variable models.}
 The solution to the EM objective in \Eqref{eqn:M_step_for_EM} for obtaining the next parameter value $\param^^{t+1}$ given the previous parameter value $\param^^{t}$ is given by finding the $\param^^{t+1}$ that solves
 %
 \begin{align}
 \E_{\param^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
-\label{eqn:EM_update_to_parameters__interesting_representation}	
+\label{eqn:interesting_represenation_of_EM_step_for_exponential_family_models}	
 \end{align}
 %
 That is, we must find the parameter value which makes the expected sufficient statistic vector with  unclamped data equal to that with clamped data.
@@ -823,7 +823,7 @@ That is, we must find the parameter value which makes the expected sufficient st
 \end{proposition}
 
 \begin{proof}
-We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  Also give argument that the optimum is a maximum and not a minimum, which follows from the concavity of the log likelihood along with the fact that concave functions are closed under integration.}   By applying the representation of $\frac{\partial Q(\param \cond \param^^t)}{\partial \param}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\param \in \param$ which solves the equation
+We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  Also give argument that the optimum is a maximum and not a minimum, which follows from the concavity of the log likelihood along with the fact that concave functions are closed under integration.}   By applying the representation of $\frac{\partial Q(\param \cond \param^^t)}{\partial \param}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\param \in \paramSpace$ which solves the equation
 %
 \begin{align*}
 \E_{\param}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 	
@@ -832,11 +832,11 @@ We find a local optimum of the Q-function by finding its critical point, that is
 Setting the solution $\param^*$ as the next parameter value $\param^^{t+1} = \param^*$ gives the result. \red{TODO: How do we know the solution exists?}
 \end{proof}
 
-\subsubsection{Relating the EM step and the ordinary gradient}
+\subsubsection{Relating the EM step and the ordinary gradient for exponential family models}
 
 
-\begin{proposition}\propositiontitle{The Q-function and log marginal likelihood have equal gradients \cite{salakhutdinov2002relationship}.}
-Consider a latent variable model whose complete data likelihood  $p(\+x, \+z \cond \param)$ is in the exponential family.  Define its log marginal likelihood as
+\begin{proposition}\propositiontitle{The Q-function and log marginal likelihood have equal gradients for exponential family models \cite{salakhutdinov2002relationship}.}
+Consider the latent variable model of \Eqref{eqn:exponential_family_complete_data_likelihood}  whose complete data likelihood  $p(\+x, \+z \cond \param)$ is in the exponential family.  Define its log marginal likelihood as
 % 
 \begin{align}
 \ell(\param) \defeq \log p(\+x \cond \param) = \log \int p(\+x,\+z \cond \param) \mu(d\+z).	
@@ -882,7 +882,7 @@ as claimed.
 
 \end{proof}
 
-\red{TODO: I think I can give a much faster proof using the idea of EM as exact CAVI inference.}
+\red{TODO: I think I can give a much faster proof using the idea of EM as exact CAVI inference.  If so, then can we discard the exponential family assumption that was made by \citet{salakhutdinov2002relationship}?}
 
 \begin{corollary}\propositiontitle{The ordinary gradient of the log marginal likelihood of an exponential family latent variable model.}
 
@@ -915,18 +915,20 @@ So we have shown that, at least for exponential family models, if the EM algorit
 \end{remark}
 
 
-\begin{proposition}\propositiontitle{Relating the EM step to the ordinary gradient \cite{salakhutdinov2002relationship}.}
-There exists a symmetric positive define \enquote{transformation matrix} $\transformationMatrixGradientToEMStep(\param^^t)$ such that the EM step $\param^^{t-1} - \param^^t$ can be expressed as
+\begin{proposition}\propositiontitle{Relating the EM step to the ordinary gradient for exponential family models \cite{salakhutdinov2002relationship}.}
+For a latent variable model of \Eqref{eqn:exponential_family_complete_data_likelihood}  whose complete data likelihood  $p(\+x, \+z \cond \param)$ is in the exponential family,  there exists a symmetric positive define \enquote{transformation matrix} $\transformationMatrixGradientToEMStep(\param^^t)$ such that the EM step $\param^^{t-1} - \param^^t$ can be expressed as
 %
 \begin{align}
 \param^^{t+1} - \param^^t = \transformationMatrixGradientToEMStep(\param^^t) \frac{\partial}{\partial \param} \ell(\param) \Bigr|_{\param=\param^^t}
 \label{eqn:relating_the_EM_step_to_the_ordinary_gradient}
 \end{align}
 %
-where $\ell$ the the log marginal likelihood as in \Eqref{eqn:log_marginal_likelihood_definition}.
+where $\ell$ is the log marginal likelihood as in \Eqref{eqn:log_marginal_likelihood_definition}.
 \label{prop:relating_the_EM_step_to_the_ordinary_gradient}
 \end{proposition}
 
+
+\red{TODO:  When does Prop 2.3.4 actually apply?  \citet{salakhutdinov2003optimization} say it applies \enquote{for most objective functions}, without specifying which.  We state this more carefully by assuming exponential family models, but perhaps this is overly restrictive.}
 
 \begin{proof}
 Define
@@ -945,7 +947,7 @@ Using these definitions, we can write the gradient of the log marginal likelihoo
 \label{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model__in_compact_notation}
 \end{align}
 %
-Using these same definitions, the EM update of \Eqref{eqn:EM_update_to_parameters__interesting_representation} is given by $\param^^{t+1}$ which solves
+Using these same definitions, the EM update of \Eqref{eqn:interesting_represenation_of_EM_step_for_exponential_family_models} is given by $\param^^{t+1}$ which solves
 %
 \[  \overline{T}(\param^^{t+1}) = \overline{T}_z(\param^^t)  \]
 %
@@ -998,7 +1000,7 @@ Now all that remains is to show that $\transformationMatrixGradientToEMStep$ is 
 \end{proof}
 
 \begin{corollary}
-The EM step gives an ascent direction for the log marginal likelihood.
+The EM step gives an ascent direction for the log marginal likelihood of any exponential family latent variable model.
 \end{corollary}
 
 \begin{proof}
@@ -1032,7 +1034,7 @@ The argument used to prove Prop.~\ref{prop:when_EM_is_exactly_gradient_ascent} c
 \end{remark}
 
 
-\subsubsection{Convergence behavior of the EM algorithm}
+\subsubsection{Convergence behavior of the EM algorithm for exponential family models}
 
 \red{TODO: 
 	
@@ -1050,7 +1052,7 @@ Consider WHY/HOW gradient chasing could ever be faster than EM.
 Also, how does the $\transformationMatrixGradientToEMStep$ matrix magically keep update in param bounds?
 }
 
-Here, we discuss the convergence behavior of the EM algorithm, following \citet{salakhutdinov2002relationship} and \citet{salakhutdinov2003optimization}.
+Here, we discuss the convergence behavior of the EM algorithm, following \citet{salakhutdinov2002relationship} and \citet{salakhutdinov2003optimization}.  \red{TODO: They never specify exponential family models as a restriction, although our proofs seem to require this.}
 
 The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSpace$ where $\EMmap(\param^^t) = \param^^{t+1}$.   If $\param_t \to \param^*$, and $\EMmap$ is continuous, then $\param^* = \EMmap(\param^*)$, and near $\param^*$, by a Taylor series expansion
 %
@@ -1126,7 +1128,7 @@ where $\meanParam := \E[\sufficientStatsFunction(\obs_i,\+z_i)]$ refers to the m
 \red{TODO: But is EM \textit{always} equivalent to performing ML with ESS's? Or is this ONLY true if I'm working within the exponential family?  I need to read up some more on EM theory.}
 
 
-Note that the update in \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} also corroborates with the more general update (not assuming i.i.d models) given in \Eqref{eqn:EM_update_to_parameters__interesting_representation}. \red{TODO: Prove directly that the latter implies the former in the i.i.d case.}
+Note that the update in \Eqref{eqn:EM_iteration_as_maximum_likelihood_with_expected_sufficient_statistics} also corroborates with the more general update (not assuming i.i.d models) given in \Eqref{eqn:interesting_represenation_of_EM_step_for_exponential_family_models}. \red{TODO: Prove directly that the latter implies the former in the i.i.d case.}
 
 \red{TODO: Check this section, especially with respect to the fact that I am dealing with three parametrizations here - $\mu, \param, \nu$; that is, mean, arbitrary, and natural, respectively.  Really the core problem is that it's not sufficiently clear in how head how and when reparametrizations affect things.}
  
