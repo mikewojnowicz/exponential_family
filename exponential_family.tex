@@ -656,7 +656,9 @@ Hence, the log likelihood has a critical point at
 % 
 \subsection{Expectation Maximization}
 
-When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood approach of Sec.~\ref{sec:ml_with_ef} cannot be applied directly because the solution would be a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood}, we can perform frequentist inference via Expectation Maximization (EM).   We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references.  \red{TODO: Clarify that EM applies more broadly than just to EF models.}
+When a model contains latent variables as in \Eqref{eqn:exponential_family_complete_data_likelihood}, it is not possible to use the maximum likelihood strategy of Sec.~\ref{sec:ml_with_ef} directly. Indeed, the maximum likelihood approach of Sec.~\ref{sec:ml_with_ef} cannot be applied directly because the solution would be a function of unobserved variables $\+z$.  However, when complete data likelihood is an exponential family as in \Eqref{eqn:exponential_family_complete_data_likelihood}, we can perform frequentist inference via Expectation Maximization (EM).  We see how this plays out in exponential families by following the logic of Section \ref{sec:ml_with_ef}; see \citet[Sec.~3]{salakhutdinov2002relationship} and \citet{miller2011why} for useful references.    As mentioned by \citet{meng1993maximum}, although the general theory of EM applies to any model, it is particularly useful when the complete data are from an exponential family since, in such cases, the E-step reduces to finding the conditional expectation of the complete-data sufficient statistics. For details, see Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} and Remark~\ref{rk:interpreting_the_EM_step_for_exponential_family_models}.
+
+
 
 
 \subsubsection{Latent variable exponential family models}
@@ -835,7 +837,10 @@ Setting the solution $\param^*$ as the next parameter value $\param^^{t+1} = \pa
 \end{proof}
 
 \begin{remark}\remarktitle{Interpreting the EM step for exponential family models.} Following \citet[pp.4]{dempster1977maximum}, we can interpret the representation in Prop~\ref{prop:interesting_representation_of_EM_update_to_params} in terms of the maximum likelihood updates for completely observed exponential family models (Sec.~\ref{sec:ml_with_ef}). Recall from \Eqref{eqn:condition_for_critical_point_of_EF_likelihood} that in the completely observed setting, maximum likelihood asks us to find the parameter $\param$ that satisfies $\E_{\param}[\sufficientStatsFunction(\+\obsCaps)] = \sufficientStatsFunction(\obs)$.  However, in the latent variable case, we do not completely observe the sufficient statistics $\sufficientStatsFunction(\+X,\+Z)$, and so we instead use the \textit{expected} sufficient statistics $\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x]$ from the most recent parameter estimate. Thus,  \Eqref{eqn:interesting_represenation_of_EM_step_for_exponential_family_models} combines the E-step on the RHS with the M-step on the LHS.
+\label{rk:interpreting_the_EM_step_for_exponential_family_models}
 \end{remark}
+
+
 
 
 \subsubsection{Relating the EM step and the ordinary gradient for exponential family models}
