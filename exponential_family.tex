@@ -1047,25 +1047,10 @@ The argument used to prove Prop.~\ref{prop:when_EM_is_exactly_gradient_ascent} c
 
 \subsubsection{Convergence behavior of the EM algorithm for exponential family models}
 
-\red{TODO: 
-	
-Consider WHY/HOW gradient chasing could ever be faster than EM. 
-
-\begin{itemize}
-
-\item Both are ascent directions.   How/when is one better than another?
-\item Is there some way to improve EM using ordinary gradient but without bringing in the 2nd order info?  I.e., is there some \textit{other} $\transformationMatrixGradientToEMStep$ that would be better? If so, why?
-\item  \citet[abstract]{qin2000direct} mentions that (at least in the context of HMMs), EM is especially slow (relative to direct optimization) in the low STN regime.  Why would this be?
-\item  Discuss with Jeff: Given this analysis, aren't both EM and direct optimization just different first-order methods, in contrast with bike/car/racecar analogy?
-\item \citet{salakhutdinov2002relationship} says the EM step has "positive projection" onto the true gradient of the likelihood function.   How is this a projection? What are the implications for comparing EM and direct optimization?
-\end{itemize}
-
-Also, how does the $\transformationMatrixGradientToEMStep$ matrix magically keep update in param bounds?
-}
 
 Here, we discuss the convergence behavior of the EM algorithm, following \citet{salakhutdinov2002relationship} and \citet{salakhutdinov2003optimization}.  \red{TODO: They never specify exponential family models as a restriction, although our proofs seem to require this.}
 
-The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSpace$ where $\EMmap(\param^^t) = \param^^{t+1}$.   If $\param_t \to \param^*$, and $\EMmap$ is continuous, then $\param^* = \EMmap(\param^*)$, and near $\param^*$, by a Taylor series expansion
+The EM algorithm implicitly defines a mapping $\EMmap : \paramSpace \to \paramSpace$ where $\EMmap(\param^^t) = \param^^{t+1}$.   If $\param^^t \to \param^*$, and $\EMmap$ is continuous, then $\param^* = \EMmap(\param^*)$, and near $\param^*$, by a Taylor series expansion
 %
 \begin{align*}
 \param^^{t+1} - \param^* \approx \explaintermbrace{convergence rate matrix}{\EMmap'(\param^*)} (\param^^t - \param^*)	
@@ -1110,9 +1095,34 @@ Thus, the convergence behavior depends on the eigenvalues of the matrix $\EMmap'
 \item If eigenvalues tend to 1, then EM takes smaller and smaller stepsizes, giving poor convergence.
 \end{itemize}
 
-\red{TODO: Use this material to address some of the questions at the beginning of this section.}
 
-\red{TODO: Finish writing up the analysis of \citet{salakhutdinov2003optimization}, which builds off of the Demspter, Laird, and Rubin insight that the convergence rate matrix can be expressed as a ratio of the entropy information to energy information.  They use that to determine when to use EM and when to use a Newton method. Note for the CPD paper that an optimization based approach (what we're selling for the CPD paper) is \textit{critical} for both determining when EM is slow and determining how to fix it.  Without the optimization based approach, all we have is the Q (energy) function, and the H (entropy) term never appears. } 
+\red{\textbf{TODO}: \textit{Extend this analysis to explain slow convergence under low STN.}  
+
+\textbf{Question of interest:} \citet[abstract]{qin2000direct}  mentions that (at least in the context of HMMs), EM is especially slow (relative to direct optimization) in the low STN regime.  Why would this be? (Note that this is precisely what we found in our sims!)
+  
+\textbf{Towards an answer}: Finish writing up the analysis of \citet{salakhutdinov2003optimization}, which builds off of the Demspter, Laird, and Rubin insight that the convergence rate matrix can be expressed as a ratio of the entropy information to energy information.  They call this a \enquote{local missing information ratio} (LMIR). They use this LMIR to determine when to use EM and when to use a Newton method. 
+
+\textbf{Remark:} Note for the CPD paper that an optimization-based approach (what we're selling for the CPD paper) is \textit{critical} for both determining when EM is slow and determining how to fix it.  Without the optimization based approach, all we have is the Q (energy) function, and the H (entropy) term never appears. }
+
+\vskip1in
+
+\red{\textbf{TODO}: Use this material to address some of these older questions below from a meeting with Jeff on 11/5/2024:
+
+Consider WHY/HOW gradient chasing could ever be faster than EM. 
+
+\begin{itemize}
+
+\item Both are ascent directions.   How/when is one better than another?
+\item Is there some way to improve EM using ordinary gradient but without bringing in the 2nd order info?  I.e., is there some \textit{other} $\transformationMatrixGradientToEMStep$ that would be better? If so, why?
+\item  Discuss with Jeff: Given this analysis, aren't both EM and direct optimization just different first-order methods, in contrast with bike/car/racecar analogy?
+\item \citet{salakhutdinov2002relationship} says the EM step has "positive projection" onto the true gradient of the likelihood function.   How is this a projection? What are the implications for comparing EM and direct optimization?
+\end{itemize}
+
+Also, how does the $\transformationMatrixGradientToEMStep$ matrix magically keep update in param bounds?
+}
+
+
+ 
 
 \subsubsection{The EM algorithm for i.i.d exponential family data}
 
