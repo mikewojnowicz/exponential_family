@@ -101,11 +101,12 @@ We are interested in  exponential families primarily because they makes inferenc
 \input{inputs/definition_exponential_family}
 
 \begin{remark}\remarktitle{Alternate constructions for the exponential family.}
-Observe \cite{chua2019stats} that without loss of generality, we can 
+Observe \cite{chua2019stats} that without loss of generality, the following properties hold. 
+%
 \begin{alphabate} 
-\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} Set $\carrierDensity(\obs) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\naturalParam(\obs) = \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\naturalParam) := \ds\int  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs)  \} \; \wt{\mu} (d\obs) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:basic_convexity_properties_of_the_exponential_family}. 
+\item \label{item:ignorabiity_of_carrier_density} \textit{(Ignorability of the carrier density.)} We can always set $\carrierDensity(\obs) \equiv 1$ if we change $\mu$ to $\wt{\mu}$, chosen so that its Radon-Nikodym derivative with respect to $\mu$ is $\carrierDensity$. That is, we can always absorb $\carrierDensity$ into $\mu$ and write \eqref{eqn:exponential_family_natural} as  $p_\naturalParam(\obs) = \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam)\}$, in which case \eqref{eqn:partition_function} becomes $\normalizerFunction(\naturalParam) := \ds\int  \exp \{ \naturalParam^\top \sufficientStatsFunction(\obs)  \} \; \wt{\mu} (d\obs) $ where $\wt{\mu}(A) := \ds\int_A \carrierDensity d\mu$ for any measurable set $A$.   This observation streamlines most computations with integrals, e.g. see the proof of Prop.~\ref{prop:basic_convexity_properties_of_the_exponential_family}. 
 \item \label{item:nonuniqueness_of_natural_parameter} \textit{(Non-uniqueness of natural parameter.)} Assume $M \in \R^{p \times p}$ is invertible, and define $\wt{\sufficientStatsFunction} = M \sufficientStatsFunction(\obs)$. Then defining $\wt{\naturalParam} = M^{-1} \naturalParam$ results in an equivalent family.  As a special case, $\naturalParam$ could be multiplied by a non-zero constant $c$ if $\sufficientStatsFunction(\obs)$ is divided by $c$.  Thus, a natural parameterization is not unique; we should speak of \textit{a} natural parameter,  rather than \textit{the} natural parameter.
-\item Change $\carrierDensity$ to $\wt{\carrierDensity}(\obs) = p_\+0(\obs)$, assuming that $\+0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\naturalParam)$ to $\wt{\logNormalizerFunction}(\naturalParam) = \logNormalizerFunction(\naturalParam) - \logNormalizerFunction(\+0)$ results in an equivalent family. 
+\item \textit{(The carrier density may absorb the probability density at the zero parameter.)} We may change $\carrierDensity$ to $\wt{\carrierDensity}(\obs) = p_\+0(\obs)$, assuming that $\+0 \in \naturalParamSpace$.  Then, changing $\logNormalizerFunction(\naturalParam)$ to $\wt{\logNormalizerFunction}(\naturalParam) = \logNormalizerFunction(\naturalParam) - \logNormalizerFunction(\+0)$ results in an equivalent family.\redfootnote{TODO: Give an example of why this is useful.}
 \end{alphabate}
 \label{rk:alternate_constructions_for_the_exponential_family}
 \end{remark}
@@ -119,13 +120,13 @@ The \textbf{natural parameter space} is the set of parameters $\naturalParam$ fo
 An exponential family is said to be \textbf{regular} if the natural parameter space is an open set.
 \end{definition}
 
-\begin{remark}\remarktitle{Exponential families with general (non-natural) parametrizations.}
+\begin{remark}\remarktitle{Exponential families with general (non-natural) parametrizations \cite[pp.~49]{bickel2001mathematical}, \cite{jordan2010exponential}.}
 One can \textit{reparameterize} a regular exponential family with some other coordinates $\param$.  If one writes the natural parameter as a continuous function $\naturalParam(\param)$, then the density \eqref{eqn:exponential_family_natural} becomes
 \begin{align}
  p_\param(\obs) = \carrierDensity(\obs) \exp \{ \naturalParam(\param)^\top \sufficientStatsFunction(\obs) - \logNormalizerFunction(\naturalParam(\param))\} 
 \label{eqn:exponential_family}
  \end{align}
- The reparameterized family is regular as well, since $\param := \naturalParam^{-1}(\naturalParamSpace)$ is open.
+ The reparameterized family is regular as well, since $\param := \naturalParam^{-1}(\naturalParamSpace)$ is open.\redfootnote{TODO: Why do we define $\naturalParam$ as a function of $\param$, rather than the other way around?}
 \end{remark}
 
 \begin{remark}
@@ -340,7 +341,7 @@ Some non-examples include
 
 \subsubsection{Relationship between moments and the normalizer function} \label{sec:relationship_between_moments_and_normalizer}
 
-\begin{proposition}\propositiontitle{The gradient of the log normalizer equals the expected sufficient statistics.}
+\begin{proposition}\propositiontitle{The gradient of the log normalizer with respect to a natural parameter equals the expected sufficient statistics.}
 Let $X$ have an exponential family distribution with natural parameter $\naturalParam$, sufficient statistics function $\sufficientStatsFunction$, and log normalizer function $\logNormalizerFunction$.   Then  
 \begin{align*}
 \nabla \logNormalizerFunction(\naturalParam) = \E_\naturalParam[\sufficientStatsFunction(\obsCaps)] 
@@ -373,7 +374,7 @@ where in  Equation (1) we take the derivative of a logarithm (interchanging the 
 Justify formally the interchange of gradient and integral in Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}.	
 \end{task}
 
-\begin{remark}\remarktitle{The Hessian of the log normalizer equals the covariance of the sufficient statistics.}
+\begin{remark}\remarktitle{The Hessian of the log normalizer with respect to a natural parameter equals the covariance of the sufficient statistics.}
 In a manner similar to that of Proposition \ref{prop:expected_sufficient_statistic_as_derivative_of_log_normalizer}, we can show that the covariance matrix of the sufficient statistics is the Hessian of the log-normalizer calculated at its natural parameter:
 %
 \begin{align}
@@ -397,8 +398,8 @@ For more information on Proposition \ref{prop:expected_sufficient_statistic_as_d
 We can provide a closed-form expression for the KL divergence between two members of the same exponential family. 
 
 \begin{proposition}
-Consider two probability distributions from the same exponential family with density $p$, and and let their natural  parameters denoted $\naturalParam$ and $\wt{\naturalParam}$, respectively.  Then the KL-divergence (i.e. relative entropy) is given by
-
+Consider two probability distributions from the same exponential family with density $p$, and and denote their natural  parameters $\naturalParam$ and $\wt{\naturalParam}$, respectively.  Then the KL-divergence (i.e. relative entropy) is given by
+%s
 \begin{align*}
 \texttt{KL}(\naturalParam || \wt{\naturalParam}) = \bigip{\nabla \logNormalizerFunction(\naturalParam)}{\naturalParam - \wt{\naturalParam}} + \logNormalizerFunction(\naturalParam) - \logNormalizerFunction(\naturalParam) 
 \labelit \label{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}
@@ -421,7 +422,7 @@ We assume for simplicity of notation (but without loss of generality) that $\mu$
 \end{proposition}
 
 By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergence_between_members_of_same_exponential_family}, expressions for the entropy $\H[\naturalParam] = -\E_{\naturalParam}[\log p(\naturalParam)]$ and cross-entropy $\H[\naturalParam, \wt{\naturalParam}] = -\E_{\naturalParam}[\log p(\wt{\naturalParam})]$ can also be provided:
-
+%
 \begin{subequations}
 \begin{align}
 \H[\naturalParam]&= \logNormalizerFunction(\naturalParam) - \bigip{\naturalParam}{\nabla \logNormalizerFunction(\naturalParam)} - \E_{\naturalParam} [\log \carrierDensity(X)]	\label{eqn:entropy_of_an_exponential_family}\\
@@ -433,7 +434,7 @@ By reasoning in a similar way as the proof of Proposition \ref{prop:kl_divergenc
 
 
 Note that unlike with KL divergence \eqref{eqn:KL_divergence_between_two_members_of_the_sample_exponential_family}, the expressions for entropy and cross entropy \eqref{eqn:entropy_and_cross_entropy_between_two_exponential_family_members} may not have a closed form solution.  However, note that these expressions will always automatically have closed form solution when the carrier density satisfies $\carrierDensity(x) \equiv 1$, as is the case, for example, with the Gaussian, Dirichlet, and inverse gamma distributions.\footnote{Some presentations give $\carrierDensity(x)=C$ for some constant $C$, but note that the constant can simply be absorbed into the log-normalizer $\logNormalizerFunction(\naturalParam)$.}. In that case, we have 
-
+%
 \begin{subequations}
 \begin{align}
 \H[\naturalParam]&= \logNormalizerFunction(\naturalParam) - \bigip{\naturalParam}{\nabla \logNormalizerFunction(\naturalParam)} \label{eqn:entropy_of_an_exponential_family_with_base_measure_unity}\\
@@ -555,7 +556,7 @@ By \Eqref{eqn:exponential_family_natural}, the log likelihood is
 The term $ \log \carrierDensity(\obs)+ \naturalParam^\top \sufficientStatsFunction(\obs) $ is affine in $\naturalParam$ and thus both convex and concave. The term $\logNormalizerFunction(\naturalParam)$ is convex by Prop~\ref{prop:basic_convexity_properties_of_the_exponential_family}; hence $-\logNormalizerFunction(\naturalParam)$ is concave. The sum of two concave functions is concave.	
 \end{proof}
  
-\red{TODO: \citet[pp.~4]{dempster1977maximum}  says that the  log-likelihood of a \textit{regular} exponential family is concave.  Is this regularity condition needed for concavity, and if so, where}
+\red{TODO: \citet[pp.~4]{dempster1977maximum}  says that the  log-likelihood of a \textit{regular} exponential family is concave.  Is this regularity condition needed for concavity, and if so, where?}
 
 
 \subsubsection{Identifiability}
@@ -748,11 +749,10 @@ This is precisely the M-step of the EM algorithm.
 
 
 \begin{proposition}\propositiontitle{The gradient of the Q-function for exponential family models \cite{salakhutdinov2002relationship}.}
-For a latent variable model of \Eqref{eqn:exponential_family_complete_data_likelihood}  whose complete data likelihood  $p(\+x, \+z \cond \param)$ is in the exponential family, the gradient of the Q-function of \Eqref{eqn:E_step_for_EM}
-is given by 
+For a latent variable model of \Eqref{eqn:exponential_family_complete_data_likelihood}  whose complete data likelihood  $p(\+x, \+z \cond \naturalParam)$ is in the exponential family, the gradient of the Q-function of \Eqref{eqn:E_step_for_EM} with respect to natural parameter $\naturalParam$ is given by 
  %
  \begin{align}
- \frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  \E_{p(\+z \cond \+x, \param^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \param)}[\sufficientStatsFunction(\+x,\+z)]
+ \frac{\partial Q(\naturalParam \cond \naturalParam^^t)}{\partial \naturalParam} =  \E_{p(\+z \cond \+x, \naturalParam^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \naturalParam)}[\sufficientStatsFunction(\+x,\+z)]
  \label{eqn:gradient_of_Q_function_for_EM}
  \end{align}
 %
@@ -765,30 +765,30 @@ is given by
 
 We have 
 \begin{align*}
-\frac{\partial}{\partial \param}  p(\+x, \+z \cond \param) & \stackrel{1}{=} p(\+x, \+z \cond \param) \bigg( \sufficientStatsFunction(\+x, \+z) - \E
-_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)] \bigg) \\
-\implies \frac{\partial}{\partial \param}  \log p(\+x, \+z \cond \param) & \stackrel{2}{=} \frac{\frac{\partial p(\+x, \+z \cond \param)}{\partial \param}}{p(\+x, \+z \cond \param)} \stackrel{3}{=}  \sufficientStatsFunction(\+x, \+z) - \E
-_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)] \\
-\implies \frac{\partial}{\partial \param}  Q(\param \cond \param^^t) & \stackrel{4}{=} \int \frac{\partial}{\partial \param} \ln p(
-\+x ,\+z \cond \param) p(\+z \cond \+x, \param^^t) \, \mu(d\+z) \\
-& \stackrel{5}{=} \bigg( \int \sufficientStatsFunction(\+x, \+z) p(\+z \cond \+x, \param^^t) \, \mu(d\+z)\bigg) - \E
-_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)]  \\
+\frac{\partial}{\partial \naturalParam}  p(\+x, \+z \cond \naturalParam) & \stackrel{1}{=} p(\+x, \+z \cond \naturalParam) \bigg( \sufficientStatsFunction(\+x, \+z) - \E
+_{p(\+x,\+z \cond \naturalParam)} [\sufficientStatsFunction(\+x, \+z)] \bigg) \\
+\implies \frac{\partial}{\partial \naturalParam}  \log p(\+x, \+z \cond \naturalParam) & \stackrel{2}{=} \frac{\frac{\partial p(\+x, \+z \cond \naturalParam)}{\partial \naturalParam}}{p(\+x, \+z \cond \naturalParam)} \stackrel{3}{=}  \sufficientStatsFunction(\+x, \+z) - \E
+_{p(\+x,\+z \cond \naturalParam)} [\sufficientStatsFunction(\+x, \+z)] \\
+\implies \frac{\partial}{\partial \naturalParam}  Q(\naturalParam \cond \naturalParam^^t) & \stackrel{4}{=} \int \frac{\partial}{\partial \naturalParam} \ln p(
+\+x ,\+z \cond \naturalParam) p(\+z \cond \+x, \naturalParam^^t) \, \mu(d\+z) \\
+& \stackrel{5}{=} \bigg( \int \sufficientStatsFunction(\+x, \+z) p(\+z \cond \+x, \naturalParam^^t) \, \mu(d\+z)\bigg) - \E
+_{p(\+x,\+z \cond \naturalParam)} [\sufficientStatsFunction(\+x, \+z)]  \\
 & \stackrel{6}{=} \E
-_{p(\+z \cond \+x, \param^^t)} [\sufficientStatsFunction(\+x, \+z)]   - \E
-_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)] 
+_{p(\+z \cond \+x, \naturalParam^^t)} [\sufficientStatsFunction(\+x, \+z)]   - \E
+_{p(\+x,\+z \cond \naturalParam)} [\sufficientStatsFunction(\+x, \+z)] 
 \end{align*}
 %
 Here, in (1), we used the definition in \Eqref{eqn:exponential_family_complete_data_likelihood} of exponential family for latent variable models, as well as the chain rule for derivatives.   Note that here $\E
-_{p(\+x,\+z \cond \param)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \param) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:E_step_for_EM}
-of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \param^^t)$, which integrates to 1.  In (6), we simply applied notation.  
+_{p(\+x,\+z \cond \naturalParam)} [\sufficientStatsFunction(\+x, \+z)] =  \int \sufficientStatsFunction(\+x, \+z) p(\+x,\+z \cond \naturalParam) \mu(d\+x, d\+z).$ In (2), we used the derivative of the logarithm along with chain rule for derivatives. In (3) we substituted the result of the first line. In (4), we used the definition in \Eqref{eqn:E_step_for_EM}
+of the Q-function, along with an (assumed) interchange of the integral and the derivative. In (5), we used linearity of the integral; in the second summand, we have a constant with respect to the density $p(\+z \cond \+x, \naturalParam^^t)$, which integrates to 1.  In (6), we simply applied notation.  
 \end{proof}
 
 
 \begin{corollary}\propositiontitle{The gradient of the Q function as the difference in expected sufficient statistics with clamped and unclamped data.}
-By Prop.~\ref{prop:gradient_of_the_Q_function}, the gradient of the Q-function evaluated at the current estimate of the parameter
+By Prop.~\ref{prop:gradient_of_the_Q_function}, the gradient of the Q-function evaluated at the current estimate of the natural parameter
 %
 \begin{align}
-\frac{\partial Q(\param \cond \param^^t)}{\partial \param} \Bigr|_{\param = \param^^t} =  \E_{p(\+z \cond \+x, \param^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \param^^t)}[\sufficientStatsFunction(\+x,\+z)] 
+\frac{\partial Q(\naturalParam \cond \naturalParam^^t)}{\partial \naturalParam} \Bigr|_{\naturalParam = \naturalParam^^t} =  \E_{p(\+z \cond \+x, \naturalParam^^t)}[\sufficientStatsFunction(\+x,\+z)] - 	\E_{p(\+x, \+z \cond \naturalParam^^t)}[\sufficientStatsFunction(\+x,\+z)] 
 \label{eqn:gradient_of_Q_function_as_difference_in_expected_sufficient_stats_with_clamped_and_unclamped_data}
 \end{align}
 %
@@ -801,42 +801,42 @@ can be interpreted as the difference in the expected sufficient statistic vector
 The interpretation of the RHS of \Eqref{eqn:gradient_of_Q_function_for_EM} was given in Notation~\ref{notation:Q_function}.     Using the alternative notation of \citet{miller2011why} that we mentioned in Notation~\ref{notation:Q_function}, we could also write the gradient in \Eqref{eqn:gradient_of_Q_function_for_EM} as 
  %
  \begin{align}
- \frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param}[\sufficientStatsFunction(\+X,\+Z)]
+ \frac{\partial Q(\naturalParam \cond \naturalParam^^t)}{\partial \naturalParam} =  \E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\naturalParam}[\sufficientStatsFunction(\+X,\+Z)]
  \label{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}
  \end{align}
  %
  Similarly, we could write \Eqref{eqn:gradient_of_Q_function_as_difference_in_expected_sufficient_stats_with_clamped_and_unclamped_data} as
   %
  \begin{align}
- \frac{\partial Q(\param \cond \param^^t)}{\partial \param} \Bigr|_{\param = \param^^t} =  \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)]
+ \frac{\partial Q(\naturalParam \cond \naturalParam^^t)}{\partial \naturalParam} \Bigr|_{\naturalParam = \naturalParam^^t} =  \E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z)]
  \label{eqn:the_gradient_of_the_Q_function_evaluated_at_the_current_parameter_and_using_jeffs_notation}
  \end{align}
  %
 \end{notation}
 
 \begin{proposition}\propositiontitle{The EM step for exponential family latent variable models \cite{dempster1977maximum, salakhutdinov2002relationship}.}
-The solution to the EM objective in \Eqref{eqn:M_step_for_EM} for obtaining the next parameter value $\param^^{t+1}$ given the previous parameter value $\param^^{t}$ is given by finding the $\param^^{t+1}$ that solves
+The solution to the EM objective in \Eqref{eqn:M_step_for_EM} for obtaining the next natural parameter value $\naturalParam^^{t+1}$ given the previous natural parameter value $\naturalParam^^{t}$ is given by finding the $\naturalParam^^{t+1}$ that solves
 %
 \begin{align}
-\E_{\param^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
+\E_{\naturalParam^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
 \label{eqn:interesting_represenation_of_EM_step_for_exponential_family_models}	
 \end{align}
 %
-That is, we must find the parameter value which makes the expected sufficient statistic vector with  unclamped data equal to that with clamped data.
+That is, we must find the natural parameter value which makes the expected sufficient statistic vector with  unclamped data equal to that with clamped data.
 \label{prop:interesting_representation_of_EM_update_to_params}
 \end{proposition}
 
 \begin{proof}
-We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\param \cond \param^^t)}{\partial \param} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  Also give argument that the optimum is a maximum and not a minimum, which I think follows from the concavity of the log likelihood along with the fact that concave functions are closed under integration.}   By applying the representation of $\frac{\partial Q(\param \cond \param^^t)}{\partial \param}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\param \in \paramSpace$ which solves the equation
+We find a local optimum of the Q-function by finding its critical point, that is by solving $\frac{\partial Q(\naturalParam \cond \naturalParam^^t)}{\partial \naturalParam} =  0$. \red{TODO: How do we know that we don't need to look at boundary conditions?  Also give argument that the optimum is a maximum and not a minimum, which I think follows from the concavity of the log likelihood along with the fact that concave functions are closed under integration.}   By applying the representation of $\frac{\partial Q(\naturalParam \cond \naturalParam^^t)}{\partial \naturalParam}$ in \Eqref{eqn:gradient_of_Q_function_for_EM_in_jeff_millers_notation}, we see that this is equivalent to finding $\naturalParam \in \naturalParamSpace$ which solves the equation
 %
 \begin{align*}
-\E_{\param}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 	
+\E_{\naturalParam}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 	
 \end{align*}
 %
-Setting the solution $\param^*$ as the next parameter value $\param^^{t+1} = \param^*$ gives the result. \red{TODO: How do we know the solution exists?}
+Setting the solution $\naturalParam^*$ as the next natural parameter value $\naturalParam^^{t+1} = \naturalParam^*$ gives the result. \red{TODO: How do we know the solution exists?}
 \end{proof}
 
-\begin{remark}\remarktitle{Interpreting the EM step for exponential family models.} Following \citet[pp.4]{dempster1977maximum}, we can interpret the representation in Prop~\ref{prop:interesting_representation_of_EM_update_to_params} in terms of the maximum likelihood updates for completely observed exponential family models (Sec.~\ref{sec:ml_with_ef}). Recall from \Eqref{eqn:condition_for_critical_point_of_EF_likelihood} that in the completely observed setting, maximum likelihood asks us to find the parameter $\param$ that satisfies $\E_{\param}[\sufficientStatsFunction(\+\obsCaps)] = \sufficientStatsFunction(\obs)$.  However, in the latent variable case, we do not completely observe the sufficient statistics $\sufficientStatsFunction(\+X,\+Z)$, and so we instead use the \textit{expected} sufficient statistics $\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x]$ from the most recent parameter estimate. Thus,  \Eqref{eqn:interesting_represenation_of_EM_step_for_exponential_family_models} combines the E-step on the RHS with the M-step on the LHS.
+\begin{remark}\remarktitle{Interpreting the EM step for exponential family models.} Following \citet[pp.4]{dempster1977maximum}, we can interpret the representation in Prop~\ref{prop:interesting_representation_of_EM_update_to_params} in terms of the maximum likelihood updates for completely observed exponential family models (Sec.~\ref{sec:ml_with_ef}). Recall from \Eqref{eqn:condition_for_critical_point_of_EF_likelihood} that in the completely observed setting, maximum likelihood asks us to find the natural parameter $\naturalParam$ that satisfies $\E_{\naturalParam}[\sufficientStatsFunction(\+\obsCaps)] = \sufficientStatsFunction(\obs)$.  However, in the latent variable case, we do not completely observe the sufficient statistics $\sufficientStatsFunction(\+X,\+Z)$, and so we instead use the \textit{expected} sufficient statistics $\E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x]$ from the most recent parameter estimate. Thus,  \Eqref{eqn:interesting_represenation_of_EM_step_for_exponential_family_models} combines the E-step on the RHS with the M-step on the LHS.
 \label{rk:interpreting_the_EM_step_for_exponential_family_models}
 \end{remark}
 
@@ -847,7 +847,7 @@ Setting the solution $\param^*$ as the next parameter value $\param^^{t+1} = \pa
 
 
 \begin{proposition}\propositiontitle{The Q-function and log marginal likelihood have equal gradients for exponential family models \cite{salakhutdinov2002relationship}.}
-Consider the latent variable model of \Eqref{eqn:exponential_family_complete_data_likelihood}  whose complete data likelihood  $p(\+x, \+z \cond \param)$ is in the exponential family.  Define its log marginal likelihood as
+Consider the latent variable model of \Eqref{eqn:exponential_family_complete_data_likelihood}  whose complete data likelihood  $p(\+x, \+z \cond \param)$ is in the exponential family.  Define its log marginal likelihood (with respect to parameter $\param$ in an arbitrary parameterization) as
 % 
 \begin{align}
 \ell(\param) \defeq \log p(\+x \cond \param) = \log \int p(\+x,\+z \cond \param) \mu(d\+z).	
@@ -895,12 +895,12 @@ as claimed.
 
 \red{TODO: I think I can give a much faster proof using the idea of EM as exact CAVI inference.  If so, then can we discard the exponential family assumption that was made by \citet{salakhutdinov2002relationship}?}
 
-\begin{corollary}\propositiontitle{The ordinary gradient of the log marginal likelihood of an exponential family latent variable model.}
+\begin{corollary}\propositiontitle{The ordinary gradient of the log marginal likelihood of an exponential family with respect to a natural parameter.}
 
 We have 
 %
 \begin{align}
-\frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t} = \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)]
+\frac{\partial }{\partial \naturalParam} \ell(\naturalParam) \Bigr|_{\naturalParam = \naturalParam^^t} = \E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z)]
 \label{eqn:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}
 \end{align}
 %
@@ -908,21 +908,21 @@ We have
 \end{corollary}
 
 \begin{proof}
-This follows immediately from the gradient of the Q-function (see \Eqref{eqn:the_gradient_of_the_Q_function_evaluated_at_the_current_parameter_and_using_jeffs_notation}) along with the fact that the Q-function and the log marginal likelihood have equal gradients when evaluated at the current parameter value (Prop.~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}).	
+Substitute the gradient of the Q-function with respect to a natural parameter (see \Eqref{eqn:the_gradient_of_the_Q_function_evaluated_at_the_current_parameter_and_using_jeffs_notation}) into the equation stating that the Q-function and the log marginal likelihood have equal gradients when evaluated at a current parameter value (Prop.~\ref{prop:Q_function_and_log_marginal_likelihood_have_the_same_gradients_when_evaluated_at_the_current_param_value}).	
 \end{proof}
 
-\begin{remark}\remarktitle{Intuition on convergence of EM algorithm to a local maximum.} Following \citet[pp.~5]{dempster1977maximum}, suppose that the EM algorithm produces a convergent sequence of parameters $\param^^t \to \param^*$ for an exponential family latent variable model (see \Eqref{eqn:exponential_family_complete_data_likelihood}).  Then by Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} we have
+\begin{remark}\remarktitle{Intuition on convergence of EM algorithm to a local maximum.} Following \citet[pp.~5]{dempster1977maximum}, suppose that the EM algorithm produces a convergent sequence of natural parameters $\naturalParam^^t \to \naturalParam^*$ for an exponential family latent variable model (see \Eqref{eqn:exponential_family_complete_data_likelihood}).  Then by Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} we have
 	%
 \begin{align}
-\E_{\param^*}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\param^*}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
+\E_{\naturalParam^*}[\sufficientStatsFunction(\+X,\+Z)] = \E_{\naturalParam^*}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] 
 \label{eqn:apply_EM_update_at_convergence}
 \end{align}
 %
 Hence, by Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}, we have 
 %
-\[ \frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^*} \stackrel{(Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model})}{=} \; \E_{\param^*}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - \E_{\param^*}[\sufficientStatsFunction(\+X,\+Z)]   \stackrel{\Eqref{eqn:apply_EM_update_at_convergence}}{=} \; \+0 \] 
+\[ \frac{\partial }{\partial \naturalParam} \ell(\naturalParam) \Bigr|_{\naturalParam = \naturalParam^*} \stackrel{(Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model})}{=} \; \E_{\naturalParam^*}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - \E_{\naturalParam^*}[\sufficientStatsFunction(\+X,\+Z)]   \stackrel{\Eqref{eqn:apply_EM_update_at_convergence}}{=} \; \+0 \] 
 %
-So we have shown that, at least for exponential family models, if the EM algorithm converges, then the resulting parameter value $\param^*$ is a critical point of the marginal likelihood.
+So we have shown that, at least for exponential family models, if the EM algorithm converges, then the resulting natural parameter value $\naturalParam^*$ is a critical point of the marginal likelihood. Moreover, this property can be extended to other parametrizations (functions of the natural parameter) by the invariance property of the MLE.\redfootnote{TODO: Note again however that following \citet{bickel2001mathematical}, we have defined the natural parameter as a function of the arbitrary parameter, rather than the other way around.  We can't apply invariance property of MLE unless we go the other way around (e.g., if said function is invertible).}
 \end{remark}
 
 
@@ -940,6 +940,8 @@ where $\ell$ is the log marginal likelihood as in \Eqref{eqn:log_marginal_likeli
 
 
 \red{TODO:  When does Prop 2.3.4 actually apply?  \citet{salakhutdinov2003optimization} say it applies \enquote{for most objective functions}, without specifying which.  We state this more carefully by assuming exponential family models, but perhaps this is overly restrictive.}
+
+\red{TODO: Confirm, by looking back through the proof more carefully, that the proposition holds for any parametrization, not just the natural parametrization (as stated by \citet{salakhutdinov2002relationship}). } 
 
 \begin{proof}
 Define
@@ -1024,24 +1026,42 @@ and hence the EM step $\param^^{t+1} - \param^^t$ is an ascent direction.
 
 
 \begin{proposition}
-Under a minimal exponential family model with mean parametrization, the EM step is identical to gradient ascent  of the log marginal likelihood with step size of 1.  That is, $\transformationMatrixGradientToEMStep(\param^^t) = \+I$ in Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient}.
-\label{prop:when_EM_is_exactly_gradient_ascent}
+Under a minimal exponential family model, the EM step in the mean parameter is identical to the gradient of the log marginal likelihood with respect to the natural parameter.  
+\label{prop:relating_EM_step_to_gradient}
 \end{proposition}
 
 \begin{proof}[Proof sketch.]
 %
 \begin{align*}
-\frac{\partial }{\partial \param} \ell(\param) \Bigr|_{\param = \param^^t} &= \E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)] && \scripttext{Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}} \\
-&=\E_{\param^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] - 	\E_{\param^^t}[\sufficientStatsFunction(\+X,\+Z)] && \scripttext{Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} (EM step)} \\
+\frac{\partial }{\partial \naturalParam} \ell(\naturalParam) \Bigr|_{\naturalParam = \naturalParam^^t} &= \E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z) \cond \+X=\+x] - 	\E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z)] && \scripttext{Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model}} \\
+&=\E_{\naturalParam^^{t+1}}[\sufficientStatsFunction(\+X,\+Z)] - 	\E_{\naturalParam^^t}[\sufficientStatsFunction(\+X,\+Z)] && \scripttext{Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} (EM step)} \\
 &=\meanParam^^{t+1} - \meanParam^^t && \scripttext{Def. mean parameter}
 \end{align*}
 
 \red{TODO: Convert from proof sketch to proof by clarifying assumptions behind Prop.~\ref{prop:interesting_representation_of_EM_update_to_params}; these assumptions must be inherited.}
 \end{proof}
 
+\begin{corollary}
+As an alternative to Prop.~\ref{prop:relating_the_EM_step_to_the_ordinary_gradient}, we can relate the EM step to the ordinary gradient via a post-multiplication
+%
+\begin{align}
+\meanParam^^{t+1} - \meanParam^^t = \frac{\partial}{\partial \meanParam} \ell(\meanParam) \Bigr|_{\meanParam=\meanParam^^t} \bigg(\frac{\partial \meanParam}{\partial \naturalParam}  \Bigr|_{\naturalParam=\naturalParam^^t} \bigg)
+\end{align}
+%
+
+\end{corollary}
+
+\begin{proof}
+By chain rule,
+\[ \frac{\partial }{\partial \naturalParam} \ell(\naturalParam) \Bigr|_{\naturalParam = \naturalParam^^t}  = \frac{\partial}{\partial \meanParam} \ell(\meanParam) \Bigr|_{\meanParam=\meanParam^^t} \bigg(\frac{\partial \meanParam}{\partial \naturalParam}  \Bigr|_{\naturalParam=\naturalParam^^t} \bigg)
+  \]
+  %
+  Then substitute Prop.~\ref{prop:relating_EM_step_to_gradient} into the LHS.
+\end{proof}
+
 
 \begin{remark}
-The argument used to prove Prop.~\ref{prop:when_EM_is_exactly_gradient_ascent} can be applied to results made directly in \citet[pp.4-5]{dempster1977maximum}.  In particular, Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model} is the \enquote{striking representation} given in  \citet[Eqn. 2.13]{dempster1977maximum}, and Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} is given in \citet[Eqns. 2.2-2.3]{dempster1977maximum}. 
+The argument used to prove Prop.~\ref{prop:relating_EM_step_to_gradient} can be applied to results made directly in \citet[pp.4-5]{dempster1977maximum}.  In particular, Cor.~\ref{cor:ordinary_gradient_of_log_marginal_likelihood_of_an_exponential_family_latent_variable_model} is the \enquote{striking representation} given in  \citet[Eqn. 2.13]{dempster1977maximum}, and Prop.~\ref{prop:interesting_representation_of_EM_update_to_params} is given in \citet[Eqns. 2.2-2.3]{dempster1977maximum}. 
 \end{remark}
 
 
