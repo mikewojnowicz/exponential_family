@@ -23,13 +23,16 @@
 \newcommand{\normalizerFunction}{Z}
 \newcommand{\logNormalizerFunction}{a}
 \newcommand{\sufficientStatsFunction}{\+s}
+\newcommand{\sufficientStatsFunctionScalar}{s}
 \newcommand{\carrierDensity}{h}
 \newcommand{\meanParam}{\+\mu}
 
 % Parameters
 \newcommand{\param}{\+\theta}
-\newcommand{\paramSpace}{\Theta}
 \newcommand{\naturalParam}{\+\eta}
+\newcommand{\naturalParamScalar}{\eta}
+
+\newcommand{\paramSpace}{\Theta}
 \newcommand{\naturalParamSpace}{H}
 
 %Relating EM step and ordinary gradient
@@ -146,23 +149,53 @@ An exponential family is said to be \textbf{minimal} if the components of the su
 Here we give examples of exponential families, showing how to derive the exponential family forms.   Note that the result of such computations are readily available for a wide variety of exponential family members (see e.g. \cite{nielsen2009statistical} or the Wikipedia page on exponential families). 
 
  
+\subsubsection{Bernoulli distribution}
+
+
+\begin{example}\exampletitle{Bernoulli Distribution.}
+ We can write the density of the Bernoulli distribution in exponential family form. 	 Given a binary observation $\obsScalar \in \set{0,1}$ and  parameter $\pi \in [0,1]$ representing the probability of success, we can write
+ %
+ \begin{align*}
+ p(\obsScalar \cond \pi) &=\pi^{\obsScalar} (1-\pi)^{1-\obsScalar} \\
+ &= \exp \log \bigg( \pi^{\obsScalar} (1-\pi)^{1-\obsScalar} \bigg) \\
+ &= \exp \bigg( \obsScalar \log \pi +  (1-\obsScalar) \log (1-\pi) \bigg) \\
+  &= \exp \bigg( \obsScalar \log \pi +  \obsScalar \log (1-\pi) + \log (1-\pi) \bigg) \\
+    &= \exp \bigg( \obsScalar \log \frac{\pi}{1-\pi} + \log (1-\pi) \bigg)
+ \end{align*}
+%
+ with natural parameter, $\naturalParamScalar(\pi) = \log \frac{\pi}{1-\pi}$, sufficient statistics $\sufficientStatsFunctionScalar(\obsScalar) = \obsScalar$, carrier density $\carrierDensity(\obsScalar)=1$ and log normalizer $\logNormalizerFunction(\naturalParamScalar)=-\log (1-\pi)=\log(1+e^{\naturalParamScalar})$.
+\label{ex:bernoulli_as_ef}
+\end{example}
+
+\begin{remark}
+From Example~\ref{ex:bernoulli_as_ef}, we see that the natural parameter $\naturalParamScalar$ and conventional (success probability) parameter $\pi$ for the Bernoulli distribution are related as follows
+ %
+ \begin{align*}
+ \naturalParamScalar &= \texttt{logit}(\pi) \defeq \log \frac{\pi}{1-\pi} \\	
+  \pi &= \texttt{expit}( \naturalParamScalar) \defeq \frac{1}{1+e^{- \naturalParamScalar}} \\	
+ \end{align*}
+%
+\end{remark}
+
+
 \subsubsection{Categorical distribution}
 
-\begin{example}{(Categorical Distribution)}
-\label{ex:categorical_as_ef} We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $\obs \in \set{0,1}^K$ and simplex-valued parameter $\pi \in \Delta_{K-1}$, we can write
-\[p(\obs \cond \pi) = \prod_{k=1}^K \pi_k^{\obsScalar_k} = \exp \{ \sum_{k=1}^K \obsScalar_k \log \pi_k\} \]
- with natural parameter, $\naturalParam(\pi) = \log \pi$, the sufficient statistics $\sufficientStatsFunction(\obs) = \obs$, carrier density $\carrierDensity(\obs)=1$ and log normalizer $0$.
+\begin{example}\exampletitle{Categorical Distribution.}
+ We can write the density of the categorical distribution in exponential family form. 	 Given one-hot encoded observations $\obs \in \set{0,1}^K$ and simplex-valued parameter $\+\pi \in \Delta_{K-1}$, we can write
+\[p(\obs \cond \+\pi) = \prod_{k=1}^K \pi_k^{\obsScalar_k} = \exp \{ \sum_{k=1}^K \obsScalar_k \log \pi_k\} \]
+ with natural parameter, $\naturalParam(\+\pi) = \log \+\pi$, sufficient statistics $\sufficientStatsFunction(\obs) = \obs$, carrier density $\carrierDensity(\obs)=1$ and log normalizer $0$.
+\label{ex:categorical_as_ef}
 \end{example}
 
 \subsubsection{Dirichlet distribution}
-\begin{example}{(Dirichlet Distribution)} 
-\label{ex:dirichlet_as_ef} We can write the density of the Dirichlet distribution in exponential family form:
+\begin{example}\exampletitle{Dirichlet Distribution.} 
+ We can write the density of the Dirichlet distribution in exponential family form:
 \begin{align*}
-p (\pi \cond\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
+p (\+\pi \cond \+\alpha) &= \df{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma (\alpha_k) } \pi_1^{\alpha_1 -1} \cdot \cdot \cdot \pi_K^{\alpha_K -1} \\
 &= \exp \bigg\{ \sum_{k=1}^K (\alpha_k -1) \log \pi_k - \bigg[ \sum_k \log \Gamma (\alpha_k)-  \log \Gamma (\sum \alpha_k) \bigg]  \bigg\}
 \end{align*}
-with natural parameter $\naturalParam(\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^\top$, sufficient statistics $\sufficientStatsFunction(\pi) = \log \pi = [\log \pi_1, ..., \log \pi_K]^\top$, carrier density $\carrierDensity(\pi)=1$, and log normalizer $\logNormalizerFunction(\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
-  
+with natural parameter $\naturalParam(\+\alpha) = [\alpha_1 -1, ..., \alpha_K -1]^\top$, sufficient statistics $\sufficientStatsFunction(\+\pi) = \log \+\pi = [\log \pi_1, ..., \log \pi_K]^\top$, carrier density $\carrierDensity(\+\pi)=1$, and log normalizer $\logNormalizerFunction(\+\alpha) =  \sum_k \log \Gamma (\alpha_k ) - \log \Gamma (\sum_k \alpha_k)$. 
+\label{ex:dirichlet_as_ef} 
 \end{example} 
 
 For an example of how the natural parametrization can help provide insight into message passing,  see Section \ref{sec:mvn_in_message_passing}.
@@ -181,8 +214,8 @@ where (1) uses a well-known exponential family property (see Proposition \ref{pr
 
 \subsubsection{Truncated normal distribution}
 
-\begin{example}{(Truncated normal distribution)} 
-\label{ex:truncated_normal_as_ef} The univariate truncated normal distribution $\TruncatedNormal(\mu,  \sigma^2,  \Omega)$ results when a normal distribution $\N(\mu,  \sigma^2)$ is truncated to some set $\Omega \in \R$. \footnote{For more information on the truncated normal,  see e.g.  \cite{burkardt2014truncated} or \url{http://parker.ad.siu.edu/Olive/ch4.pdf}.}   Note that the parameters $\mu, \sigma^2$ denote the mean and variance of the \textit{parent} normal distribution;  i.e.  if $X \sim \TruncatedNormal(\mu,  \sigma^2,  \Omega)$ then $\E[X] \neq \mu$ (unless $\Omega = \R$). 
+\begin{example}\exampletitle{Truncated normal distribution.}
+ The univariate truncated normal distribution $\TruncatedNormal(\mu,  \sigma^2,  \Omega)$ results when a normal distribution $\N(\mu,  \sigma^2)$ is truncated to some set $\Omega \in \R$. \footnote{For more information on the truncated normal,  see e.g.  \cite{burkardt2014truncated} or \url{http://parker.ad.siu.edu/Olive/ch4.pdf}.}   Note that the parameters $\mu, \sigma^2$ denote the mean and variance of the \textit{parent} normal distribution;  i.e.  if $X \sim \TruncatedNormal(\mu,  \sigma^2,  \Omega)$ then $\E[X] \neq \mu$ (unless $\Omega = \R$). 
 
 If we assume that the truncation set is an interval $\Omega = (a,b)$ for $a,b \in \R$,  then the distribution $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ has p.d.f.
 
@@ -198,7 +231,7 @@ f(x ; \mu,  \sigma^2,  a,  b) & = K \df{1}{\sqrt{2 \pi \sigma^2}} \exp \bp{-\hal
 & = K \df{1}{\sqrt{2 \pi}} \exp \bp{ - \frac{1}{2 \sigma^2} x^2 + \frac{\mu}{\sigma^2} x  + \frac{\mu^2}{\sigma^2}  - \log \sigma}  \indicate{a \leq x \leq b} 
 \end{align*} 
 where $K := \big( \Phi_{\mu, \sigma^2} (b)  - \Phi_{\mu, \sigma^2} (a) \big)^{-1}$,  then we see that see that  $\TruncatedNormal(\mu,  \sigma^2,  (a,b))$ belongs to the exponential family \eqref{eqn:exponential_family} where,  in this case,  we have natural parameter $\naturalParam = (\frac{1}{\sigma^2},  \frac{\mu}{\sigma^2})\top$,  sufficient statistics function $\sufficientStatsFunction(x) = (-\half x^2,  x)^\top$,  carrier density $\carrierDensity(x) =  \frac{1}{\sqrt{2 \pi}}  \indicate{a \leq x \leq b}$,  and log normalizer $a(\param) = \log K + \frac{\mu^2}{\sigma^2} - \log \sigma$.
- 
+\label{ex:truncated_normal_as_ef}
 \end{example}
 
 \begin{remark}
@@ -209,20 +242,19 @@ The truncated normal distribution differs from the normal distribution only in i
 
 \subsubsection{Inverse Gamma distribution}
 
-\begin{example}{(Inverse Gamma Distribution)} 
-\label{ex:inverse_gamma_as_ef} The Inverse Gamma distribution is the distribution of the reciprocal of a Gamma random variable.\footnote{The density of the inverse gamma can easily be obtained from the gamma density by defining the transformation $Y = \frac{1}{X} := g(X)$ and then applying the change of variables formula,  $f_Y(y) = f_X (g^{-1}(y)) | \df{d}{dy} g^{-1}(y)|$.}  We can write the density of the Inverse Gamma $\InverseGamma(\alpha,  \beta)$ distribution in exponential family form:
+\begin{example}\exampletitle{Inverse Gamma Distribution.} 
+ The Inverse Gamma distribution is the distribution of the reciprocal of a Gamma random variable.\footnote{The density of the inverse gamma can easily be obtained from the gamma density by defining the transformation $Y = \frac{1}{X} := g(X)$ and then applying the change of variables formula,  $f_Y(y) = f_X (g^{-1}(y)) | \df{d}{dy} g^{-1}(y)|$.}  We can write the density of the Inverse Gamma $\InverseGamma(\alpha,  \beta)$ distribution in exponential family form:
 \begin{align*}
 p (x \cond \alpha,  \beta) &= \df{\beta^\alpha}{ \Gamma (\alpha) } x^{-\alpha -1} \exp \bigg(- \df{\beta}{x} \bigg) \\
 &= \exp \bigg\{ (-\alpha - 1) \log x + (- \beta) \frac{1}{x} + \log \df{\beta^\alpha}{\Gamma(\alpha)} \bigg\}
 \end{align*}
-with natural parameter $\naturalParam(\alpha) = [-\alpha-1,  -\beta]\top$, sufficient statistics $\sufficientStatsFunction(x) = [\log x ,  \frac{1}{x}]^\top$, carrier density $\carrierDensity(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
-  
+with natural parameter $\naturalParam(\alpha) = [-\alpha-1,  -\beta]^\top$, sufficient statistics $\sufficientStatsFunction(x) = [\log x ,  \frac{1}{x}]^\top$, carrier density $\carrierDensity(x)=1$, and log normalizer $a(\alpha,  \beta) =  \log \frac{\beta^\alpha}{\Gamma(\alpha)} $. 
+\label{ex:inverse_gamma_as_ef}
 \end{example} 
 
 \subsubsection{Multivariate normal}
 
-\begin{example}{(Multivariate normal)} 
-\label{ex:mvn_as_ef}
+\begin{example}\exampletitle{Multivariate normal.}
 We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribution in exponential form
 \begin{align*}
 	p(\+x \cond \+\mu, \+\Sigma) &= (2\pi)^{-d/2} |\+\Sigma |^{-1/2} \exp \bigg\{ -\half (\+x - \+\mu)^\top \+\Sigma^{-1} (\+x - \+\mu) \bigg\}  \\
@@ -230,6 +262,7 @@ We can write the density of a multivariate normal $\N(\+\mu, \+\Sigma)$ distribu
 	\labelit \label{eqn:mvn_as_ef}
 \end{align*} 
 with natural parameter $\naturalParam(\+\mu, \+\Sigma) = \big(-\half \vectorize (\+\Sigma^{-1}) , \,  \+\Sigma^{-1} \+\mu \big) $, sufficient statistics $\sufficientStatsFunction(\+x) = \big(\vectorize (\+x \+x^\top), \+x \big)$, carrier density $\carrierDensity(\obs) = (2\pi)^{-d/2}$ and log normalizing $\logNormalizerFunction(\+\mu, \+\Sigma) =  -\half \+\mu \+\Sigma^{-1} \+\mu + \half \log |\+\Sigma^{-1} | $. 
+\label{ex:mvn_as_ef}
 \end{example}
 
 \begin{remark}
@@ -245,15 +278,15 @@ In Section \ref{sec:normal_data_with_non_conjugate_prior}, we use the exponentia
 \end{remark}
 
 \begin{remark}
-\label{rk:mvn_from_ef}
 Equation \eqref{eqn:mvn_as_ef} also says that if a random vector $\+x$ has a density on $\R^d$ that is proportional to $\exp \{ -\half \+x^\top \+A \+x + \+x^\top \+b\}$ for some matrix $\+A$ and vector $\+b$, then $\+x$ must be multivariate normal with covariance $\+A^{-1}$ and mean $\+A^{-1}\+b$. 
+\label{rk:mvn_from_ef}
 \end{remark}
 	
 
 \subsubsection{Inverse Wishart distribution}
 
-\begin{example}{(Inverse Wishart distribution)} 
-\label{ex:inverse_wishart_as_ef} The Inverse Wishart distribution (Section \ref{sec:inverse_wishart_distribution}) is the distribution of the inverse of a Wishart random variable.   We can write the density of the Inverse Wishart $\InverseWishart(\+\Psi,  \nu)$ distribution in exponential family form:
+\begin{example}\exampletitle{Inverse Wishart distribution.}
+ The Inverse Wishart distribution (Section \ref{sec:inverse_wishart_distribution}) is the distribution of the inverse of a Wishart random variable.   We can write the density of the Inverse Wishart $\InverseWishart(\+\Psi,  \nu)$ distribution in exponential family form:
 \begin{align*}
 p (\+X  \cond \+\Psi,  \nu) & \stackrel{1}{=} C(\+\Psi,  \nu) \; | \+X | ^{-(\nu + p + 1)/2} \exp \bigg\{ -\half \tr (\+\Psi \+X^{-1} ) \bigg\} \\
 & = \exp \bigg\{ \frac{-(\nu + p + 1)}{2}  \log | \+ X | \;  -\half \tr (\+\Psi \+X^{-1} )  \; + \log  C(\+\Psi,  \nu)   \bigg\} \\
@@ -263,10 +296,10 @@ Equation (1) gives the standard representation of the $\InverseWishart(\+\Psi,  
 
 
 As we see from the last line,  in the exponential family representation,  we have natural parameter $\naturalParam = [\frac{-(\nu + p + 1)}{2},  \; -\half \vectorize (\+\Psi)]^\top$, sufficient statistics $\sufficientStatsFunction(\+X) = [\log | \+X | , \vectorize (\+X^{-1})]^\top$, carrier density $\carrierDensity(\+X)=1$, and log normalizer $ \log  C(\+\Psi,  \nu)$.   
-  
+\label{ex:inverse_wishart_as_ef}
 \end{example} 
 
-%{eqn:trace_of_matrix_product}
+
 
 \subsubsection{Gaussian Mixture Models}
 
@@ -276,7 +309,7 @@ For a detailed explanation of how to represent Gaussian mixture models in the ex
 
 \subsubsection{Hidden Markov Models} 
 
-\begin{example}{(Hidden Markov Models)} 
+\begin{example}\exampletitle{Hidden Markov Models.}
 A  hidden Markov model (HMM) is a tool for representing probability distributions over sequences of observations.  The HMM assumes that the observation at time $t$ was generated by some process whose state $\state_t$ is hidden from the observer.  Moreover, it assumes that the sequence of states satisfies the \textit{Markov property}:  conditional on the current state $\state_t$, its future and past hidden states are independent.  Finally, there is a Markov property on outputs:  conditional on the current state $\state_t$, the output $y_t$ is independent of all other hidden states and outputs.\redfootnote{I might have lifted this paragraph overviewing HMM's from somewhere; check into that.}
 
 % Note: No need to introduce the Bayesian hidden markov model here; we're just showing that the complete data likelihood is in the
@@ -1293,9 +1326,7 @@ Here we will show that the Inverse Wishart is a conjugate prior for the covarian
 
 This situation comes up 
 
-\begin{example}{\remarktitle{Inverse Wishart prior on the covariance of a  Multivariate Normal sampling model with known mean}} \label{ex:inverse_wishart_prior}
-
-
+\begin{example}\exampletitle{Inverse Wishart prior on the covariance of a  Multivariate Normal sampling model with known mean}
 
 Consider the sampling model for $\+y :=(\+y_1, ....,\+y_n) \iid \N_d(\+\mu,  \+\Sigma)$
 \begin{align}
@@ -1325,6 +1356,7 @@ And so the conjugate updates are given by
 \nu^\prime &\leftarrow  \nu + n \\
 \+\Psi^\prime &\leftarrow \+\Psi + \ds\sum_{i=1}^n (\+y_i - \+\mu) (\+y_i - \+\mu)^\top
 \end{align}
+\label{ex:inverse_wishart_prior}
 \end{example}
 
 For interpretation of the parameters of the Inverse Wishart,  see Remark \ref{rk:inverse_wishart_parameter_interpretation}.
